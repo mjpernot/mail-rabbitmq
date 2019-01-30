@@ -7,13 +7,13 @@ host = "<HOSTNAME>"
 # RabbitMQ Exchange name for each instance run.
 exchange_name = "isse-guard-test"
 # List of valid queues in RabbitMQ.
-valid_queues = [ "QUEUE_NAME1", "QUEUE_NAME2", ... ]
+valid_queues = [ "QUEUE_NAME1", "QUEUE_NAME2" ]
 # Name of error queue to handle incorrectly routed emails.
 err_queue = "isse_error_test"
 # Archive directory path for non-processed email files.
-email_dir = "/<DIRECTORY_PATH>/email_dir"
+email_dir = "./email_dir"
 # Directory path and file name to the program log.
-log_file = "/<DIRECTORY_PATH>/logs/mail_2_rmq.log"
+log_file = "./logs/mail_2_rmq.log"
 # RabbitMQ listening port, default is 5672.
 port = 5672
 # Type of exchange:  direct, topic, fanout, headers
