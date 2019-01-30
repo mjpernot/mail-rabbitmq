@@ -14,9 +14,6 @@ pipeline {
                 dir ('rabbit_lib') {
                     git branch: "master", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.dicelab.net/JAC-IDM/rabbitmq-lib.git"
                 }
-                dir ('rabbit_lib/lib') {
-                    git branch: "master", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.dicelab.net/JAC-IDM/python-lib.git"
-                }
                 sh """
                 pip2 install mock --user
                 pip2 install pika==0.11.0 --user
