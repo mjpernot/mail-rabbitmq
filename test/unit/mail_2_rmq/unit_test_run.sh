@@ -5,8 +5,8 @@
 #   is located at.
 
 test/unit/mail_2_rmq/load_cfg.py
+test/unit/mail_2_rmq/parse_email.py
 
-#cat test/unit/mail_2_rmq/test_mail.txt | test/unit/mail_2_rmq/test_parse_email.py
 #test/unit/mail_2_rmq/test_archive_email.py
 #cat test/unit/mail_2_rmq/test_mail.txt | test/unit/mail_2_rmq/test_connect_process.py
 #cat test/unit/mail_2_rmq/test_mail.txt | test/unit/mail_2_rmq/test_process_message.py -G
