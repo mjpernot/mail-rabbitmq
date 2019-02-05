@@ -385,14 +385,14 @@ cd {Python_Project}/mail-rabbitmq
 ```
 
 
+### Individual Unit Tests:
+```
+test/unit/mail_2_rmq/load_cfg.py
+```
+
 ### Unit:  parse_email
 ```
 cat test/unit/mail_2_rmq/test_mail.txt | test/unit/mail_2_rmq/test_parse_email.py
-```
-
-### Unit:  load_cfg
-```
-test/unit/mail_2_rmq/test_load_cfg.py
 ```
 
 ### Unit:  archive_email
