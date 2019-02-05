@@ -10,4 +10,5 @@ test/unit/mail_2_rmq/archive_email.py
 test/unit/mail_2_rmq/connect_process.py
 test/unit/mail_2_rmq/process_message.py
 test/unit/mail_2_rmq/check_nonprocess.py
+test/unit/mail_2_rmq/help_message.py
 
