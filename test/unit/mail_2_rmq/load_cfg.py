@@ -26,7 +26,6 @@ else:
 
 # Third-party
 import mock
-import collections
 
 # Local
 sys.path.append(os.getcwd())
