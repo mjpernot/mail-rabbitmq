@@ -206,7 +206,6 @@ def connect_process(RQ, LOG, cfg, msg, **kwargs):
     LOG.log_info("Connection info: %s->%s" % (cfg.host, cfg.exchange_name))
 
     connect_status, err_msg = RQ.create_connection()
-    print(connect_status, err_msg)
 
     if connect_status and RQ.channel.is_open:
         LOG.log_info("Connected to RabbitMQ mode")
