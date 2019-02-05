@@ -49,6 +49,10 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Unit testing initilization.
+        test_false_publish -> Test publish returns false.
+        test_true_publish -> Test publish returns true.
+        test_error_queue -> Test message sent to error queue.
+        test_non_error_queue -> Test message sent to non-error queue.
         test_true_true_connect -> Test connection with true/true status.
         test_false_false_connect -> Test connection with false/false status.
         test_false_true_connect -> Test connection with false/true status.
@@ -175,19 +179,14 @@ class UnitTest(unittest.TestCase):
         self.cfg = CfgTest()
         self.RQ = RQTest()
 
-        #self.msg = {"from": "From_Address",
-        #            "to": "To_Address",
-        #            "subject": "EmailSubject"}
-
-    #@unittest.skip("Done")
     @mock.patch("mail_2_rmq.email")
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_true_true_connect(self, mock_log, mock_archive, mock_msg):
+    def test_false_publish(self, mock_log, mock_archive, mock_msg):
 
-        """Function:  test_true_true_connect
+        """Function:  test_false_publish
 
-        Description:  Test connecting to RabbitMQ with true/true status.
+        Description:  Test publish returns false.
 
         Arguments:
             mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
@@ -200,10 +199,93 @@ class UnitTest(unittest.TestCase):
         mock_archive.return_value = True
         mock_msg.get_payload.return_value = "Email message"
 
+        self.RQ.pub_status = False
+
         self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
                                                     self.cfg, mock_msg))
 
-    @unittest.skip("Done")
+    @mock.patch("mail_2_rmq.email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_true_publish(self, mock_log, mock_msg):
+
+        """Function:  test_true_publish
+
+        Description:  Test publish returns true.
+
+        Arguments:
+            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
+            mock_msg -> Mock Ref:  mail_2_rmq.email
+
+        """
+
+        mock_log.return_value = True
+        mock_msg.get_payload.return_value = "Email message"
+
+        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+                                                    self.cfg, mock_msg))
+
+    @mock.patch("mail_2_rmq.email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_error_queue(self, mock_log, mock_msg):
+
+        """Function:  test_error_queue
+
+        Description:  Test message sent to error queue.
+
+        Arguments:
+            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
+            mock_msg -> Mock Ref:  mail_2_rmq.email
+
+        """
+
+        mock_log.return_value = True
+        mock_msg.get_payload.return_value = "Email message"
+
+        self.RQ.queue_name = self.cfg.err_queue
+
+        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+                                                    self.cfg, mock_msg))
+
+    @mock.patch("mail_2_rmq.email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_non_error_queue(self, mock_log, mock_msg):
+
+        """Function:  test_non_error_queue
+
+        Description:  Test message sent to non-error queue.
+
+        Arguments:
+            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
+            mock_msg -> Mock Ref:  mail_2_rmq.email
+
+        """
+
+        mock_log.return_value = True
+        mock_msg.get_payload.return_value = "Email message"
+
+        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+                                                    self.cfg, mock_msg))
+
+    @mock.patch("mail_2_rmq.email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_true_true_connect(self, mock_log, mock_msg):
+
+        """Function:  test_true_true_connect
+
+        Description:  Test connecting to RabbitMQ with true/true status.
+
+        Arguments:
+            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
+            mock_msg -> Mock Ref:  mail_2_rmq.email
+
+        """
+
+        mock_log.return_value = True
+        mock_msg.get_payload.return_value = "Email message"
+
+        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+                                                    self.cfg, mock_msg))
+
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_false_false_connect(self, mock_log, mock_archive):
@@ -226,7 +308,6 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
                                                     self.cfg, ""))
 
-    @unittest.skip("Done")
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_false_true_connect(self, mock_log, mock_archive):
@@ -248,7 +329,6 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
                                                     self.cfg, ""))
 
-    @unittest.skip("Done")
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_true_false_connect(self, mock_log, mock_archive):
