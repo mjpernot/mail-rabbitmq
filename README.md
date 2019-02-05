@@ -348,35 +348,6 @@ pip install -r requirements-python-lib.txt --target lib --trusted-host pypi.appd
 pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host pypi.appdev.proj.coe.ic.gov
 ```
 
-
-### Configuration:
-  * Replace **{Python_Project}** with the baseline path of the python program.
-
-Create configuration file for testing.
-
-```
-cd test/unit/mail_2_rmq/config
-cp ../../../../config/rabbitmq.py.TEMPLATE rabbitmq.py
-```
-
-Make the appropriate changes to the environment.
-  * Make the appropriate changes to connect to RabbitMQ.
-    - user = "<USER>"
-    - passwd = "<PASSWORD>"
-    - host = "<HOSTNAME>"
-    - exchange_name = "<EXCHANGE_NAME>" to "isse-guard-test"
-    - valid_queues = [ "QUEUE_NAME1", "QUEUE_NAME2", ... ] to [ "SIPR-test", "SG-test" ]
-    - err_queue = "<ERROR_QUEUE_NAME>" to "isse_error_test"
-    - email_dir = "{Python_Project}/mail_rabbitmq/email_dir" to "{Python_Project}/mail_rabbitmq/test/unit/mail_2_rmq/email_dir"
-    - log_file = "{Python_Project}/mail_rabbitmq/logs/mail_2_rmq.log" to "{Python_Project}/mail_rabbitmq/test/unit/mail_2_rmq/logs/mail_2_rmq.log"
-    - x_durable = True to False
-    - q_durable = True to False
-
-```
-vim rabbitmq.py
-chmod 600 rabbitmq.py
-```
-
 # Unit test runs for mail_2_rmq.py:
   * Replace **{Python_Project}** with the baseline path of the python program.
 
@@ -392,9 +363,10 @@ test/unit/mail_2_rmq/parse_email.py
 test/unit/mail_2_rmq/archive_email.py
 test/unit/mail_2_rmq/connect_process.py
 test/unit/mail_2_rmq/process_message.py
+test/unit/mail_2_rmq/check_nonprocess.py
 ```
 
-### Unit:  All units
+### All unit tests:
 ```
 test/unit/mail_2_rmq/unit_test_run.sh
 ```
