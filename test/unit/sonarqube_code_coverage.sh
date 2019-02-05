@@ -10,7 +10,7 @@ echo ""
 echo "Running unit test modules in conjunction with coverage"
 #coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/help_message.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/load_cfg.py
-#coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/parse_email.py
+coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/parse_email.py
 #coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/archive_email.py
 #coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/connect_process.py
 #coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_message.py
