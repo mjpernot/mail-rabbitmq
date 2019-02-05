@@ -390,11 +390,7 @@ cd {Python_Project}/mail-rabbitmq
 test/unit/mail_2_rmq/load_cfg.py
 test/unit/mail_2_rmq/parse_email.py
 test/unit/mail_2_rmq/archive_email.py
-```
-
-### Unit:  connect_process
-```
-cat test/unit/mail_2_rmq/test_mail.txt | test/unit/mail_2_rmq/test_connect_process.py
+test/unit/mail_2_rmq/connect_process.py
 ```
 
 ### Unit:  process_message
