@@ -391,17 +391,7 @@ test/unit/mail_2_rmq/load_cfg.py
 test/unit/mail_2_rmq/parse_email.py
 test/unit/mail_2_rmq/archive_email.py
 test/unit/mail_2_rmq/connect_process.py
-```
-
-### Unit:  process_message
-```
-cat test/unit/mail_2_rmq/test_mail.txt | test/unit/mail_2_rmq/test_process_message.py -G
-cat test/unit/mail_2_rmq/test_mail2.txt | test/unit/mail_2_rmq/test_process_message.py -B
-```
-
-### Post-Testing Cleanup:
-```
-test/unit/mail_2_rmq/mail_2_rmq_cleanup.py
+test/unit/mail_2_rmq/process_message.py
 ```
 
 ### Unit:  All units
