@@ -79,6 +79,9 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Unit testing initilization.
+        test_all_func -> Test with all functions.
+        test_true_func -> Test with true status and function.
+        test_true_status -> Test with true status flag.
         test_false_status -> Test with false status flag.
 
     """
@@ -132,6 +135,71 @@ class UnitTest(unittest.TestCase):
         self.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
         self.func_dict = {"-M": process_message, "-C": check_nonprocess}
 
+    @mock.patch("mail_2_rmq.gen_class")
+    @mock.patch("mail_2_rmq.load_cfg")
+    def test_all_func(self, mock_cfg, mock_class):
+
+        """Function:  test_all_func
+
+        Description:  Test with all functions.
+
+        Arguments:
+            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
+            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+
+        """
+
+        mock_cfg.return_value = (self.cfg, True)
+        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
+        mock_class.ProgramLock.return_value = mail_2_rmq.gen_class.ProgramLock
+
+        self.args_array["-M"] = True
+        self.args_array["-C"] = True
+        self.assertFalse(mail_2_rmq.run_program(self.args_array,
+                                                self.func_dict))
+
+    @mock.patch("mail_2_rmq.gen_class")
+    @mock.patch("mail_2_rmq.load_cfg")
+    def test_true_func(self, mock_cfg, mock_class):
+
+        """Function:  test_true_func
+
+        Description:  Test with true status and function.
+
+        Arguments:
+            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
+            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+
+        """
+
+        mock_cfg.return_value = (self.cfg, True)
+        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
+        mock_class.ProgramLock.return_value = mail_2_rmq.gen_class.ProgramLock
+
+        self.args_array["-M"] = True
+        self.assertFalse(mail_2_rmq.run_program(self.args_array,
+                                                self.func_dict))
+
+    @mock.patch("mail_2_rmq.gen_class")
+    @mock.patch("mail_2_rmq.load_cfg")
+    def test_true_status(self, mock_cfg, mock_class):
+
+        """Function:  test_true_status
+
+        Description:  Test with true status flag.
+
+        Arguments:
+            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
+            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+
+        """
+
+        mock_cfg.return_value = (self.cfg, True)
+        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
+
+        self.assertFalse(mail_2_rmq.run_program(self.args_array,
+                                                self.func_dict))
+
     @mock.patch("mail_2_rmq.load_cfg")
     def test_false_status(self, mock_cfg):
 
@@ -140,7 +208,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with false status flag.
 
         Arguments:
-            
+            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
 
         """
 
