@@ -17,17 +17,18 @@ pipeline {
                 sh """
                 pip2 install mock --user
                 pip2 install pika==0.11.0 --user
-                test/unit/mail_2_rmq/test_load_cfg.py
+                test/unit/mail_2_rmq/load_cfg.py
                 """
-                sh 'rm -rf lib'
-                sh 'rm -rf rabbit_lib'
+                // sh 'rm -rf lib'
+                // sh 'rm -rf rabbit_lib'
             }
         }
         stage('SonarQube analysis') {
             steps {
                 script {
-                    // sh './test/unit/sonarqube_code_coverage.sh'
-                    // sh 'rm -rf lib'
+                    sh './test/unit/sonarqube_code_coverage.sh'
+                    sh 'rm -rf lib'
+                    sh 'rm -rf rabbit_lib'
                     scannerHome = tool 'sonar-scanner';
                 }
                 withSonarQubeEnv('Sonar') {
