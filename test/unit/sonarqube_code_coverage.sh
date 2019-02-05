@@ -15,7 +15,7 @@ coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/archive_email.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/connect_process.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_message.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/check_nonprocess.py
-#coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/run_program.py
+coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/run_program.py
 #coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/main.py
 
 echo ""
