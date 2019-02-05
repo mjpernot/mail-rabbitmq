@@ -48,7 +48,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Unit testing initilization.
-        test_process_message -> Test parsing an email.
+        test_invalid_subj -> Test email with invalid subject.
+        test_valid_subj -> Test email with valid subject.
 
     """
 
@@ -99,19 +100,21 @@ class UnitTest(unittest.TestCase):
                 self.q_durable = True
                 self.auto_delete = True
                 self.err_queue = "ERROR_QUEUE"
-                self.valid_queues ["QUEUE1", "QUEUE2"]
+                self.valid_queues = ["QUEUE1", "QUEUE2"]
 
         self.cfg = CfgTest()
+
+        self.email_msg = {"subject": "QUEUE1"}
 
     @mock.patch("mail_2_rmq.connect_process")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.rabbitmq_class.RabbitMQPub")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_process_message(self, mock_log, mock_rmq, mock_parse, mock_conn):
+    def test_invalid_subj(self, mock_log, mock_rmq, mock_parse, mock_conn):
 
-        """Function:  test_process_message
+        """Function:  test_invalid_subj
 
-        Description:  Test process an email.
+        Description:  Test email with invalid subject.
 
         Arguments:
             mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
@@ -123,10 +126,35 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
         mock_rmq.return_value = "RabbitMQ Instance"
-        mock_parse.return_value = "Email Message"
+        mock_parse.return_value = {"subject": "invalid"}
         mock_conn.return_value = True
 
-        self.assertFalse(mail_2_rmq.process_message())
+        self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
+
+    @mock.patch("mail_2_rmq.connect_process")
+    @mock.patch("mail_2_rmq.parse_email")
+    @mock.patch("mail_2_rmq.rabbitmq_class.RabbitMQPub")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_valid_subj(self, mock_log, mock_rmq, mock_parse, mock_conn):
+
+        """Function:  test_valid_subj
+
+        Description:  Test email with valid subject.
+
+        Arguments:
+            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
+            mock_rmq -> Mock Ref:  mail_2_rmq.rabbitmq_class.RabbitMQPub
+            mock_parse -> Mock Ref:  mail_2_rmq.parse_email
+            mock_conn -> Mock Ref:  mail_2_rmq.connect_process
+
+        """
+
+        mock_log.return_value = True
+        mock_rmq.return_value = "RabbitMQ Instance"
+        mock_parse.return_value = self.email_msg
+        mock_conn.return_value = True
+
+        self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
 
 if __name__ == "__main__":
