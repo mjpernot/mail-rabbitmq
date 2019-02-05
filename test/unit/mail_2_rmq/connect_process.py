@@ -99,6 +99,7 @@ class UnitTest(unittest.TestCase):
                 self.channel = self.status(True)
                 self.conn_status = True
                 self.err_msg = ""
+                self.pub_status = True
 
             def create_connection(self):
 
@@ -112,6 +113,19 @@ class UnitTest(unittest.TestCase):
                 """
 
                 return self.conn_status, self.err_msg
+
+            def publish_msg(self, msg):
+
+                """Method:  publish_msg
+
+                Description:  Stub holder for publish_msg method.
+
+                Arguments:
+                        None
+
+                """
+
+                return self.pub_status
 
             def change_channel(self, stat):
 
@@ -165,13 +179,11 @@ class UnitTest(unittest.TestCase):
         #            "to": "To_Address",
         #            "subject": "EmailSubject"}
 
-    @unittest.skip("Not Done")
+    #@unittest.skip("Done")
     @mock.patch("mail_2_rmq.email")
     @mock.patch("mail_2_rmq.archive_email")
-    @mock.patch("mail_2_rmq.rabbitmq_class.RabbitMQPub")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_true_true_connect(self, mock_log, mock_rmq, mock_archive,
-                               mock_msg):
+    def test_true_true_connect(self, mock_log, mock_archive, mock_msg):
 
         """Function:  test_true_true_connect
 
@@ -179,14 +191,12 @@ class UnitTest(unittest.TestCase):
 
         Arguments:
             mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_rmq -> Mock Ref:  mail_2_rmq.rabbitmq_class.RabbitMQPub
             mock_archive -> Mock Ref:  mail_2_rmq.archive_email
             mock_msg -> Mock Ref:  mail_2_rmq.email
 
         """
 
         mock_log.return_value = True
-        #mock_rmq.create_connection.return_value = (False, "Error Message")
         mock_archive.return_value = True
         mock_msg.get_payload.return_value = "Email message"
 
