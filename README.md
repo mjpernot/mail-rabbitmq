@@ -10,7 +10,7 @@
   * Prerequisites
   * Installation
   * Configuration
-  * Post-Installation
+  * Mail Alias Setup
   * Program Description
   * Program Help Function
   * Help Message
@@ -20,7 +20,7 @@
 
 # Features:
   * Process and parse emails via mailing pipe.
-  * Insert email into correct RabbitMQ queue based on subject line.
+  * Insert email into correct RabbitMQ queue based on email subject line.
 
 # Prerequisites:
 
@@ -68,7 +68,6 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 # Configuration:
 
 Setup configuration file.
-  * Replace **{Python_Project}** with the baseline path of the python program.
 
 ```
 chmod 777 email_dir logs
@@ -76,8 +75,8 @@ cd config
 cp rabbitmq.py.TEMPLATE rabbitmq.py
 ```
 
-Make the appropriate changes to the environment.
-  * Change these entries in the rabbitmq.py file.
+Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file.
+  * Replace **{Python_Project}** with the baseline path of the python program.
   * "user", "passwd", and "host" is connection information to a RabbitMQ node.
   * "exchange_name" is name of the exchange in the RabbitMQ node.
   * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.
@@ -99,8 +98,8 @@ chmod 600 rabbitmq.py
 ```
 
 
-# Post-Installation
-  * If installing on a postfix system, use the "Postfix system" option.  Otherwise use the "Alias system" option for all other systems.
+# Mail Alias Setup
+  * If installing on a postfix system, use the **"Postfix system"** option.  Otherwise use the **"Alias system"** option for all other systems.
 
 ### Postfix system
 
@@ -117,13 +116,13 @@ Change ownership of configuration file.
 sudo chown rabbitmq:rabbitmq {Python_Project}/mail-rabbitmq/config/rabbitmq.py
 ```
 
-In second term window:
+In a second term window:
   * Monitor the system messages file for an SELinux policy exceptions.
 ```
 sudo tail -f /var/log/messages
 ```
 
-Create aliases database (run as rabbitmq).
+Create aliases database in first term window (run as rabbitmq).
 ```
 postalias .aliases
 ```
@@ -209,7 +208,7 @@ Repeat the previous three steps (from "Send test email to rabbitmq" onward) unti
 Add an email alias to allow mail piping.
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Add the following entry:
-    - mailrabbit: "|{Python_Project}/mail_rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail_rabbitmq/config -M"
+    -  mailrabbit: "|{Python_Project}/mail_rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail_rabbitmq/config -M"
 ```
 sudo vim /etc/aliases
 sudo newaliases
@@ -400,8 +399,8 @@ cd test/blackbox/mail_2_rmq/config
 cp ../../../../config/rabbitmq.py.TEMPLATE rabbitmq.py
 ```
 
-Make the appropriate changes to the environment.
-  * Change these entries in the rabbitmq.py file.
+Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file.
+  * Replace **{Python_Project}** with the baseline path of the python program.
   * "user", "passwd", and "host" is connection information to a RabbitMQ node.
   * "exchange_name" is name of the exchange in the RabbitMQ node.
   * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.
