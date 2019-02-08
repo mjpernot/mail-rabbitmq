@@ -431,8 +431,8 @@ chmod 644 rabbitmq_2.py
 Add two email aliases to allow functional testing.
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Add the following lines to the aliases file:
-    - mailrabbit: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/test/blackbox/config -M"
-    - mailrabbit_2:   "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq_2 -d {Python_Project}/mail-rabbitmq/test/blackbox/config -M"
+    - `mailrabbit: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/test/blackbox/config -M"`
+    - `mailrabbit_2:   "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq_2 -d {Python_Project}/mail-rabbitmq/test/blackbox/config -M"`
 ```
 sudo vim /etc/aliases
 sudo newaliases
