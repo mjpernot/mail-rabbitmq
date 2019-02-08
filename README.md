@@ -2,7 +2,7 @@
 # Classification (U)
 
 # Description:
-  This project is used to process and parse emails that are injested into a queue in RabbitMQ.  The program will normally be called via a pipe in an email alias.
+  This project is used to process and parse emails that are injested into a queue in RabbitMQ.
 
 
 ###  This README file is broken down into the following sections:
@@ -19,7 +19,8 @@
     - Blackbox
 
 # Features:
-  * Process and parse emails and insert them into the correct RabbitMQ queue.
+  * Process and parse emails via mailing pipe.
+  * Insert email into correct RabbitMQ queue based on subject line.
 
 # Prerequisites:
 
@@ -29,7 +30,7 @@
     - git
     - python-pip
 
-  * Local class/library dependencies within the program structure.
+  * Local dependencies within the program structure.
     - lib/gen_class
     - lib/arg_parser
     - lib/gen_libs
@@ -42,7 +43,6 @@
 
 Install these programs using git 
   * Replace **{Python_Project}** with the baseline path of the python program.
-
 ```
 umask 022
 cd {Python_Project}
@@ -50,7 +50,6 @@ git clone git@sc.appdev.proj.coe.ic.gov:JAC-DSXD/mail-rabbitmq.git
 ```
 
 Install/upgrade system modules.
-
 ```
 cd mail-rabbitmq
 sudo bash
@@ -68,7 +67,7 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 
 # Configuration:
 
-Create configuration file.
+Setup configuration file.
   * Replace **{Python_Project}** with the baseline path of the python program.
 
 ```
@@ -78,13 +77,19 @@ cp rabbitmq.py.TEMPLATE rabbitmq.py
 ```
 
 Make the appropriate changes to the environment.
-  * Make the appropriate changes to connect to RabbitMQ.
-    - user = "<USER>"
-    - passwd = "<PASSWORD>"
-    - host = "<HOSTNAME>"
-    - exchange_name = "<EXCHANGE_NAME>"
-    - valid_queues = [ "QUEUE_NAME1", "QUEUE_NAME2", ... ]
-    - err_queue = "<ERROR_QUEUE_NAME>"
+  * Change these entries in the rabbitmq.py file.
+  * "user", "passwd", and "host" is connection information to a RabbitMQ node.
+  * "exchange_name" is name of the exchange in the RabbitMQ node.
+  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.
+  * "err_queue" is the name of RabbitMQ queue that will contain any messages that do not fit in the other queues (i.e. invalid subject lines).
+  * "email_dir" is the location where non-processed emails will be saved to (e.g. when RabbitMQ is down).
+  * "log_file" is the location of the mail_2_rmq.py log file.
+    - user = "USER"
+    - passwd = "PASSWORD"
+    - host = "HOSTNAME"
+    - exchange_name = "EXCHANGE_NAME"
+    - valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2"]
+    - err_queue = "ERROR_QUEUE_NAME"
     - email_dir = "{Python_Project}/mail_rabbitmq/email_dir"
     - log_file = "{Python_Project}/mail_rabbitmq/logs/mail_2_rmq.log"
 
