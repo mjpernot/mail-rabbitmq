@@ -311,7 +311,6 @@ sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
 Install these programs using git 
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Replace **{Branch_Name}** with the name of the Git branch being tested.  See Git Merge Request.
-
 ```
 umask 022
 cd {Python_Project}
@@ -319,7 +318,6 @@ git clone --branch {Branch_Name} git@sc.appdev.proj.coe.ic.gov:JAC-DSXD/mail-rab
 ```
 
 Install/upgrade system modules.
-
 ```
 cd mail-rabbitmq
 sudo bash
@@ -329,7 +327,6 @@ exit
 ```
 
 Install supporting classes and libraries.
-
 ```
 pip install -r requirements-python-lib.txt --target lib --trusted-host pypi.appdev.proj.coe.ic.gov
 pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host pypi.appdev.proj.coe.ic.gov
@@ -337,11 +334,9 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 
 # Unit test runs for mail_2_rmq.py:
   * Replace **{Python_Project}** with the baseline path of the python program.
-
 ```
 cd {Python_Project}/mail-rabbitmq
 ```
-
 
 ### Individual Unit Tests:
 ```
@@ -370,7 +365,6 @@ test/unit/mail_2_rmq/unit_test_run.sh
 Install these programs using git 
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Replace **{Branch_Name}** with the name of the Git branch being tested.  See Git Merge Request.
-
 ```
 umask 022
 cd {Python_Project}
@@ -378,7 +372,6 @@ git clone --branch {Branch_Name} git@sc.appdev.proj.coe.ic.gov:JAC-DSXD/mail-rab
 ```
 
 Install/upgrade system modules.
-
 ```
 cd mail-rabbitmq
 sudo bash
@@ -388,7 +381,6 @@ exit
 ```
 
 Install supporting classes and libraries.
-
 ```
 pip install -r requirements-python-lib.txt --target lib --trusted-host pypi.appdev.proj.coe.ic.gov
 pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host pypi.appdev.proj.coe.ic.gov
@@ -398,7 +390,6 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 ### Configuration:
 
 Create configuration file for testing.
-
 ```
 chmod 777 email_dir logs
 cd test/blackbox/mail_2_rmq/config
@@ -406,18 +397,21 @@ cp ../../../../config/rabbitmq.py.TEMPLATE rabbitmq.py
 ```
 
 Make the appropriate changes to the environment.
-  * Make the appropriate changes to connect to RabbitMQ.
-    - user = "<USER>"
-    - passwd = "<PASSWORD>"
-    - host = "<HOSTNAME>"
-    - exchange_name = "<EXCHANGE_NAME>" to "isse-guard-test"
-    - valid_queues = [ "QUEUE_NAME1", "QUEUE_NAME2", ... ] to [ "SIPR-test", "SG-test" ]
-    - err_queue = "<ERROR_QUEUE_NAME>" to "isse_error_test"
-    - email_dir = "{Python_Project}/mail_rabbitmq/email_dir" to "{Python_Project}/mail_rabbitmq/test/blackbox/mail_2_rmq/email_dir"
-    - log_file = "{Python_Project}/mail_rabbitmq/logs/mail_2_rmq.log" to "{Python_Project}/mail_rabbitmq/test/blackbox/mail_2_rmq/logs/mail_2_rmq.log"
-    - x_durable = True to False
-    - q_durable = True to False
-
+  * Change these entries in the rabbitmq.py file.
+  * "user", "passwd", and "host" is connection information to a RabbitMQ node.
+  * "exchange_name" is name of the exchange in the RabbitMQ node.
+  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.
+  * "err_queue" is the name of RabbitMQ queue that will contain any messages that do not fit in the other queues (i.e. invalid subject lines).
+  * "email_dir" is the location where non-processed emails will be saved to (e.g. when RabbitMQ is down).
+  * "log_file" is the location of the mail_2_rmq.py log file.
+    - user = "USER"
+    - passwd = "PASSWORD"
+    - host = "HOSTNAME"
+    - exchange_name = "EXCHANGE_NAME"
+    - valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2"]
+    - err_queue = "ERROR_QUEUE_NAME"
+    - email_dir = "{Python_Project}/mail_rabbitmq/email_dir"
+    - log_file = "{Python_Project}/mail_rabbitmq/logs/mail_2_rmq.log"
 ```
 vim rabbitmq.py
 chmod 644 rabbitmq.py
@@ -425,7 +419,6 @@ chmod 644 rabbitmq.py
 
 Setup a second configuration file to test non-connection logic paths.
   * Change the same variables as listed except change the passwd variable to an incorrect password.
-
 ```
 cp rabbitmq.py rabbitmq_2.py
 vim rabbitmq_2.py
@@ -437,7 +430,6 @@ Add two email aliases to allow functional testing.
   * Add the following lines to the aliases file:
     - mailrabbit: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/test/blackbox/config -M"
     - mailrabbit_2:   "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq_2 -d {Python_Project}/mail-rabbitmq/test/blackbox/config -M"
-
 ```
 sudo vim /etc/aliases
 sudo newaliases
@@ -445,7 +437,6 @@ sudo newaliases
 
 Add links to the program if not present /etc/smrsh directory.
   * Replace **{Python_Project}** with the baseline path of the python program.
-
 ```
 cd /etc/smrsh
 sudo ln -s {Python_Project}/mail-rabbitmq/mail_2_rmq.py mail_2_rmq.py
@@ -454,13 +445,9 @@ sudo ln -s {Python_Project}/mail-rabbitmq/mail_2_rmq.py mail_2_rmq.py
 # Blackbox test run for mail_2_rmq.py:
   * Replace **{Python_Project}** with the baseline path of the python program.
 
-```
-cd {Python_Project}/mail-rabbitmq
-```
-
 ### Blackbox:  mail_2_rmq.py
 ```
-cd {Python_Project}/test/blackbox
+cd {Python_Project}/mail-rabbitmq/test/blackbox
 ./mail_2_rmq_functional_test.sh
 ```
 
