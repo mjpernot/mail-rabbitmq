@@ -106,7 +106,7 @@ chmod 600 rabbitmq.py
 Setup local aliases for rabbitmq account:
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Add to the file:
-    -  rabbitmq: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/config -M"
+    - `rabbitmq: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/config -M"`
 ```
 vim /home/rabbitmq/.aliases
 ```
