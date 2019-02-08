@@ -40,9 +40,9 @@
 
 
 # Installation:
+  * Replace **{Python_Project}** with the baseline path of the python program.
 
 Install the program using git 
-  * Replace **{Python_Project}** with the baseline path of the python program.
 ```
 umask 022
 cd {Python_Project}
@@ -68,7 +68,6 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 # Configuration:
 
 Setup configuration file.
-
 ```
 chmod 777 email_dir logs
 cd config
@@ -76,7 +75,6 @@ cp rabbitmq.py.TEMPLATE rabbitmq.py
 ```
 
 Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file.
-  * Replace **{Python_Project}** with the baseline path of the python program.
   * "user", "passwd", and "host" is connection information to a RabbitMQ node.
   * "exchange_name" is name of the exchange in the RabbitMQ node.
   * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.
@@ -100,11 +98,11 @@ chmod 600 rabbitmq.py
 
 # Mail Alias Setup
   * If installing on a postfix system, use the **"Postfix system"** option.  Otherwise use the **"Alias system"** option for all other systems.
+  * Replace **{Python_Project}** with the baseline path of the python program.
 
 ### Postfix system
 
 Setup local aliases for rabbitmq account:
-  * Replace **{Python_Project}** with the baseline path of the python program.
   * Add to the file:
     - `rabbitmq: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/config -M"`
 ```
@@ -206,7 +204,6 @@ Repeat the previous three steps (from "Send test email to rabbitmq" onward) unti
   * This will only work on non-postfix systems.
 
 Add an email alias to allow mail piping.
-  * Replace **{Python_Project}** with the baseline path of the python program.
   * Add the following entry:
     - `mailrabbit: "|{Python_Project}/mail_rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail_rabbitmq/config -M"`
 ```
@@ -234,9 +231,8 @@ sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
 # Program Help Function:
 
   The program has a -h (Help option) that will show display an usage message.  The help message will usually consist of a description, usage, arugments to the program, example, notes about the program, and any known bugs not yet fixed.  To run the help command:
-  * Replace **{Python_Project}** with the baseline path of the python program.
 ```
-{Python_Project}/mail-rabbitmq/mail_2_rmq.py -h
+mail_2_rmq.py -h
 ```
 
 
@@ -308,13 +304,13 @@ sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
 # Testing:
 
 # Unit Testing:
+  * Replace **{Python_Project}** with the baseline path of the python program.
 
 ### Description: Testing consists of unit testing for the functions in the mail_2_rmq.py program.
 
 ### Installation:
 
-Install the program using git 
-  * Replace **{Python_Project}** with the baseline path of the python program.
+Install the program using git
   * Replace **{Branch_Name}** with the name of the Git branch being tested.  See Git Merge Request.
 ```
 umask 022
@@ -338,7 +334,6 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 ```
 
 # Unit test runs for mail_2_rmq.py:
-  * Replace **{Python_Project}** with the baseline path of the python program.
 
 ### Individual Unit Tests:
 ```
@@ -360,13 +355,11 @@ test/unit/mail_2_rmq/unit_test_run.sh
 
 
 # Blackbox Testing:
-
-### Description: Testing consists of blackbox testing of the mail_2_rmq.py program.
+  * Replace **{Python_Project}** with the baseline path of the python program.
 
 ### Installation:
 
-Install the program using git 
-  * Replace **{Python_Project}** with the baseline path of the python program.
+Install the program using git
   * Replace **{Branch_Name}** with the name of the Git branch being tested.  See Git Merge Request.
 ```
 umask 022
@@ -400,7 +393,6 @@ cp ../../../../config/rabbitmq.py.TEMPLATE rabbitmq.py
 ```
 
 Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file.
-  * Replace **{Python_Project}** with the baseline path of the python program.
   * "user", "passwd", and "host" is connection information to a RabbitMQ node.
   * "exchange_name" is name of the exchange in the RabbitMQ node.
   * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.
@@ -429,7 +421,6 @@ chmod 644 rabbitmq_2.py
 ```
 
 Add two email aliases to allow functional testing.
-  * Replace **{Python_Project}** with the baseline path of the python program.
   * Add the following lines to the aliases file:
     - `mailrabbit: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/test/blackbox/config -M"`
     - `mailrabbit_2:   "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq_2 -d {Python_Project}/mail-rabbitmq/test/blackbox/config -M"`
@@ -439,22 +430,20 @@ sudo newaliases
 ```
 
 Add links to the program in the /etc/smrsh directory.
-  * Replace **{Python_Project}** with the baseline path of the python program.
 ```
 cd /etc/smrsh
 sudo ln -s {Python_Project}/mail-rabbitmq/mail_2_rmq.py mail_2_rmq.py
 ```
 
-# Blackbox test run for mail_2_rmq.py:
-  * Replace **{Python_Project}** with the baseline path of the python program.
+### Blackbox test run for mail_2_rmq.py:
 
-### Blackbox:  mail_2_rmq.py
+Blackbox:  mail_2_rmq.py
 ```
 cd {Python_Project}/mail-rabbitmq/test/blackbox
 ./mail_2_rmq_functional_test.sh
 ```
 
-#### Post-Testing Cleanup:
+Post-Testing Cleanup:
 ```
 cd ../..
 test/blackbox/mail_2_rmq_cleanup.py
