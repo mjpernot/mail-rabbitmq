@@ -41,7 +41,7 @@
 
 # Installation:
 
-Install these programs using git 
+Install the program using git 
   * Replace **{Python_Project}** with the baseline path of the python program.
 ```
 umask 022
@@ -104,7 +104,7 @@ chmod 600 rabbitmq.py
 
 ### Postfix system
 
-Setup local aliases for rabbitmq account (run as rabbitmq):
+Setup local aliases for rabbitmq account:
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Add to the file:
     -  rabbitmq: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/config -M"
@@ -120,7 +120,7 @@ sudo chown rabbitmq:rabbitmq {Python_Project}/mail-rabbitmq/config/rabbitmq.py
 In second term window:
   * Monitor the system messages file for an SELinux policy exceptions.
 ```
-tail -f /var/log/messages
+sudo tail -f /var/log/messages
 ```
 
 Create aliases database (run as rabbitmq).
@@ -136,9 +136,11 @@ sudo sealert -l {HexiDecimal_Key}
 
 Run the grep and sedmodule commands from sealert command.  Example below.
 ```
+sudo bash
 cd /root
 grep mail_2_rmq.py /var/log/audit/audit.log | audit2allow -M mypol
-sudo semodule -i mypol.pp
+semodule -i mypol.pp
+exit
 ```
 
 Re-create the aliases database, if SELinux policy exception was detected and removed (run as rabbitmq).
@@ -160,19 +162,21 @@ Reload postfix.
 sudo service postfix restart
 ```
 
-Allow the acces to .aliases and .aliases.db files.
+Allow the access to .aliases and .aliases.db files.
   * Replace **{HOME}** with the baseline path to the rabbitmq's home directory.
 ```
-sudo semanage fcontext -a -t etc_aliases_t "/{HOME}/rabbitmq/\.aliases"
-sudo restorecon -R /{HOME}/rabbitmq/.aliases
-sudo semanage fcontext -a -t etc_aliases_t "/{HOME}/rabbitmq/\.aliases.db"
-sudo restorecon -R /{HOME}/rabbitmq/.aliases.db
+sudo bash
+semanage fcontext -a -t etc_aliases_t "/{HOME}/rabbitmq/\.aliases"
+restorecon -R /{HOME}/rabbitmq/.aliases
+semanage fcontext -a -t etc_aliases_t "/{HOME}/rabbitmq/\.aliases.db"
+restorecon -R /{HOME}/rabbitmq/.aliases.db
+exit
 ```
 
 In second term window:
   * Continue monitoring the system messages file for an SELinux policy exceptions.
 ```
-tail -f /var/log/messages
+sudo tail -f /var/log/messages
 ```
 
 Send test email to rabbitmq.
@@ -189,9 +193,11 @@ sudo sealert -l {HexiDecimal_Key}
 
 Run the grep and sedmodule commands from sealert command.  Example below.
 ```
+sudo bash
 cd /root
 grep mail_2_rmq.py /var/log/audit/audit.log | audit2allow -M mypol
-sudo semodule -i mypol.pp
+semodule -i mypol.pp
+exit
 ```
 
 Repeat the previous three steps (from "Send test email to rabbitmq" onward) until all exceptions have been found and excluded in the policy.
@@ -209,7 +215,7 @@ sudo vim /etc/aliases
 sudo newaliases
 ```
 
-Add links to the program if not present /etc/smrsh directory.
+Add links to the program in the /etc/smrsh directory.
 ```
 cd /etc/smrsh
 sudo ln -s {Python_Project}/mail_rabbitmq/mail_2_rmq.py mail_2_rmq.py
@@ -308,7 +314,7 @@ sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
 
 ### Installation:
 
-Install these programs using git 
+Install the program using git 
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Replace **{Branch_Name}** with the name of the Git branch being tested.  See Git Merge Request.
 ```
@@ -334,12 +340,10 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 
 # Unit test runs for mail_2_rmq.py:
   * Replace **{Python_Project}** with the baseline path of the python program.
-```
-cd {Python_Project}/mail-rabbitmq
-```
 
 ### Individual Unit Tests:
 ```
+cd {Python_Project}/mail-rabbitmq
 test/unit/mail_2_rmq/load_cfg.py
 test/unit/mail_2_rmq/parse_email.py
 test/unit/mail_2_rmq/archive_email.py
@@ -362,7 +366,7 @@ test/unit/mail_2_rmq/unit_test_run.sh
 
 ### Installation:
 
-Install these programs using git 
+Install the program using git 
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Replace **{Branch_Name}** with the name of the Git branch being tested.  See Git Merge Request.
 ```
@@ -435,7 +439,7 @@ sudo vim /etc/aliases
 sudo newaliases
 ```
 
-Add links to the program if not present /etc/smrsh directory.
+Add links to the program in the /etc/smrsh directory.
   * Replace **{Python_Project}** with the baseline path of the python program.
 ```
 cd /etc/smrsh
