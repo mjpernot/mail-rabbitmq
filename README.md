@@ -208,7 +208,7 @@ Repeat the previous three steps (from "Send test email to rabbitmq" onward) unti
 Add an email alias to allow mail piping.
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Add the following entry:
-    -  mailrabbit: "|{Python_Project}/mail_rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail_rabbitmq/config -M"
+    - `mailrabbit: "|{Python_Project}/mail_rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail_rabbitmq/config -M"`
 ```
 sudo vim /etc/aliases
 sudo newaliases
