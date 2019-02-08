@@ -100,7 +100,7 @@ chmod 600 rabbitmq.py
 
 
 # Post-Installation
-  * If installing on a postfix system, then use the "Postfix system" option, otherwise use the "Alias system" option for all other and older systems.
+  * If installing on a postfix system, use the "Postfix system" option.  Otherwise use the "Alias system" option for all other systems.
 
 ### Postfix system
 
@@ -108,47 +108,40 @@ Setup local aliases for rabbitmq account (run as rabbitmq):
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Add to the file:
     -  rabbitmq: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/config -M"
-
 ```
 vim /home/rabbitmq/.aliases
 ```
 
 Change ownership of configuration file.
-
 ```
 sudo chown rabbitmq:rabbitmq {Python_Project}/mail-rabbitmq/config/rabbitmq.py
 ```
 
 In second term window:
   * Monitor the system messages file for an SELinux policy exceptions.
-
 ```
 tail -f /var/log/messages
 ```
 
 Create aliases database (run as rabbitmq).
-
 ```
 postalias .aliases
 ```
 
 Monitor the messages file for SELinux exceptions, look for "run sealert".  NOTE:  Most audit logs rotate every 10 minutes, so if the sealert command fails, re-run the email message in again.
   * HexiDecimal_Key will be displayed in the tail command in the second term window.
-
 ```
-sealert -l {HexiDecimal_Key}
+sudo sealert -l {HexiDecimal_Key}
 ```
 
 Run the grep and sedmodule commands from sealert command.  Example below.
-
 ```
 cd /root
 grep mail_2_rmq.py /var/log/audit/audit.log | audit2allow -M mypol
-semodule -i mypol.pp
+sudo semodule -i mypol.pp
 ```
 
-Re-create the aliases database, if SELinux policy exception was detected and removed.
-
+Re-create the aliases database, if SELinux policy exception was detected and removed (run as rabbitmq).
 ```
 postalias .aliases
 ```
@@ -158,36 +151,31 @@ Setup aliases in main.cf file.
   * Add the following lines to the file:
     -  `alias_maps = hash:/{HOME}/rabbitmq/.aliases`
     -  `alias_database = hash:/{HOME}/rabbitmq/.aliases`
-
 ```
-vim /etc/postfix/main.cf
+sudo vim /etc/postfix/main.cf
 ```
 
 Reload postfix.
-
 ```
-service postfix restart
+sudo service postfix restart
 ```
 
 Allow the acces to .aliases and .aliases.db files.
   * Replace **{HOME}** with the baseline path to the rabbitmq's home directory.
-
 ```
-semanage fcontext -a -t etc_aliases_t "/{HOME}/rabbitmq/\.aliases"
-restorecon -R /{HOME}/rabbitmq/.aliases
-semanage fcontext -a -t etc_aliases_t "/{HOME}/rabbitmq/\.aliases.db"
-restorecon -R /{HOME}/rabbitmq/.aliases.db
+sudo semanage fcontext -a -t etc_aliases_t "/{HOME}/rabbitmq/\.aliases"
+sudo restorecon -R /{HOME}/rabbitmq/.aliases
+sudo semanage fcontext -a -t etc_aliases_t "/{HOME}/rabbitmq/\.aliases.db"
+sudo restorecon -R /{HOME}/rabbitmq/.aliases.db
 ```
 
 In second term window:
   * Continue monitoring the system messages file for an SELinux policy exceptions.
-
 ```
 tail -f /var/log/messages
 ```
 
 Send test email to rabbitmq.
-
 ```
 echo "sipr-isse" | mailx -s sipr-isse rabbitmq@mail.eu.dodiis.ic.gov
 ```
@@ -195,19 +183,18 @@ echo "sipr-isse" | mailx -s sipr-isse rabbitmq@mail.eu.dodiis.ic.gov
 Monitor the messages file for SELinux exceptions, look for "run sealert".
   * NOTE:  Most audit logs rotate every 10 minutes, so if the sealert command fails, re-run the email message in again.
   * HexiDecimal_Key will be displayed in the tail command in the second term window.
-
 ```
-sealert -l {HexiDecimal_Key}
+sudo sealert -l {HexiDecimal_Key}
 ```
 
 Run the grep and sedmodule commands from sealert command.  Example below.
 ```
 cd /root
 grep mail_2_rmq.py /var/log/audit/audit.log | audit2allow -M mypol
-semodule -i mypol.pp
+sudo semodule -i mypol.pp
 ```
 
-Repeat the previous three steps (from sending an email onward) until all exceptions have been found and excluded in the policy.
+Repeat the previous three steps (from "Send test email to rabbitmq" onward) until all exceptions have been found and excluded in the policy.
 
 
 ### Alias system
@@ -217,21 +204,18 @@ Add an email alias to allow mail piping.
   * Replace **{Python_Project}** with the baseline path of the python program.
   * Add the following entry:
     - mailrabbit: "|{Python_Project}/mail_rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail_rabbitmq/config -M"
-
 ```
 sudo vim /etc/aliases
 sudo newaliases
 ```
 
 Add links to the program if not present /etc/smrsh directory.
-
 ```
 cd /etc/smrsh
 sudo ln -s {Python_Project}/mail_rabbitmq/mail_2_rmq.py mail_2_rmq.py
 ```
 
 Change ownership of configuration file.
-
 ```
 sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
 ```
@@ -246,7 +230,6 @@ sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
 
   The program has a -h (Help option) that will show display an usage message.  The help message will usually consist of a description, usage, arugments to the program, example, notes about the program, and any known bugs not yet fixed.  To run the help command:
   * Replace **{Python_Project}** with the baseline path of the python program.
-
 ```
 {Python_Project}/mail-rabbitmq/mail_2_rmq.py -h
 ```
@@ -318,7 +301,6 @@ sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
 
 
 # Testing:
-
 
 # Unit Testing:
 
