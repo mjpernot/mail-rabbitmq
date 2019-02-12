@@ -157,15 +157,15 @@ def parse_email(**kwargs):
     return email.message_from_string("".join(raw_msg))
 
 
-def archive_email(RQ, LOG, cfg, msg, **kwargs):
+def archive_email(rq, log, cfg, msg, **kwargs):
 
     """Function:  archive_email
 
     Description:  Save an email to file in an archive directory.
 
     Arguments:
-        (input) RQ -> RabbitMQ class instance.
-        (input) LOG -> Log class instance.
+        (input) rq -> RabbitMQ class instance.
+        (input) log -> Log class instance.
         (input) cfg -> Configuration settings module for the program.
         (input) msg -> Email message being processed.
         (input) **kwargs:
@@ -173,17 +173,17 @@ def archive_email(RQ, LOG, cfg, msg, **kwargs):
 
     """
 
-    e_file = RQ.exchange + "-" + RQ.queue_name + "-" \
+    e_file = rq.exchange + "-" + rq.queue_name + "-" \
         + datetime.datetime.strftime(datetime.datetime.now(),
                                      "%Y%m%d-%H%M%S") + ".email.txt"
 
-    LOG.log_info("Saving email to: %s" %
+    log.log_info("Saving email to: %s" %
                  (cfg.email_dir + os.path.sep + e_file))
 
     with open(cfg.email_dir + os.path.sep + e_file, "w") as o_file:
         print(msg, file=o_file)
 
-    LOG.log_info("Email saved to:  %s" % (e_file))
+    log.log_info("Email saved to:  %s" % (e_file))
 
 
 def connect_process(RQ, LOG, cfg, msg, **kwargs):

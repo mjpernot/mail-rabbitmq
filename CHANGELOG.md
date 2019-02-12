@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [0.3.3] - 2019-02-12
+### Changed
+- archive_email:  Changed "LOG" to "log" and "RQ" to "rq".
+
+
 ## [0.3.2] - 2018-11-19
 ### Changed
 - Documentation updates.
