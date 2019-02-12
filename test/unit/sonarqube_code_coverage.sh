@@ -16,7 +16,7 @@ coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/connect_process.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_message.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/check_nonprocess.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/run_program.py
-#coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/main.py
+coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/main.py
 
 echo ""
 echo "Producing code coverage report"
