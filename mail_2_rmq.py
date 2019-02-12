@@ -130,7 +130,7 @@ def load_cfg(cfg_name, cfg_dir, **kwargs):
         status_flag = status
 
     status, err_msg = gen_libs.chk_crt_dir(os.path.dirname(cfg.log_file),
-                                           write=True,read=True)
+                                           write=True, read=True)
 
     if not status:
         status_flag = status
@@ -175,8 +175,7 @@ def archive_email(RQ, LOG, cfg, msg, **kwargs):
 
     e_file = RQ.exchange + "-" + RQ.queue_name + "-" \
         + datetime.datetime.strftime(datetime.datetime.now(),
-                                     "%Y%m%d-%H%M%S") \
-                                     + ".email.txt"
+                                     "%Y%m%d-%H%M%S") + ".email.txt"
 
     LOG.log_info("Saving email to: %s" %
                  (cfg.email_dir + os.path.sep + e_file))
