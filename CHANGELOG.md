@@ -6,6 +6,8 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [0.3.3] - 2019-02-12
 ### Changed
+- process_message:  Changed "LOG" to "log".
+- connect_process:  Changed "LOG" to "log" and "RQ" to "rq".
 - archive_email:  Changed "LOG" to "log" and "RQ" to "rq".
 
 
