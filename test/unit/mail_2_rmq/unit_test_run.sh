@@ -4,10 +4,13 @@
 # Will need to run this from the base directory where the class file 
 #   is located at.
 
-cat test/unit/mail_2_rmq/test_mail.txt | test/unit/mail_2_rmq/test_parse_email.py
-test/unit/mail_2_rmq/test_load_cfg.py
-test/unit/mail_2_rmq/test_archive_email.py
-cat test/unit/mail_2_rmq/test_mail.txt | test/unit/mail_2_rmq/test_connect_process.py
-cat test/unit/mail_2_rmq/test_mail.txt | test/unit/mail_2_rmq/test_process_message.py -G
-cat test/unit/mail_2_rmq/test_mail2.txt | test/unit/mail_2_rmq/test_process_message.py -B
-test/unit/mail_2_rmq/mail_2_rmq_cleanup.py
+test/unit/mail_2_rmq/load_cfg.py
+test/unit/mail_2_rmq/parse_email.py
+test/unit/mail_2_rmq/archive_email.py
+test/unit/mail_2_rmq/connect_process.py
+test/unit/mail_2_rmq/process_message.py
+test/unit/mail_2_rmq/check_nonprocess.py
+test/unit/mail_2_rmq/help_message.py
+test/unit/mail_2_rmq/run_program.py
+test/unit/mail_2_rmq/main.py
+
