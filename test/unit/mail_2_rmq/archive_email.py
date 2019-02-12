@@ -129,7 +129,7 @@ class UnitTest(unittest.TestCase):
         self.dtg = "20190205-124217"
 
         self.e_file = self.RQ.exchange + "-" + self.RQ.queue_name + "-" \
-                      + self.dtg + ".email.txt"
+            + self.dtg + ".email.txt"
         self.full_e_file = self.cfg.email_dir + os.path.sep + self.e_file
 
     @mock.patch("mail_2_rmq.datetime.datetime")
