@@ -278,7 +278,7 @@ def process_message(cfg, log, **kwargs):
         connect_process(RQ, log, cfg, msg)
 
 
-def check_nonprocess(cfg, LOG, **kwargs):
+def check_nonprocess(cfg, log, **kwargs):
 
     """Function:  check_nonprocess
 
@@ -287,7 +287,7 @@ def check_nonprocess(cfg, LOG, **kwargs):
 
     Arguments:
         (input) cfg -> Configuration settings module for the program.
-        (input) LOG -> Log class instance.
+        (input) log -> Log class instance.
         (input) **kwargs:
             None
 
