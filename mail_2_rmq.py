@@ -204,10 +204,8 @@ def get_text(msg, **kwargs):
 
     for part in msg.walk():
 
-        if part.get_content_maintype() == "multipart":
-            continue
-
-        elif not part.get_payload(decode=True):
+        if part.get_content_maintype() == "multipart" \
+           or not part.get_payload(decode=True):
             continue
 
         msg_list.append(part.get_payload(decode=True))
