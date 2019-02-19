@@ -126,7 +126,6 @@ class UnitTest(unittest.TestCase):
                 __init__ -> Initialize configuration environment.
                 get_content_maintype -> Stub holder for get_content_maintype.
                 get_payload -> Stub holder for get_payload method.
-                
 
             """
 
