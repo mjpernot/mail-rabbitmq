@@ -18,6 +18,7 @@ pipeline {
                 pip2 install mock --user
                 pip2 install pika==0.11.0 --user
                 test/unit/mail_2_rmq/help_message.py
+                test/unit/mail_2_rmq/get_text.py
                 test/unit/mail_2_rmq/connect_process.py
                 test/unit/mail_2_rmq/load_cfg.py
                 test/unit/mail_2_rmq/parse_email.py

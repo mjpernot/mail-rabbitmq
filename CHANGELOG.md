@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [0.3.4] - 2019-02-19
+### Added:
+- get_text:  Walks the tree of an email to return text from a multi-part email.
+
+### Changed
+- connect_process:  Replaced "msg.get_payload" with call to get_text function.
+- parse_email:  Replaced "email" class with "email.Parser" class.
+
+
 ## [0.3.3] - 2019-02-12
 ### Changed
 - main:  Refactored code.
