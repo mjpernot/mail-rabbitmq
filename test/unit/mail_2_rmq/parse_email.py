@@ -63,9 +63,54 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.raw_msg = "Raw Email Message"
+        class ParserTest(object):
 
-    @mock.patch("mail_2_rmq.email.message_from_string")
+            """Class:  ParserTest
+
+            Description:  Class which is a representation of the email.Parser
+                class.
+
+            Super-Class:  object
+
+            Sub-Classes:  None
+
+            Methods:
+                __init__ -> Initialize configuration environment.
+                parsestr -> Stub holder for parsestr method.
+
+            """
+
+            def __init__(self):
+
+                """Method:  __init__
+
+                Description:  Initialization instance of the RQTest class.
+
+                Arguments:
+                        None
+
+                """
+
+                pass
+
+            def parsestr(self, msg):
+
+                """Method:  parsestr
+
+                Description:  Stub holder for parsestr method.
+
+                Arguments:
+                        None
+
+                """
+
+                return msg
+
+        self.raw_msg = ["Raw", "Email", "Message"]
+        self.PT = ParserTest()
+        self.processed_msg = "RawEmailMessage"
+
+    @mock.patch("mail_2_rmq.email.Parser")
     @mock.patch("mail_2_rmq.sys.stdin")
     def test_parse_email(self, mock_stdin, mock_parse):
 
@@ -75,14 +120,14 @@ class UnitTest(unittest.TestCase):
 
         Arguments:
             mock_stdin -> Mock Ref:  mail_2_rmq.sys.stdin
-            mock_parse -> Mock Ref:  mail_2_rmq.email.message_from_string
+            mock_parse -> Mock Ref:  mail_2_rmq.
 
         """
 
+        mock_parse.Parser.return_value = self.PT
         mock_stdin.readlines.return_value = self.raw_msg
-        mock_parse.return_value = "Raw Email Message"
 
-        self.assertEqual(mail_2_rmq.parse_email(), self.raw_msg)
+        self.assertEqual(mail_2_rmq.parse_email(), self.processed_msg)
 
 
 if __name__ == "__main__":

@@ -71,7 +71,7 @@ from __future__ import print_function
 import sys
 import os
 import datetime
-import email
+import email.Parser
 
 # Third-party
 
@@ -152,9 +152,9 @@ def parse_email(**kwargs):
 
     """
 
-    raw_msg = sys.stdin.readlines()
+    p = email.Parser.Parser()
 
-    return email.message_from_string("".join(raw_msg))
+    return p.parsestr("".join(sys.stdin.readlines()))
 
 
 def archive_email(rq, log, cfg, msg, **kwargs):
@@ -186,6 +186,33 @@ def archive_email(rq, log, cfg, msg, **kwargs):
     log.log_info("Email saved to:  %s" % (e_file))
 
 
+def get_text(msg, **kwargs):
+
+    """Function:  get_text
+
+    Description:  Walks the tree of a email and returns the text of the email.
+
+    Arguments:
+        (input) msg -> Email message instance.
+        (input) **kwargs:
+            None
+        (output) All texts in email joined together in a single string.
+
+    """
+
+    msg_list = []
+
+    for part in msg.walk():
+
+        if part.get_content_maintype() == "multipart" \
+           or not part.get_payload(decode=True):
+            continue
+
+        msg_list.append(part.get_payload(decode=True))
+
+    return "".join(msg_list)
+
+
 def connect_process(rq, log, cfg, msg, **kwargs):
 
     """Function:  connect_process
@@ -213,10 +240,10 @@ def connect_process(rq, log, cfg, msg, **kwargs):
         if rq.queue_name == cfg.err_queue:
             t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
                     + " Subject: " + msg["subject"] + " Body: " \
-                    + msg.get_payload()
+                    + get_text(msg)
 
         else:
-            t_msg = msg.get_payload()
+            t_msg = get_text(msg)
 
         if rq.publish_msg(t_msg):
             log.log_info("Message ingested into RabbitMQ")
