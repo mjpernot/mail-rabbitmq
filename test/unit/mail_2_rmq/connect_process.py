@@ -83,6 +83,9 @@ class UnitTest(unittest.TestCase):
 
             Methods:
                 __init__ -> Initialize configuration environment.
+                create_connection -> Stub holder for create_connection method.
+                publish_msg -> Stub holder for publish_msg method.
+                change_channel -> Change channel status.
 
             """
 
