@@ -6,7 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [0.3.4] - 2019-02-19
 ### Added:
-- get_text:  Walks the tree of a email and returns the text of the email.
+- get_text:  Walks the tree of an email to return text from a multi-part email.
 
 ### Changed
 - connect_process:  Replaced "msg.get_payload" with call to get_text function.
