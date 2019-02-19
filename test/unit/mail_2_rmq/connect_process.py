@@ -83,6 +83,9 @@ class UnitTest(unittest.TestCase):
 
             Methods:
                 __init__ -> Initialize configuration environment.
+                create_connection -> Stub holder for create_connection method.
+                publish_msg -> Stub holder for publish_msg method.
+                change_channel -> Change channel status.
 
             """
 
@@ -179,7 +182,7 @@ class UnitTest(unittest.TestCase):
         self.cfg = CfgTest()
         self.RQ = RQTest()
 
-    @mock.patch("mail_2_rmq.email")
+    @mock.patch("mail_2_rmq.get_text")
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_false_publish(self, mock_log, mock_archive, mock_msg):
@@ -191,20 +194,20 @@ class UnitTest(unittest.TestCase):
         Arguments:
             mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
             mock_archive -> Mock Ref:  mail_2_rmq.archive_email
-            mock_msg -> Mock Ref:  mail_2_rmq.email
+            mock_msg -> Mock Ref:  mail_2_rmq.get_text
 
         """
 
         mock_log.return_value = True
         mock_archive.return_value = True
-        mock_msg.get_payload.return_value = "Email message"
+        mock_msg.return_value = "Email message"
 
         self.RQ.pub_status = False
 
         self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
                                                     self.cfg, mock_msg))
 
-    @mock.patch("mail_2_rmq.email")
+    @mock.patch("mail_2_rmq.get_text")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_true_publish(self, mock_log, mock_msg):
 
@@ -214,17 +217,17 @@ class UnitTest(unittest.TestCase):
 
         Arguments:
             mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_msg -> Mock Ref:  mail_2_rmq.email
+            mock_msg -> Mock Ref:  mail_2_rmq.get_text
 
         """
 
         mock_log.return_value = True
-        mock_msg.get_payload.return_value = "Email message"
+        mock_msg.return_value = "Email message"
 
         self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
                                                     self.cfg, mock_msg))
 
-    @mock.patch("mail_2_rmq.email")
+    @mock.patch("mail_2_rmq.get_text")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_error_queue(self, mock_log, mock_msg):
 
@@ -234,19 +237,19 @@ class UnitTest(unittest.TestCase):
 
         Arguments:
             mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_msg -> Mock Ref:  mail_2_rmq.email
+            mock_msg -> Mock Ref:  mail_2_rmq.get_text
 
         """
 
         mock_log.return_value = True
-        mock_msg.get_payload.return_value = "Email message"
+        mock_msg.return_value = "Email message"
 
         self.RQ.queue_name = self.cfg.err_queue
 
         self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
                                                     self.cfg, mock_msg))
 
-    @mock.patch("mail_2_rmq.email")
+    @mock.patch("mail_2_rmq.get_text")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_non_error_queue(self, mock_log, mock_msg):
 
@@ -256,17 +259,17 @@ class UnitTest(unittest.TestCase):
 
         Arguments:
             mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_msg -> Mock Ref:  mail_2_rmq.email
+            mock_msg -> Mock Ref:  mail_2_rmq.get_text
 
         """
 
         mock_log.return_value = True
-        mock_msg.get_payload.return_value = "Email message"
+        mock_msg.return_value = "Email message"
 
         self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
                                                     self.cfg, mock_msg))
 
-    @mock.patch("mail_2_rmq.email")
+    @mock.patch("mail_2_rmq.get_text")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_true_true_connect(self, mock_log, mock_msg):
 
@@ -276,12 +279,12 @@ class UnitTest(unittest.TestCase):
 
         Arguments:
             mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_msg -> Mock Ref:  mail_2_rmq.email
+            mock_msg -> Mock Ref:  mail_2_rmq.get_text
 
         """
 
         mock_log.return_value = True
-        mock_msg.get_payload.return_value = "Email message"
+        mock_msg.return_value = "Email message"
 
         self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
                                                     self.cfg, mock_msg))
