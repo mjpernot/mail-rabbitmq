@@ -9,6 +9,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - get_text:  Walks the tree of a email and returns the text of the email.
 
 ### Changed
+- connect_process:  Replaced "msg.get_payload" with call to get_text function.
 - parse_email:  Replaced "email" class with "email.Parser" class.
 
 

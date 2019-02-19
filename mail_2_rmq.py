@@ -242,10 +242,10 @@ def connect_process(rq, log, cfg, msg, **kwargs):
         if rq.queue_name == cfg.err_queue:
             t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
                     + " Subject: " + msg["subject"] + " Body: " \
-                    + msg.get_payload()
+                    + get_text(msg)
 
         else:
-            t_msg = msg.get_payload()
+            t_msg = get_text(msg)
 
         if rq.publish_msg(t_msg):
             log.log_info("Message ingested into RabbitMQ")
