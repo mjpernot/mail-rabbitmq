@@ -71,7 +71,7 @@ from __future__ import print_function
 import sys
 import os
 import datetime
-import email
+import email.Parser
 
 # Third-party
 
@@ -152,9 +152,9 @@ def parse_email(**kwargs):
 
     """
 
-    raw_msg = sys.stdin.readlines()
+    p = email.Parser.Parser()
 
-    return email.message_from_string("".join(raw_msg))
+    return p.parsestr("".join(sys.stdin.readlines()))
 
 
 def archive_email(rq, log, cfg, msg, **kwargs):

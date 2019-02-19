@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [0.3.4] - 2019-02-19
+### Changed
+- parse_email:  Replaced "email" class with "email.Parser" class.
+
+
 ## [0.3.3] - 2019-02-12
 ### Changed
 - main:  Refactored code.
