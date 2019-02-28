@@ -107,7 +107,7 @@ class UnitTest(unittest.TestCase):
 
         self.email_msg = {"subject": "QUEUE1"}
 
-    @mock.patch("mail_2_rmq.filter_subj")
+    @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.connect_process")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.rabbitmq_class.RabbitMQPub")
@@ -124,7 +124,7 @@ class UnitTest(unittest.TestCase):
             mock_rmq -> Mock Ref:  mail_2_rmq.rabbitmq_class.RabbitMQPub
             mock_parse -> Mock Ref:  mail_2_rmq.parse_email
             mock_conn -> Mock Ref:  mail_2_rmq.connect_process
-            mock_filter -> Mock Ref:  mail_2_rmq.filter_subj
+            mock_filter -> Mock Ref:  mail_2_rmq.filter_subject
 
         """
 
@@ -136,7 +136,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
-    @mock.patch("mail_2_rmq.filter_subj")
+    @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.connect_process")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.rabbitmq_class.RabbitMQPub")
@@ -153,7 +153,7 @@ class UnitTest(unittest.TestCase):
             mock_rmq -> Mock Ref:  mail_2_rmq.rabbitmq_class.RabbitMQPub
             mock_parse -> Mock Ref:  mail_2_rmq.parse_email
             mock_conn -> Mock Ref:  mail_2_rmq.connect_process
-            mock_filter -> Mock Ref:  mail_2_rmq.filter_subj
+            mock_filter -> Mock Ref:  mail_2_rmq.filter_subject
 
         """
 
