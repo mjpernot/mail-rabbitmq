@@ -25,6 +25,7 @@ pipeline {
                 test/unit/mail_2_rmq/process_message.py
                 test/unit/mail_2_rmq/check_nonprocess.py
                 test/unit/mail_2_rmq/archive_email.py
+                test/unit/mail_2_rmq/filter_subject.py
                 test/unit/mail_2_rmq/run_program.py
                 test/unit/mail_2_rmq/main.py
                 """
