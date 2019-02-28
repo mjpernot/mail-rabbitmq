@@ -8,6 +8,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ### Added
 - filter_subject:  Filters strings out of the message subject line.
 
+### Changed
+- process_message:  Added function call to filter_subject, replaced msg['subject'] with subj.
+
 
 ## [0.3.4] - 2019-02-19
 ### Added:
