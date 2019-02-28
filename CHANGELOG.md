@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [0.3.5] - 2019-02-28
+### Added
+- filter_subject:  Filters strings out of the message subject line.
+
+
 ## [0.3.4] - 2019-02-19
 ### Added:
 - get_text:  Walks the tree of an email to return text from a multi-part email.
