@@ -49,6 +49,8 @@ class UnitTest(unittest.TestCase):
     Methods:
         setUp -> Unit testing initilization.
         test_no_filter -> No filtering required.
+        test_filtering -> Filtering required.
+        test_white_space -> Test stripping white space from right.
 
     """
 
@@ -121,6 +123,21 @@ class UnitTest(unittest.TestCase):
         """
 
         subj = "[FromSomePlace] package-admin"
+        self.assertEqual(mail_2_rmq.filter_subject(subj, self.cfg),
+                                                   self.subj_base)
+
+    def test_white_space(self):
+
+        """Function:  test_white_space
+
+        Description:  Test stripping white space from right.
+
+        Arguments:
+            None
+
+        """
+
+        subj = "[FromSomePlace] package-admin "
         self.assertEqual(mail_2_rmq.filter_subject(subj, self.cfg),
                                                    self.subj_base)
 
