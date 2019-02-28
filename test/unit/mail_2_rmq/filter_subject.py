@@ -109,7 +109,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertEqual(mail_2_rmq.filter_subject(self.subj_base, self.cfg),
-                                                   self.subj_base)
+                         self.subj_base)
 
     def test_filtering(self):
 
@@ -124,7 +124,7 @@ class UnitTest(unittest.TestCase):
 
         subj = "[FromSomePlace] package-admin"
         self.assertEqual(mail_2_rmq.filter_subject(subj, self.cfg),
-                                                   self.subj_base)
+                         self.subj_base)
 
     def test_white_space(self):
 
@@ -139,7 +139,7 @@ class UnitTest(unittest.TestCase):
 
         subj = "[FromSomePlace] package-admin "
         self.assertEqual(mail_2_rmq.filter_subject(subj, self.cfg),
-                                                   self.subj_base)
+                         self.subj_base)
 
 
 if __name__ == "__main__":

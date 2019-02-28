@@ -57,7 +57,8 @@
             # Directory path and file name to the program log.
             log_file = "/<DIRECTORY_PATH>/logs/mail_2_rmq.log"
             # Filter out strings within the subject line.
-            # Do not modify this setting unless you understand regular expressions.
+            # Do not modify this setting unless you understand regular
+            #   expressions.
             subj_filter = ["\[.*\]"]
 
     Example:
@@ -281,7 +282,7 @@ def filter_subject(subj, cfg, **kwargs):
 
     for f_str in cfg.subj_filter:
         subj = re.sub(f_str, "", subj).strip()
-    
+
     return subj
 
 
