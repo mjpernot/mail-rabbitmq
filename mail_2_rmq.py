@@ -385,19 +385,19 @@ def run_program(args_array, func_dict, **kwargs):
         LOG.log_info("Email Archive:  %s" % (cfg.email_dir))
         LOG.log_info("%s" % (str_val))
 
-        # Intersect args_array & func_dict to find which functions to call.
-        for opt in set(args_array.keys()) & set(func_dict.keys()):
+        try:
+            flavor_id = cfg.exchange_name
+            PROG_LOCK = gen_class.ProgramLock(sys.argv, flavor_id)
 
-            try:
-                flavor_id = cfg.exchange_name + opt
-                PROG_LOCK = gen_class.ProgramLock(sys.argv, flavor_id)
+            # Intersect args_array & func_dict to find which functions to call.
+            for opt in set(args_array.keys()) & set(func_dict.keys()):
 
                 func_dict[opt](cfg, LOG, **kwargs)
 
-                del PROG_LOCK
+            del PROG_LOCK
 
-            except gen_class.SingleInstanceException:
-                LOG.log_warn("mail_2_rmq lock in place for: %s" % (flavor_id))
+        except gen_class.SingleInstanceException:
+            LOG.log_warn("mail_2_rmq lock in place for: %s" % (flavor_id))
 
         LOG.log_close()
 
