@@ -294,6 +294,9 @@ mail_2_rmq.py -h
             email_dir = "/<DIRECTORY_PATH>/email_dir"
             # Directory path and file name to the program log.
             log_file = "/<DIRECTORY_PATH>/logs/mail_2_rmq.log"
+            # Filter out strings within the subject line.
+            # Do not modify this setting unless you understand regular expressions.
+            subj_filter = ["\[.*\]"]
 
     Example:
         /opt/local/mail_2_rmq.py -C -c rabbitmq -d /opt/local/config"
@@ -345,6 +348,7 @@ test/unit/mail_2_rmq/get_text.py
 test/unit/mail_2_rmq/connect_process.py
 test/unit/mail_2_rmq/process_message.py
 test/unit/mail_2_rmq/check_nonprocess.py
+test/unit/mail_2_rmq/filter_subject.py
 test/unit/mail_2_rmq/help_message.py
 test/unit/mail_2_rmq/run_program.py
 test/unit/mail_2_rmq/main.py
