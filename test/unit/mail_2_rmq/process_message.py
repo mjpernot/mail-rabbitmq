@@ -101,16 +101,19 @@ class UnitTest(unittest.TestCase):
                 self.auto_delete = True
                 self.err_queue = "ERROR_QUEUE"
                 self.valid_queues = ["QUEUE1", "QUEUE2"]
+                self.subj_filter = ["\[.*\]"]
 
         self.cfg = CfgTest()
 
         self.email_msg = {"subject": "QUEUE1"}
 
+    @mock.patch("mail_2_rmq.filter_subj")
     @mock.patch("mail_2_rmq.connect_process")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.rabbitmq_class.RabbitMQPub")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_invalid_subj(self, mock_log, mock_rmq, mock_parse, mock_conn):
+    def test_invalid_subj(self, mock_log, mock_rmq, mock_parse, mock_conn,
+                          mock_filter):
 
         """Function:  test_invalid_subj
 
@@ -121,6 +124,7 @@ class UnitTest(unittest.TestCase):
             mock_rmq -> Mock Ref:  mail_2_rmq.rabbitmq_class.RabbitMQPub
             mock_parse -> Mock Ref:  mail_2_rmq.parse_email
             mock_conn -> Mock Ref:  mail_2_rmq.connect_process
+            mock_filter -> Mock Ref:  mail_2_rmq.filter_subj
 
         """
 
@@ -128,14 +132,17 @@ class UnitTest(unittest.TestCase):
         mock_rmq.return_value = "RabbitMQ Instance"
         mock_parse.return_value = {"subject": "invalid"}
         mock_conn.return_value = True
+        mock_filter.return_value = self.email_msg["subject"]
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
+    @mock.patch("mail_2_rmq.filter_subj")
     @mock.patch("mail_2_rmq.connect_process")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.rabbitmq_class.RabbitMQPub")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_valid_subj(self, mock_log, mock_rmq, mock_parse, mock_conn):
+    def test_valid_subj(self, mock_log, mock_rmq, mock_parse, mock_conn,
+                        mock_filter):
 
         """Function:  test_valid_subj
 
@@ -146,6 +153,7 @@ class UnitTest(unittest.TestCase):
             mock_rmq -> Mock Ref:  mail_2_rmq.rabbitmq_class.RabbitMQPub
             mock_parse -> Mock Ref:  mail_2_rmq.parse_email
             mock_conn -> Mock Ref:  mail_2_rmq.connect_process
+            mock_filter -> Mock Ref:  mail_2_rmq.filter_subj
 
         """
 
@@ -153,6 +161,7 @@ class UnitTest(unittest.TestCase):
         mock_rmq.return_value = "RabbitMQ Instance"
         mock_parse.return_value = self.email_msg
         mock_conn.return_value = True
+        mock_filter.return_value = self.email_msg["subject"]
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
