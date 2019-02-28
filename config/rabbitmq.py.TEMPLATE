@@ -24,4 +24,6 @@ x_durable = True
 q_durable = True
 # Do queues automatically delete once message is processed:  True|False
 auto_delete = False
-
+# Filter out strings within the subject line.
+# Do not modify this setting unless you understand regular expressions.
+subj_filter = ["\[.*\]"]
