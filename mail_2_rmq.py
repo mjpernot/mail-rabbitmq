@@ -56,6 +56,9 @@
             email_dir = "/<DIRECTORY_PATH>/email_dir"
             # Directory path and file name to the program log.
             log_file = "/<DIRECTORY_PATH>/logs/mail_2_rmq.log"
+            # Filter out strings within the subject line.
+            # Do not modify this setting unless you understand regular expressions.
+            subj_filter = ["\[.*\]"]
 
     Example:
         alias: "| /opt/local/mail_2_rmq.py -M -c rabbitmq -d /opt/local/config"
@@ -72,6 +75,7 @@ import sys
 import os
 import datetime
 import email.Parser
+import re
 
 # Third-party
 
@@ -260,6 +264,27 @@ def connect_process(rq, log, cfg, msg, **kwargs):
         archive_email(rq, log, cfg, msg)
 
 
+def filter_subject(subj, cfg, **kwargs):
+
+    """Function:  filter_subject
+
+    Description:  Filter out strings from the message subject line.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program.
+        (input) subj -> Nessage subject line.
+        (input) **kwargs:
+            None
+        (output) subj -> Filtered message subject line.
+
+    """
+
+    for f_str in cfg.subj_filter:
+        subj = re.sub(f_str, "", subj).strip()
+    
+    return subj
+
+
 def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
@@ -277,22 +302,25 @@ def process_message(cfg, log, **kwargs):
     log.log_info("Parsing email...")
     msg = parse_email()
 
+    # Filter out strings in subject line.
+    subj = filter_subject(msg["subject"], cfg)
+
     # Email subject must be a valid queue name.
-    if msg['subject'] in cfg.valid_queues:
-        log.log_info("Valid email subject:  %s" % (msg['subject']))
+    if subj in cfg.valid_queues:
+        log.log_info("Valid email subject:  %s" % (subj))
 
         RQ = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
                                         cfg.port, cfg.exchange_name,
-                                        cfg.exchange_type, msg["subject"],
-                                        msg["subject"], cfg.x_durable,
-                                        cfg.q_durable, cfg.auto_delete)
+                                        cfg.exchange_type, subj, subj,
+                                        cfg.x_durable, cfg.q_durable,
+                                        cfg.auto_delete)
 
         log.log_info("Instance creation")
 
         connect_process(RQ, log, cfg, msg)
 
     else:
-        log.log_warn("Invalid email subject:  %s" % (msg['subject']))
+        log.log_warn("Invalid email subject:  %s" % (subj))
 
         RQ = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
                                         cfg.port, cfg.exchange_name,
