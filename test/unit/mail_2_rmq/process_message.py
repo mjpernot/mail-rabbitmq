@@ -132,7 +132,7 @@ class UnitTest(unittest.TestCase):
         mock_rmq.return_value = "RabbitMQ Instance"
         mock_parse.return_value = {"subject": "invalid"}
         mock_conn.return_value = True
-        mock_filter.return_value = self.email_msg["subject"]
+        mock_filter.return_value = "invalid"
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
