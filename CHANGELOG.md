@@ -4,11 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
-## [0.3.5] - 2019-02-28
+## [0.3.5] - 2019-03-01
 ### Added
 - filter_subject:  Filters strings out of the message subject line.
 
 ### Changed
+- process_message:  Changed "RQ" to "rq" to meet convention standards.
 - run_program:  Moved program lock from inside for loop to outside of for loop.
 - process_message:  Added function call to filter_subject, replaced msg['subject'] with subj.
 
