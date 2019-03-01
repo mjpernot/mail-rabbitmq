@@ -373,33 +373,33 @@ def run_program(args_array, func_dict, **kwargs):
         print("Error:  Problem in configuration file.")
 
     else:
-        LOG = gen_class.Logger(cfg.log_file, cfg.log_file, "INFO",
+        log = gen_class.Logger(cfg.log_file, cfg.log_file, "INFO",
                                "%(asctime)s %(levelname)s %(message)s",
                                "%Y-%m-%dT%H:%M:%SZ")
         str_val = "=" * 80
-        LOG.log_info("%s:%s Initialized" % (cfg.host, cfg.exchange_name))
-        LOG.log_info("%s" % (str_val))
-        LOG.log_info("Exchange Name:  %s" % (cfg.exchange_name))
-        LOG.log_info("Exchange Type:  %s" % (cfg.exchange_type))
-        LOG.log_info("Valid Queues:  %s" % (cfg.valid_queues))
-        LOG.log_info("Email Archive:  %s" % (cfg.email_dir))
-        LOG.log_info("%s" % (str_val))
+        log.log_info("%s:%s Initialized" % (cfg.host, cfg.exchange_name))
+        log.log_info("%s" % (str_val))
+        log.log_info("Exchange Name:  %s" % (cfg.exchange_name))
+        log.log_info("Exchange Type:  %s" % (cfg.exchange_type))
+        log.log_info("Valid Queues:  %s" % (cfg.valid_queues))
+        log.log_info("Email Archive:  %s" % (cfg.email_dir))
+        log.log_info("%s" % (str_val))
 
         try:
             flavor_id = cfg.exchange_name
-            PROG_LOCK = gen_class.ProgramLock(sys.argv, flavor_id)
+            prog_lock = gen_class.ProgramLock(sys.argv, flavor_id)
 
             # Intersect args_array & func_dict to find which functions to call.
             for opt in set(args_array.keys()) & set(func_dict.keys()):
 
-                func_dict[opt](cfg, LOG, **kwargs)
+                func_dict[opt](cfg, log, **kwargs)
 
-            del PROG_LOCK
+            del prog_lock
 
         except gen_class.SingleInstanceException:
-            LOG.log_warn("mail_2_rmq lock in place for: %s" % (flavor_id))
+            log.log_warn("mail_2_rmq lock in place for: %s" % (flavor_id))
 
-        LOG.log_close()
+        log.log_close()
 
 
 def main():
