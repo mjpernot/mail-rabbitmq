@@ -9,6 +9,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - filter_subject:  Filters strings out of the message subject line.
 
 ### Changed
+- run_program:  Changed "LOG" to "log" and "PROG_LOCK" to "prog_lock" to meet convention standards.
 - process_message:  Changed "RQ" to "rq" to meet convention standards.
 - run_program:  Moved program lock from inside for loop to outside of for loop.
 - process_message:  Added function call to filter_subject, replaced msg['subject'] with subj.
