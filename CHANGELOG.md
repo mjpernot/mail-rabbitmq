@@ -9,6 +9,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - filter_subject:  Filters strings out of the message subject line.
 
 ### Changed
+- archive_email:  Replaced "open()" with call to "gen_libs.write_file".
 - run_program:  Changed "LOG" to "log" and "PROG_LOCK" to "prog_lock" to meet convention standards.
 - process_message:  Changed "RQ" to "rq" to meet convention standards.
 - run_program:  Moved program lock from inside for loop to outside of for loop.
