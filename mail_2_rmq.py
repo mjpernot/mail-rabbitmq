@@ -310,7 +310,7 @@ def process_message(cfg, log, **kwargs):
     if subj in cfg.valid_queues:
         log.log_info("Valid email subject:  %s" % (subj))
 
-        RQ = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
+        rq = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
                                         cfg.port, cfg.exchange_name,
                                         cfg.exchange_type, subj, subj,
                                         cfg.x_durable, cfg.q_durable,
@@ -318,12 +318,12 @@ def process_message(cfg, log, **kwargs):
 
         log.log_info("Instance creation")
 
-        connect_process(RQ, log, cfg, msg)
+        connect_process(rq, log, cfg, msg)
 
     else:
         log.log_warn("Invalid email subject:  %s" % (subj))
 
-        RQ = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
+        rq = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
                                         cfg.port, cfg.exchange_name,
                                         cfg.exchange_type, cfg.err_queue,
                                         cfg.err_queue, cfg.x_durable,
@@ -331,7 +331,7 @@ def process_message(cfg, log, **kwargs):
 
         log.log_info("Instance creation")
 
-        connect_process(RQ, log, cfg, msg)
+        connect_process(rq, log, cfg, msg)
 
 
 def check_nonprocess(cfg, log, **kwargs):
