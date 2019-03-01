@@ -186,8 +186,6 @@ def archive_email(rq, log, cfg, msg, **kwargs):
                  (cfg.email_dir + os.path.sep + e_file))
 
     gen_libs.write_file(cfg.email_dir + os.path.sep + e_file, "w", msg)
-    # with open(cfg.email_dir + os.path.sep + e_file, "w") as o_file:
-    #     print(msg, file=o_file)
 
     log.log_info("Email saved to:  %s" % (e_file))
 
