@@ -254,12 +254,12 @@ def connect_process(rq, log, cfg, msg, **kwargs):
             log.log_info("Message ingested into RabbitMQ")
 
         else:
-            log.log_err("Failed to injest message into RabbuitMQ")
+            log.log_err("Failed to injest message into RabbitMQ")
 
             archive_email(rq, log, cfg, msg)
 
     else:
-        log.log_err("Failed to connnect to RabbuitMQ Node...")
+        log.log_err("Failed to connnect to RabbitMQ Node...")
         log.log_err("Message:  %s" % (err_msg))
 
         archive_email(rq, log, cfg, msg)
