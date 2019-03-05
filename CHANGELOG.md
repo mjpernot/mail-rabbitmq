@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [0.3.5] - 2019-03-01
+### Added
+- filter_subject:  Filters strings out of the message subject line.
+
+### Changed
+- archive_email:  Replaced "open()" with call to "gen_libs.write_file".
+- run_program:  Changed "LOG" to "log" and "PROG_LOCK" to "prog_lock" to meet convention standards.
+- process_message:  Changed "RQ" to "rq" to meet convention standards.
+- run_program:  Moved program lock from inside for loop to outside of for loop.
+- process_message:  Added function call to filter_subject, replaced msg['subject'] with subj.
+
+
 ## [0.3.4] - 2019-02-19
 ### Added:
 - get_text:  Walks the tree of an email to return text from a multi-part email.

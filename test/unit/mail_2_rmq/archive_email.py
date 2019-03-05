@@ -119,8 +119,7 @@ class UnitTest(unittest.TestCase):
 
                 """
 
-                self.email_dir = os.path.join(os.getcwd(),
-                                              "test/unit/mail_2_rmq/tmp")
+                self.email_dir = "/tmp"
 
         self.cfg = CfgTest()
         self.RQ = RQTest()
@@ -128,13 +127,10 @@ class UnitTest(unittest.TestCase):
         self.msg = "Email Message"
         self.dtg = "20190205-124217"
 
-        self.e_file = self.RQ.exchange + "-" + self.RQ.queue_name + "-" \
-            + self.dtg + ".email.txt"
-        self.full_e_file = self.cfg.email_dir + os.path.sep + self.e_file
-
+    @mock.patch("mail_2_rmq.gen_libs.write_file")
     @mock.patch("mail_2_rmq.datetime.datetime")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_archive_email(self, mock_log, mock_date):
+    def test_archive_email(self, mock_log, mock_date, mock_file):
 
         """Function:  test_archive_email
 
@@ -143,22 +139,17 @@ class UnitTest(unittest.TestCase):
         Arguments:
             mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
             mock_date -> Mock Ref:  mail_2_rmq.datetime.datetime
+            mock_file -> Mock Ref:  mail_2_rmq.gen_libs.write_file
 
         """
 
         mock_log.return_value = True
         mock_date.now.return_value = "(2019, 2, 5, 12, 40, 50, 852147)"
         mock_date.strftime.return_value = self.dtg
+        mock_file.return_value = True
 
-        mail_2_rmq.archive_email(self.RQ, mock_log, self.cfg, self.msg)
-
-        if self.msg in open(self.full_e_file).read():
-            f_status = True
-
-        else:
-            f_status = False
-
-        self.assertTrue(f_status)
+        self.assertFalse(mail_2_rmq.archive_email(self.RQ, mock_log, self.cfg,
+                                                  self.msg))
 
     def tearDown(self):
 
@@ -171,8 +162,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        if os.path.isfile(self.full_e_file):
-            os.remove(self.full_e_file)
+        pass
 
 
 if __name__ == "__main__":

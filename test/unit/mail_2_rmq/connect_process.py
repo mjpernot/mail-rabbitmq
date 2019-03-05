@@ -173,8 +173,6 @@ class UnitTest(unittest.TestCase):
 
                 """
 
-                self.email_dir = os.path.join(os.getcwd(),
-                                              "test/unit/mail_2_rmq/tmp")
                 self.host = "HOSTNAME"
                 self.exchange_name = "EXCHANGE_NAME"
                 self.err_queue = "ERROR_QUEUE"
