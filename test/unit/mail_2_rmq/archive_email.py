@@ -119,18 +119,13 @@ class UnitTest(unittest.TestCase):
 
                 """
 
-                self.email_dir = os.path.join(os.getcwd(),
-                                              "test/unit/mail_2_rmq/tmp")
+                self.email_dir = "/tmp"
 
         self.cfg = CfgTest()
         self.RQ = RQTest()
 
         self.msg = "Email Message"
         self.dtg = "20190205-124217"
-
-        self.e_file = self.RQ.exchange + "-" + self.RQ.queue_name + "-" \
-            + self.dtg + ".email.txt"
-        self.full_e_file = self.cfg.email_dir + os.path.sep + self.e_file
 
     @mock.patch("mail_2_rmq.gen_libs.write_file")
     @mock.patch("mail_2_rmq.datetime.datetime")
