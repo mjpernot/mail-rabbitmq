@@ -56,6 +56,10 @@
             email_dir = "/<DIRECTORY_PATH>/email_dir"
             # Directory path and file name to the program log.
             log_file = "/<DIRECTORY_PATH>/logs/mail_2_rmq.log"
+            # Filter out strings within the subject line.
+            # Do not modify this setting unless you understand regular
+            #   expressions.
+            subj_filter = ["\[.*\]"]
 
     Example:
         alias: "| /opt/local/mail_2_rmq.py -M -c rabbitmq -d /opt/local/config"
@@ -72,6 +76,7 @@ import sys
 import os
 import datetime
 import email.Parser
+import re
 
 # Third-party
 
@@ -180,8 +185,7 @@ def archive_email(rq, log, cfg, msg, **kwargs):
     log.log_info("Saving email to: %s" %
                  (cfg.email_dir + os.path.sep + e_file))
 
-    with open(cfg.email_dir + os.path.sep + e_file, "w") as o_file:
-        print(msg, file=o_file)
+    gen_libs.write_file(cfg.email_dir + os.path.sep + e_file, "w", msg)
 
     log.log_info("Email saved to:  %s" % (e_file))
 
@@ -249,15 +253,36 @@ def connect_process(rq, log, cfg, msg, **kwargs):
             log.log_info("Message ingested into RabbitMQ")
 
         else:
-            log.log_err("Failed to injest message into RabbuitMQ")
+            log.log_err("Failed to injest message into RabbitMQ")
 
             archive_email(rq, log, cfg, msg)
 
     else:
-        log.log_err("Failed to connnect to RabbuitMQ Node...")
+        log.log_err("Failed to connnect to RabbitMQ Node...")
         log.log_err("Message:  %s" % (err_msg))
 
         archive_email(rq, log, cfg, msg)
+
+
+def filter_subject(subj, cfg, **kwargs):
+
+    """Function:  filter_subject
+
+    Description:  Filter out strings from the message subject line.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program.
+        (input) subj -> Nessage subject line.
+        (input) **kwargs:
+            None
+        (output) subj -> Filtered message subject line.
+
+    """
+
+    for f_str in cfg.subj_filter:
+        subj = re.sub(f_str, "", subj).strip()
+
+    return subj
 
 
 def process_message(cfg, log, **kwargs):
@@ -277,24 +302,27 @@ def process_message(cfg, log, **kwargs):
     log.log_info("Parsing email...")
     msg = parse_email()
 
-    # Email subject must be a valid queue name.
-    if msg['subject'] in cfg.valid_queues:
-        log.log_info("Valid email subject:  %s" % (msg['subject']))
+    # Filter out strings in subject line.
+    subj = filter_subject(msg["subject"], cfg)
 
-        RQ = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
+    # Email subject must be a valid queue name.
+    if subj in cfg.valid_queues:
+        log.log_info("Valid email subject:  %s" % (subj))
+
+        rq = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
                                         cfg.port, cfg.exchange_name,
-                                        cfg.exchange_type, msg["subject"],
-                                        msg["subject"], cfg.x_durable,
-                                        cfg.q_durable, cfg.auto_delete)
+                                        cfg.exchange_type, subj, subj,
+                                        cfg.x_durable, cfg.q_durable,
+                                        cfg.auto_delete)
 
         log.log_info("Instance creation")
 
-        connect_process(RQ, log, cfg, msg)
+        connect_process(rq, log, cfg, msg)
 
     else:
-        log.log_warn("Invalid email subject:  %s" % (msg['subject']))
+        log.log_warn("Invalid email subject:  %s" % (subj))
 
-        RQ = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
+        rq = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
                                         cfg.port, cfg.exchange_name,
                                         cfg.exchange_type, cfg.err_queue,
                                         cfg.err_queue, cfg.x_durable,
@@ -302,7 +330,7 @@ def process_message(cfg, log, **kwargs):
 
         log.log_info("Instance creation")
 
-        connect_process(RQ, log, cfg, msg)
+        connect_process(rq, log, cfg, msg)
 
 
 def check_nonprocess(cfg, log, **kwargs):
@@ -344,33 +372,33 @@ def run_program(args_array, func_dict, **kwargs):
         print("Error:  Problem in configuration file.")
 
     else:
-        LOG = gen_class.Logger(cfg.log_file, cfg.log_file, "INFO",
+        log = gen_class.Logger(cfg.log_file, cfg.log_file, "INFO",
                                "%(asctime)s %(levelname)s %(message)s",
                                "%Y-%m-%dT%H:%M:%SZ")
         str_val = "=" * 80
-        LOG.log_info("%s:%s Initialized" % (cfg.host, cfg.exchange_name))
-        LOG.log_info("%s" % (str_val))
-        LOG.log_info("Exchange Name:  %s" % (cfg.exchange_name))
-        LOG.log_info("Exchange Type:  %s" % (cfg.exchange_type))
-        LOG.log_info("Valid Queues:  %s" % (cfg.valid_queues))
-        LOG.log_info("Email Archive:  %s" % (cfg.email_dir))
-        LOG.log_info("%s" % (str_val))
+        log.log_info("%s:%s Initialized" % (cfg.host, cfg.exchange_name))
+        log.log_info("%s" % (str_val))
+        log.log_info("Exchange Name:  %s" % (cfg.exchange_name))
+        log.log_info("Exchange Type:  %s" % (cfg.exchange_type))
+        log.log_info("Valid Queues:  %s" % (cfg.valid_queues))
+        log.log_info("Email Archive:  %s" % (cfg.email_dir))
+        log.log_info("%s" % (str_val))
 
-        # Intersect args_array & func_dict to find which functions to call.
-        for opt in set(args_array.keys()) & set(func_dict.keys()):
+        try:
+            flavor_id = cfg.exchange_name
+            prog_lock = gen_class.ProgramLock(sys.argv, flavor_id)
 
-            try:
-                flavor_id = cfg.exchange_name + opt
-                PROG_LOCK = gen_class.ProgramLock(sys.argv, flavor_id)
+            # Intersect args_array & func_dict to find which functions to call.
+            for opt in set(args_array.keys()) & set(func_dict.keys()):
 
-                func_dict[opt](cfg, LOG, **kwargs)
+                func_dict[opt](cfg, log, **kwargs)
 
-                del PROG_LOCK
+            del prog_lock
 
-            except gen_class.SingleInstanceException:
-                LOG.log_warn("mail_2_rmq lock in place for: %s" % (flavor_id))
+        except gen_class.SingleInstanceException:
+            log.log_warn("mail_2_rmq lock in place for: %s" % (flavor_id))
 
-        LOG.log_close()
+        log.log_close()
 
 
 def main():
