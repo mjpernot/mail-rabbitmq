@@ -48,6 +48,54 @@ def load_module(mod_name, mod_path):
     return __import__(mod_name)
 
 
+def cleanup_queue(rq):
+
+    """Function:  cleanup_queue
+
+    Description:  Cleanup the test queues.
+
+    Arguments:
+        (input) rq -> RabbitMQ instance class.
+
+    """
+
+    try:
+        rq.channel.queue_declare(queue=rq.queue_name, passive=True)
+        rq.clear_queue()
+        rq.drop_queue()
+
+        if drop_exch:
+            rq.drop_exchange()
+
+        rq.close_channel()
+
+        if rq.channel.is_closed:
+
+            if connect_status and rq.connection._impl.connection_state > 0:
+
+                rq.close()
+
+                if rq.connection._impl.connection_state == 0:
+                    print("\t%s dropped" % rq.queue_name)
+
+                else:
+                    print("\tFailed to close connection")
+                    print("\tConnection: %s" % rq.connection)
+                    print("\tConnection State: %s" %
+                          rq.connection._impl.connection_state)
+
+            else:
+                print("\tConnection not opened")
+
+        else:
+            print("\tFailure:  Channel did not close")
+            print("\tChannel: %s" % rq.channel)
+
+    except pika.exceptions.ChannelClosed as msg:
+        print("\tWarning:  Unable to locate queue")
+        print("Error Msg: %s" % msg)
+
+
 def mail_2_rmq_cleanup(cfg, queue_name, drop_exch=False):
 
     """Function:  mail_2_rmq_cleanup
@@ -84,44 +132,7 @@ def mail_2_rmq_cleanup(cfg, queue_name, drop_exch=False):
                                                 passive=True)
                     RQ.create_queue()
 
-                    try:
-                        RQ.channel.queue_declare(queue=RQ.queue_name,
-                                                 passive=True)
-                        RQ.clear_queue()
-                        RQ.drop_queue()
-
-                        if drop_exch:
-                            RQ.drop_exchange()
-
-                        RQ.close_channel()
-
-                        if RQ.channel.is_closed:
-
-                            if connect_status \
-                                    and RQ.connection._impl.connection_state \
-                                    > 0:
-
-                                RQ.close()
-
-                                if RQ.connection._impl.connection_state == 0:
-                                    print("\t%s dropped" % RQ.queue_name)
-
-                                else:
-                                    print("\tFailed to close connection")
-                                    print("\tConnection: %s" % RQ.connection)
-                                    print("\tConnection State: %s" %
-                                          RQ.connection._impl.connection_state)
-
-                            else:
-                                print("\tConnection not opened")
-
-                        else:
-                            print("\tFailure:  Channel did not close")
-                            print("\tChannel: %s" % RQ.channel)
-
-                    except pika.exceptions.ChannelClosed as msg:
-                        print("\tWarning:  Unable to locate queue")
-                        print("Error Msg: %s" % msg)
+                    cleanup_queue(RQ)
 
                 except pika.exceptions.ChannelClosed as msg:
                     print("\tWarning:  Unable to find an exchange")

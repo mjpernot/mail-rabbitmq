@@ -394,8 +394,8 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 Create configuration file for testing.
 ```
 chmod 777 email_dir logs
-cd test/blackbox/mail_2_rmq/config
-cp ../../../../config/rabbitmq.py.TEMPLATE rabbitmq.py
+cd test/blackbox/config
+cp ../../config/rabbitmq.py.TEMPLATE rabbitmq.py
 ```
 
 Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file.
