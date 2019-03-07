@@ -37,7 +37,7 @@ import version
 __version__ = version.__version__
 
 
-def process_message(cfg, LOG, **kwargs):
+def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
 
@@ -45,14 +45,14 @@ def process_message(cfg, LOG, **kwargs):
 
     Arguments:
         cfg -> Stub argument holder.
-        LOG -> Stub argument holder.
+        log -> Stub argument holder.
 
     """
 
     pass
 
 
-def check_nonprocess(cfg, LOG, **kwargs):
+def check_nonprocess(cfg, log, **kwargs):
 
     """Function:  check_nonprocess
 
@@ -60,7 +60,7 @@ def check_nonprocess(cfg, LOG, **kwargs):
 
     Arguments:
         cfg -> Stub argument holder.
-        LOG -> Stub argument holder.
+        log -> Stub argument holder.
 
     """
 
