@@ -82,7 +82,7 @@ def cleanup_queue(rq):
                     print("\tFailed to close connection")
                     print("\tConnection: %s" % rq.connection)
                     print("\tConnection State: %s" %
-                            rq.connection._impl.connection_state)
+                          rq.connection._impl.connection_state)
 
             else:
                 print("\tConnection not opened")
