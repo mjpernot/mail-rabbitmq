@@ -146,8 +146,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with exception handler.
 
         Arguments:
-            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
-            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+            None
 
         """
 
@@ -167,8 +166,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with all functions.
 
         Arguments:
-            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
-            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+            None
 
         """
 
@@ -190,8 +188,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with true status and function.
 
         Arguments:
-            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
-            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+            None
 
         """
 
@@ -212,8 +209,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with true status flag.
 
         Arguments:
-            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
-            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+            None
 
         """
 
@@ -231,7 +227,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with false status flag.
 
         Arguments:
-            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
+            None
 
         """
 
