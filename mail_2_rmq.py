@@ -172,7 +172,7 @@ def archive_email(rq, log, cfg, msg, **kwargs):
         (input) rq -> RabbitMQ class instance.
         (input) log -> Log class instance.
         (input) cfg -> Configuration settings module for the program.
-        (input) msg -> Email message being processed.
+        (input) msg -> Email message instance.
         (input) **kwargs:
             None
 
@@ -271,8 +271,8 @@ def filter_subject(subj, cfg, **kwargs):
     Description:  Filter out strings from the message subject line.
 
     Arguments:
+        (input) subj -> Message subject line.
         (input) cfg -> Configuration settings module for the program.
-        (input) subj -> Nessage subject line.
         (input) **kwargs:
             None
         (output) subj -> Filtered message subject line.
