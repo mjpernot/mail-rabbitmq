@@ -37,6 +37,26 @@ import version
 __version__ = version.__version__
 
 
+class SingleInstanceException(BaseException):
+
+    """Class:  SingleInstanceException
+
+    Description:  Class exception for the ProgramLock class when an instance
+        lock has been detected.
+
+    Super-Class:  BaseException
+
+    Sub-Classes:
+        None
+
+    Methods:
+        None
+
+    """
+
+    pass
+
+
 def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
@@ -151,8 +171,7 @@ class UnitTest(unittest.TestCase):
 
         mock_cfg.return_value = (self.cfg, True)
         mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
-        mock_class.ProgramLock.side_effect = \
-            mail_2_rmq.gen_class.SingleInstanceException
+        mock_class.ProgramLock.return_value = SingleInstanceException
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
                                                 self.func_dict))
