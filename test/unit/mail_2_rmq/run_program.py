@@ -56,6 +56,10 @@ class SingleInstanceException(BaseException):
 
     pass
 
+def testme(arg1, arg2):
+    import lib.gen_class as gen_class
+    raise gen_class.SingleInstanceException() 
+
 
 def process_message(cfg, log, **kwargs):
 
@@ -171,7 +175,7 @@ class UnitTest(unittest.TestCase):
 
         mock_cfg.return_value = (self.cfg, True)
         mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
-        mock_class.ProgramLock.return_value = SingleInstanceException
+        mock_class.ProgramLock = testme
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
                                                 self.func_dict))
