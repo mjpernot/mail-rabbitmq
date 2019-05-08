@@ -120,11 +120,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test email with invalid subject.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_rmq -> Mock Ref:  mail_2_rmq.rabbitmq_class.RabbitMQPub
-            mock_parse -> Mock Ref:  mail_2_rmq.parse_email
-            mock_conn -> Mock Ref:  mail_2_rmq.connect_process
-            mock_filter -> Mock Ref:  mail_2_rmq.filter_subject
+            None
 
         """
 
@@ -149,11 +145,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test email with valid subject.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_rmq -> Mock Ref:  mail_2_rmq.rabbitmq_class.RabbitMQPub
-            mock_parse -> Mock Ref:  mail_2_rmq.parse_email
-            mock_conn -> Mock Ref:  mail_2_rmq.connect_process
-            mock_filter -> Mock Ref:  mail_2_rmq.filter_subject
+            None
 
         """
 
