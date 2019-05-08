@@ -137,6 +137,28 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.gen_class")
     @mock.patch("mail_2_rmq.load_cfg")
+    def test_exception_handler(self, mock_cfg, mock_class):
+
+        """Function:  test_exception_handler
+
+        Description:  Test with exception handler.
+
+        Arguments:
+            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
+            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+
+        """
+
+        mock_cfg.return_value = (self.cfg, True)
+        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
+        mock_class.ProgramLock.side_effect = \
+            mail_2_rmq.gen_class.SingleInstanceException
+
+        self.assertFalse(mail_2_rmq.run_program(self.args_array,
+                                                self.func_dict))
+
+    @mock.patch("mail_2_rmq.gen_class")
+    @mock.patch("mail_2_rmq.load_cfg")
     def test_all_func(self, mock_cfg, mock_class):
 
         """Function:  test_all_func
