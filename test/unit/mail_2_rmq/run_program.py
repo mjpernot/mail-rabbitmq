@@ -37,30 +37,6 @@ import version
 __version__ = version.__version__
 
 
-class SingleInstanceException(BaseException):
-
-    """Class:  SingleInstanceException
-
-    Description:  Class exception for the ProgramLock class when an instance
-        lock has been detected.
-
-    Super-Class:  BaseException
-
-    Sub-Classes:
-        None
-
-    Methods:
-        None
-
-    """
-
-    pass
-
-def testme(arg1, arg2):
-    import lib.gen_class as gen_class
-    raise gen_class.SingleInstanceException() 
-
-
 def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
@@ -103,6 +79,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Unit testing initilization.
+        test_exception_handler -> Test with exception handler.
         test_all_func -> Test with all functions.
         test_true_func -> Test with true status and function.
         test_true_status -> Test with true status flag.
@@ -159,9 +136,10 @@ class UnitTest(unittest.TestCase):
         self.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
         self.func_dict = {"-M": process_message, "-C": check_nonprocess}
 
-    @mock.patch("mail_2_rmq.gen_class")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    @mock.patch("mail_2_rmq.gen_class.ProgramLock")
     @mock.patch("mail_2_rmq.load_cfg")
-    def test_exception_handler(self, mock_cfg, mock_class):
+    def test_exception_handler(self, mock_cfg, mock_lock, mock_log):
 
         """Function:  test_exception_handler
 
@@ -174,8 +152,8 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_cfg.return_value = (self.cfg, True)
-        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
-        mock_class.ProgramLock = testme
+        mock_log.return_value = mail_2_rmq.gen_class.Logger
+        mock_lock.side_effect = mail_2_rmq.gen_class.SingleInstanceException
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
                                                 self.func_dict))
