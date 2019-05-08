@@ -366,6 +366,9 @@ def run_program(args_array, func_dict, **kwargs):
 
     """
 
+    args_array = dict(args_array)
+    func_dict = dict(func_dict)
+
     cfg, status_flag = load_cfg(args_array["-c"], args_array["-d"])
 
     if not status_flag:
