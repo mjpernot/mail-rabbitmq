@@ -359,6 +359,11 @@ test/unit/mail_2_rmq/main.py
 test/unit/mail_2_rmq/unit_test_run.sh
 ```
 
+### Code coverage test:
+```
+test/unit/mail_2_rmq/code_coverage.sh
+```
+
 
 # Blackbox Testing:
   * Replace **{Python_Project}** with the baseline path of the python program.
