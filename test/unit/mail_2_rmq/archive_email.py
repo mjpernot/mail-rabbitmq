@@ -137,9 +137,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test archiving an email.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_date -> Mock Ref:  mail_2_rmq.datetime.datetime
-            mock_file -> Mock Ref:  mail_2_rmq.gen_libs.write_file
+            None
 
         """
 
@@ -150,19 +148,6 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mail_2_rmq.archive_email(self.RQ, mock_log, self.cfg,
                                                   self.msg))
-
-    def tearDown(self):
-
-        """Function:  tearDown
-
-        Description:  Clean up of unit testing.
-
-        Arguments:
-            None
-
-        """
-
-        pass
 
 
 if __name__ == "__main__":
