@@ -13,7 +13,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - create_rq:  Function to create and return a RabbitMQ instance.
 
 ### Changed
-- process_message:  Refactored function and replaced instance code with create_rq call.
+- process_message:  Refactored, added camelize call on subject, and replaced create instance with create_rq call.
 
 
 ## [0.3.5] - 2019-03-01
