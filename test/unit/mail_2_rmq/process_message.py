@@ -100,12 +100,12 @@ class UnitTest(unittest.TestCase):
                 self.q_durable = True
                 self.auto_delete = True
                 self.err_queue = "ERROR_QUEUE"
-                self.valid_queues = ["QUEUE1", "QUEUE2"]
+                self.valid_queues = ["Queue1", "Queue2"]
                 self.subj_filter = ["\[.*\]"]
 
         self.cfg = CfgTest()
 
-        self.email_msg = {"subject": "QUEUE1"}
+        self.email_msg = {"subject": "Queue1"}
 
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.connect_process")
@@ -132,13 +132,14 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
+    @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.connect_process")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.create_rq")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_valid_subj(self, mock_log, mock_rq, mock_parse, mock_conn,
-                        mock_filter):
+                        mock_filter, mock_camel):
 
         """Function:  test_valid_subj
 
@@ -154,6 +155,7 @@ class UnitTest(unittest.TestCase):
         mock_parse.return_value = self.email_msg
         mock_conn.return_value = True
         mock_filter.return_value = self.email_msg["subject"]
+        mock_camel.return_value = self.email_msg["subject"]
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
