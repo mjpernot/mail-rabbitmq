@@ -69,7 +69,6 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 
 Setup configuration file.
 ```
-chmod 777 email_dir logs
 cd config
 cp rabbitmq.py.TEMPLATE rabbitmq.py
 ```
@@ -77,7 +76,7 @@ cp rabbitmq.py.TEMPLATE rabbitmq.py
 Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file.
   * "user", "passwd", and "host" is connection information to a RabbitMQ node.
   * "exchange_name" is name of the exchange in the RabbitMQ node.
-  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.
+  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.  Note:  Queues names must be UpperCamelCase style.
   * "err_queue" is the name of RabbitMQ queue that will contain any messages that do not fit in the other queues (i.e. invalid subject lines).
   * "email_dir" is the location where non-processed emails will be saved to (e.g. when RabbitMQ is down).
   * "log_file" is the location of the mail_2_rmq.py log file.
@@ -85,10 +84,10 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - passwd = "PASSWORD"
     - host = "HOSTNAME"
     - exchange_name = "EXCHANGE_NAME"
-    - valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2"]
+    - valid_queues = ["QueueName1", "QueueName2"]
     - err_queue = "ERROR_QUEUE_NAME"
-    - email_dir = "{Python_Project}/mail_rabbitmq/email_dir"
-    - log_file = "{Python_Project}/mail_rabbitmq/logs/mail_2_rmq.log"
+    - email_dir = "/Directory_Path/mail_rabbitmq/email_dir"
+    - log_file = "/Directory_Path/mail_rabbitmq/logs/mail_2_rmq.log"
 
 ```
 vim rabbitmq.py
@@ -263,40 +262,40 @@ mail_2_rmq.py -h
         NOTE 2:  -M and -C are XOR options.
 
     Notes:
-        The configuration file below is required to run this program.  Create
-        them and replace those variables (i.e. <VARIABLE>) with a value.
-
-        Configuration file format (rabbitmq.py).  The configuration file format
+        The configuration file below is required to run this program.
+        Configuration file format (e.g. rabbitmq.py).  The configuration file format
         is for the initial environment setup for the program.
+
             # RabbitMQ Configuration file
             # Classification (U)
             # Unclassified until filled.
-            user = "<USER>"
-            passwd = "<PASSWORD>"
-            host = "<HOSTNAME>"
+            user = "USER"
+            passwd = "PASSWORD"
+            host = "HOSTNAME"
+            # RabbitMQ Exchange name for each instance run.
+            exchange_name = "EXCHANGE_NAME"
+            # List of valid queues in RabbitMQ.
+            # Note:  Queues names must be UpperCamelCase style.
+            valid_queues = ["QueueName1", "QueueName2", ...]
+            # Name of error queue to handle incorrectly routed emails.
+            err_queue = "<ERROR_QUEUE_NAME>"
+            # Archive directory path for non-processed email files.
+            email_dir = "/DIRECTORY_PATH/mail_rabbitmq/email_dir"
+            # Directory path and file name to the program log.
+            log_file = "/DIRECTORY_PATH/mail_rabbitmq/logs/mail_2_rmq.log"
+            # Filter out strings within the subject line.
+            # Do not modify unless you understand regular expressions.
+            subj_filter = ["\[.*\]"]
             # RabbitMQ listening port, default is 5672.
             port = 5672
-            # RabbitMQ Exchange name for each instance run.
-            exchange_name = "<EXCHANGE_NAME>"
             # Type of exchange:  direct, topic, fanout, headers
             exchange_type = "direct"
             # Is exchange durable: True|False
             x_durable = True
             # Are queues durable: True|False
             q_durable = True
-            # Do queues delete once message is processed:  True|False
+            # Do queues automatically delete once message is processed:  True|False
             auto_delete = False
-            # List of valid queues in RabbitMQ.
-            valid_queues = [ "QUEUE_NAME1", "QUEUE_NAME2", ... ]
-            # Name of error queue to handle incorrect email subjects.
-            err_queue = "<ERROR_QUEUE_NAME>"
-            # Archive directory path for non-processed email files.
-            email_dir = "/<DIRECTORY_PATH>/email_dir"
-            # Directory path and file name to the program log.
-            log_file = "/<DIRECTORY_PATH>/logs/mail_2_rmq.log"
-            # Filter out strings within the subject line.
-            # Do not modify this setting unless you understand regular expressions.
-            subj_filter = ["\[.*\]"]
 
     Example:
         /opt/local/mail_2_rmq.py -C -c rabbitmq -d /opt/local/config"
@@ -400,7 +399,6 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 
 Create configuration file for testing.
 ```
-chmod 777 email_dir logs
 cd test/blackbox/config
 cp ../../config/rabbitmq.py.TEMPLATE rabbitmq.py
 ```
@@ -408,7 +406,7 @@ cp ../../config/rabbitmq.py.TEMPLATE rabbitmq.py
 Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file.
   * "user", "passwd", and "host" is connection information to a RabbitMQ node.
   * "exchange_name" is name of the exchange in the RabbitMQ node.
-  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.
+  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.  Note:  Queues names must be UpperCamelCase style.
   * "err_queue" is the name of RabbitMQ queue that will contain any messages that do not fit in the other queues (i.e. invalid subject lines).
   * "email_dir" is the location where non-processed emails will be saved to (e.g. when RabbitMQ is down).
   * "log_file" is the location of the mail_2_rmq.py log file.
@@ -416,10 +414,10 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - passwd = "PASSWORD"
     - host = "HOSTNAME"
     - exchange_name = "EXCHANGE_NAME"
-    - valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2"]
+    - valid_queues = ["QueueName1", "QueueName2"]
     - err_queue = "ERROR_QUEUE_NAME"
-    - email_dir = "{Python_Project}/mail_rabbitmq/email_dir"
-    - log_file = "{Python_Project}/mail_rabbitmq/logs/mail_2_rmq.log"
+    - email_dir = "/Directory_Path/mail_rabbitmq/email_dir"
+    - log_file = "/Directory_Path/mail_rabbitmq/logs/mail_2_rmq.log"
 ```
 vim rabbitmq.py
 chmod 644 rabbitmq.py

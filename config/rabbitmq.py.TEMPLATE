@@ -1,19 +1,23 @@
 # RabbitMQ Configuration file
 # Classification (U)
 # Unclassified until filled.
-user = "<USER>"
-passwd = "<PASSWORD>"
-host = "<HOSTNAME>"
+user = "USER"
+passwd = "PASSWORD"
+host = "HOSTNAME"
 # RabbitMQ Exchange name for each instance run.
-exchange_name = "<EXCHANGE_NAME>"
+exchange_name = "EXCHANGE_NAME"
 # List of valid queues in RabbitMQ.
-valid_queues = [ "QUEUE_NAME1", "QUEUE_NAME2", ... ]
+# Note:  Queues names must be UpperCamelCase style.
+valid_queues = ["QueueName1", "QueueName2", ...]
 # Name of error queue to handle incorrectly routed emails.
 err_queue = "<ERROR_QUEUE_NAME>"
 # Archive directory path for non-processed email files.
-email_dir = "/<DIRECTORY_PATH>/email_dir"
+email_dir = "/DIRECTORY_PATH/mail_rabbitmq/email_dir"
 # Directory path and file name to the program log.
-log_file = "/<DIRECTORY_PATH>/logs/mail_2_rmq.log"
+log_file = "/DIRECTORY_PATH/mail_rabbitmq/logs/mail_2_rmq.log"
+# Filter out strings within the subject line.
+# Do not modify unless you understand regular expressions.
+subj_filter = ["\[.*\]"]
 # RabbitMQ listening port, default is 5672.
 port = 5672
 # Type of exchange:  direct, topic, fanout, headers
@@ -24,6 +28,3 @@ x_durable = True
 q_durable = True
 # Do queues automatically delete once message is processed:  True|False
 auto_delete = False
-# Filter out strings within the subject line.
-# Do not modify this setting unless you understand regular expressions.
-subj_filter = ["\[.*\]"]
