@@ -8,6 +8,13 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ### Fixed
 - run_program:  Fixed problem with mutable default arguments issue.
 
+### Added
+- camelize:  Camelcases a string.
+- create_rq:  Function to create and return a RabbitMQ instance.
+
+### Changed
+- process_message:  Refactored, added camelize call on subject, and replaced create instance with create_rq call.
+
 
 ## [0.3.5] - 2019-03-01
 ### Added

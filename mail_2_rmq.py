@@ -143,6 +143,28 @@ def load_cfg(cfg_name, cfg_dir, **kwargs):
     return cfg, status_flag
 
 
+def create_rq(cfg, q_name, r_key, **kwargs):
+
+    """Function:  create_rq
+
+    Description:  Create and return a RabbitMQ instance.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program.
+        (input) q_name -> Queue name in RabbitMQ.
+        (input) r_key -> Routing key in RabbitMQ.
+        (input) **kwargs:
+            None
+        (output) RabbitMQ instance.
+
+    """
+
+    return rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host, cfg.port,
+                                      cfg.exchange_name, cfg.exchange_type,
+                                      q_name, r_key, cfg.x_durable,
+                                      cfg.q_durable, cfg.auto_delete)
+
+
 def parse_email(**kwargs):
 
     """Function:  parse_email
@@ -285,6 +307,25 @@ def filter_subject(subj, cfg, **kwargs):
     return subj
 
 
+def camelize(data_str, **kwargs):
+
+    """Function:  camelize
+
+    Description:  Camelcases a string.
+
+    Arguments:
+        (input) data_str -> String to be camelcased.
+        (input) **kwargs:
+            None
+        (output) CamelCased string.
+
+    """
+
+    return "".join(item.capitalize() for item in re.split("([^a-zA-Z0-9])",
+                                                          data_str)
+                if item.isalnum())
+
+
 def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
@@ -301,36 +342,20 @@ def process_message(cfg, log, **kwargs):
 
     log.log_info("Parsing email...")
     msg = parse_email()
-
-    # Filter out strings in subject line.
     subj = filter_subject(msg["subject"], cfg)
+    subj = camelize(subj)
+    log.log_info("Instance creation")
 
-    # Email subject must be a valid queue name.
+    # Is email subject a valid queue.
     if subj in cfg.valid_queues:
         log.log_info("Valid email subject:  %s" % (subj))
-
-        rq = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
-                                        cfg.port, cfg.exchange_name,
-                                        cfg.exchange_type, subj, subj,
-                                        cfg.x_durable, cfg.q_durable,
-                                        cfg.auto_delete)
-
-        log.log_info("Instance creation")
-
-        connect_process(rq, log, cfg, msg)
+        rq = create_rq(cfg, subj, subj)
 
     else:
         log.log_warn("Invalid email subject:  %s" % (subj))
+        rq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
 
-        rq = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
-                                        cfg.port, cfg.exchange_name,
-                                        cfg.exchange_type, cfg.err_queue,
-                                        cfg.err_queue, cfg.x_durable,
-                                        cfg.q_durable, cfg.auto_delete)
-
-        log.log_info("Instance creation")
-
-        connect_process(rq, log, cfg, msg)
+    connect_process(rq, log, cfg, msg)
 
 
 def check_nonprocess(cfg, log, **kwargs):

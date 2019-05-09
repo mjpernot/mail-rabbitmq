@@ -342,6 +342,8 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 ```
 cd {Python_Project}/mail-rabbitmq
 test/unit/mail_2_rmq/load_cfg.py
+test/unit/mail_2_rmq/camelize.py
+test/unit/mail_2_rmq/create_rq.py
 test/unit/mail_2_rmq/parse_email.py
 test/unit/mail_2_rmq/archive_email.py
 test/unit/mail_2_rmq/get_text.py
