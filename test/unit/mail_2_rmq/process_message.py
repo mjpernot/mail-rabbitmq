@@ -110,9 +110,9 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.connect_process")
     @mock.patch("mail_2_rmq.parse_email")
-    @mock.patch("mail_2_rmq.rabbitmq_class.RabbitMQPub")
+    @mock.patch("mail_2_rmq.create_rq")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_invalid_subj(self, mock_log, mock_rmq, mock_parse, mock_conn,
+    def test_invalid_subj(self, mock_log, mock_rq, mock_parse, mock_conn,
                           mock_filter):
 
         """Function:  test_invalid_subj
@@ -125,7 +125,7 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_log.return_value = True
-        mock_rmq.return_value = "RabbitMQ Instance"
+        mock_rq.return_value = "RabbitMQ Instance"
         mock_parse.return_value = {"subject": "invalid"}
         mock_conn.return_value = True
         mock_filter.return_value = "invalid"
@@ -135,9 +135,9 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.connect_process")
     @mock.patch("mail_2_rmq.parse_email")
-    @mock.patch("mail_2_rmq.rabbitmq_class.RabbitMQPub")
+    @mock.patch("mail_2_rmq.create_rq")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_valid_subj(self, mock_log, mock_rmq, mock_parse, mock_conn,
+    def test_valid_subj(self, mock_log, mock_rq, mock_parse, mock_conn,
                         mock_filter):
 
         """Function:  test_valid_subj
@@ -150,7 +150,7 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_log.return_value = True
-        mock_rmq.return_value = "RabbitMQ Instance"
+        mock_rq.return_value = "RabbitMQ Instance"
         mock_parse.return_value = self.email_msg
         mock_conn.return_value = True
         mock_filter.return_value = self.email_msg["subject"]
