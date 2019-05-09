@@ -327,32 +327,18 @@ def process_message(cfg, log, **kwargs):
     # Filter out strings in subject line.
     subj = filter_subject(msg["subject"], cfg)
 
-    # Email subject must be a valid queue name.
+    log.log_info("Instance creation")
+
+    # Is email subject a valid queue.
     if subj in cfg.valid_queues:
         log.log_info("Valid email subject:  %s" % (subj))
-
-        rq = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
-                                        cfg.port, cfg.exchange_name,
-                                        cfg.exchange_type, subj, subj,
-                                        cfg.x_durable, cfg.q_durable,
-                                        cfg.auto_delete)
-
-        log.log_info("Instance creation")
-
-        connect_process(rq, log, cfg, msg)
+        rq = create_rq(cfg, subj, subj)
 
     else:
         log.log_warn("Invalid email subject:  %s" % (subj))
+        rq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
 
-        rq = rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host,
-                                        cfg.port, cfg.exchange_name,
-                                        cfg.exchange_type, cfg.err_queue,
-                                        cfg.err_queue, cfg.x_durable,
-                                        cfg.q_durable, cfg.auto_delete)
-
-        log.log_info("Instance creation")
-
-        connect_process(rq, log, cfg, msg)
+    connect_process(rq, log, cfg, msg)
 
 
 def check_nonprocess(cfg, log, **kwargs):
