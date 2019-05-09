@@ -307,6 +307,25 @@ def filter_subject(subj, cfg, **kwargs):
     return subj
 
 
+def camelize(data_str, **kwargs):
+
+    """Function:  camelize
+
+    Description:  Camelcases a string.
+
+    Arguments:
+        (input) data_str -> String to be camelcased.
+        (input) **kwargs:
+            None
+        (output) CamelCased string.
+
+    """
+
+    return "".join(item.capitalize() for item in re.split("([^a-zA-Z0-9])",
+                                                          data_str)
+                if item.isalnum())
+
+
 def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
