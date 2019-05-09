@@ -9,6 +9,7 @@ coverage erase
 echo ""
 echo "Running unit test modules in conjunction with coverage"
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/load_cfg.py
+coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/camelize.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/create_rq.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/help_message.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/check_nonprocess.py
