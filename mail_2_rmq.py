@@ -143,6 +143,28 @@ def load_cfg(cfg_name, cfg_dir, **kwargs):
     return cfg, status_flag
 
 
+def create_rq(cfg, q_name, r_key, **kwargs):
+
+    """Function:  create_rq
+
+    Description:  Create and return a RabbitMQ instance.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program.
+        (input) q_name -> Queue name in RabbitMQ.
+        (input) r_key -> Routing key in RabbitMQ.
+        (input) **kwargs:
+            None
+        (output) RabbitMQ instance.
+
+    """
+
+    return rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host, cfg.port,
+                                      cfg.exchange_name, cfg.exchange_type,
+                                      q_name, r_key, cfg.x_durable,
+                                      cfg.q_durable, cfg.auto_delete)
+
+
 def parse_email(**kwargs):
 
     """Function:  parse_email
