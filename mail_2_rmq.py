@@ -342,10 +342,8 @@ def process_message(cfg, log, **kwargs):
 
     log.log_info("Parsing email...")
     msg = parse_email()
-
-    # Filter out strings in subject line.
     subj = filter_subject(msg["subject"], cfg)
-
+    subj = camelize(subj)
     log.log_info("Instance creation")
 
     # Is email subject a valid queue.
