@@ -190,9 +190,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test publish returns false.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_archive -> Mock Ref:  mail_2_rmq.archive_email
-            mock_msg -> Mock Ref:  mail_2_rmq.get_text
+            None
 
         """
 
@@ -214,8 +212,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test publish returns true.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_msg -> Mock Ref:  mail_2_rmq.get_text
+            None
 
         """
 
@@ -234,8 +231,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test message sent to error queue.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_msg -> Mock Ref:  mail_2_rmq.get_text
+            None
 
         """
 
@@ -256,8 +252,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test message sent to non-error queue.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_msg -> Mock Ref:  mail_2_rmq.get_text
+            None
 
         """
 
@@ -276,8 +271,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with true/true status.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_msg -> Mock Ref:  mail_2_rmq.get_text
+            None
 
         """
 
@@ -296,8 +290,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with false/false status.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_archive -> Mock Ref:  mail_2_rmq.archive_email
+            None
 
         """
 
@@ -318,8 +311,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with false/true status.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_archive -> Mock Ref:  mail_2_rmq.archive_email
+            None
 
         """
 
@@ -339,8 +331,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with true/false status.
 
         Arguments:
-            mock_log -> Mock Ref:  mail_2_rmq.gen_class.Logger
-            mock_archive -> Mock Ref:  mail_2_rmq.archive_email
+            None
 
         """
 

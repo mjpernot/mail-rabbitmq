@@ -79,6 +79,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Unit testing initilization.
+        test_exception_handler -> Test with exception handler.
         test_all_func -> Test with all functions.
         test_true_func -> Test with true status and function.
         test_true_status -> Test with true status flag.
@@ -135,6 +136,27 @@ class UnitTest(unittest.TestCase):
         self.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
         self.func_dict = {"-M": process_message, "-C": check_nonprocess}
 
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    @mock.patch("mail_2_rmq.gen_class.ProgramLock")
+    @mock.patch("mail_2_rmq.load_cfg")
+    def test_exception_handler(self, mock_cfg, mock_lock, mock_log):
+
+        """Function:  test_exception_handler
+
+        Description:  Test with exception handler.
+
+        Arguments:
+            None
+
+        """
+
+        mock_cfg.return_value = (self.cfg, True)
+        mock_log.return_value = mail_2_rmq.gen_class.Logger
+        mock_lock.side_effect = mail_2_rmq.gen_class.SingleInstanceException
+
+        self.assertFalse(mail_2_rmq.run_program(self.args_array,
+                                                self.func_dict))
+
     @mock.patch("mail_2_rmq.gen_class")
     @mock.patch("mail_2_rmq.load_cfg")
     def test_all_func(self, mock_cfg, mock_class):
@@ -144,8 +166,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with all functions.
 
         Arguments:
-            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
-            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+            None
 
         """
 
@@ -167,8 +188,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with true status and function.
 
         Arguments:
-            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
-            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+            None
 
         """
 
@@ -189,8 +209,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with true status flag.
 
         Arguments:
-            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
-            mock_class -> Mock Ref:  mail_2_rmq.gen_class
+            None
 
         """
 
@@ -208,7 +227,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with false status flag.
 
         Arguments:
-            mock_cfg -> Mock Ref:  mail_2_rmq.load_cfg
+            None
 
         """
 

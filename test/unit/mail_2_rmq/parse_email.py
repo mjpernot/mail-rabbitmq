@@ -119,8 +119,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test parsing an email.
 
         Arguments:
-            mock_stdin -> Mock Ref:  mail_2_rmq.sys.stdin
-            mock_parse -> Mock Ref:  mail_2_rmq.
+            None
 
         """
 
