@@ -323,7 +323,7 @@ def camelize(data_str, **kwargs):
 
     return "".join(item.capitalize() for item in re.split("([^a-zA-Z0-9])",
                                                           data_str)
-                if item.isalnum())
+                   if item.isalnum())
 
 
 def process_message(cfg, log, **kwargs):
