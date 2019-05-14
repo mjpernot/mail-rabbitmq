@@ -125,9 +125,7 @@ def load_cfg(cfg_name, cfg_dir, **kwargs):
     """
 
     status_flag = True
-
     cfg = gen_libs.load_module(cfg_name, cfg_dir)
-
     status, err_msg = gen_libs.chk_crt_dir(cfg.email_dir, write=True,
                                            read=True)
 
@@ -203,12 +201,9 @@ def archive_email(rq, log, cfg, msg, **kwargs):
     e_file = rq.exchange + "-" + rq.queue_name + "-" \
         + datetime.datetime.strftime(datetime.datetime.now(),
                                      "%Y%m%d-%H%M%S") + ".email.txt"
-
     log.log_info("Saving email to: %s" %
                  (cfg.email_dir + os.path.sep + e_file))
-
     gen_libs.write_file(cfg.email_dir + os.path.sep + e_file, "w", msg)
-
     log.log_info("Email saved to:  %s" % (e_file))
 
 
@@ -229,7 +224,6 @@ def get_text(msg, **kwargs):
     msg_list = []
 
     for part in msg.walk():
-
         if part.get_content_maintype() == "multipart" \
            or not part.get_payload(decode=True):
             continue
@@ -256,7 +250,6 @@ def connect_process(rq, log, cfg, msg, **kwargs):
     """
 
     log.log_info("Connection info: %s->%s" % (cfg.host, cfg.exchange_name))
-
     connect_status, err_msg = rq.create_connection()
 
     if connect_status and rq.channel.is_open:
@@ -276,13 +269,11 @@ def connect_process(rq, log, cfg, msg, **kwargs):
 
         else:
             log.log_err("Failed to injest message into RabbitMQ")
-
             archive_email(rq, log, cfg, msg)
 
     else:
         log.log_err("Failed to connnect to RabbitMQ Node...")
         log.log_err("Message:  %s" % (err_msg))
-
         archive_email(rq, log, cfg, msg)
 
 
@@ -393,7 +384,6 @@ def run_program(args_array, func_dict, **kwargs):
 
     args_array = dict(args_array)
     func_dict = dict(func_dict)
-
     cfg, status_flag = load_cfg(args_array["-c"], args_array["-d"])
 
     if not status_flag:
@@ -418,7 +408,6 @@ def run_program(args_array, func_dict, **kwargs):
 
             # Intersect args_array & func_dict to find which functions to call.
             for opt in set(args_array.keys()) & set(func_dict.keys()):
-
                 func_dict[opt](cfg, log, **kwargs)
 
             del prog_lock
