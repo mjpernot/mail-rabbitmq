@@ -108,7 +108,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test False and False statuses.
 
         Arguments:
-            mock_lib -> Mock Ref:  mail_2_rmq.gen_libs
+            None
 
         """
 
@@ -126,7 +126,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test False and True statuses.
 
         Arguments:
-            mock_lib -> Mock Ref:  mail_2_rmq.gen_libs
+            None
 
         """
 
@@ -144,7 +144,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test True and False statuses.
 
         Arguments:
-            mock_lib -> Mock Ref:  mail_2_rmq.gen_libs
+            None
 
         """
 
@@ -162,7 +162,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test True and True statuses.
 
         Arguments:
-            mock_lib -> Mock Ref:  mail_2_rmq.gen_libs
+            None
 
         """
 

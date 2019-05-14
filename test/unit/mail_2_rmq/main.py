@@ -84,15 +84,13 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_dir_chk_crt returns False.
 
         Arguments:
-            mock_arg -> Mock Ref:  mail_2_rmq.arg_parser
-            mock_help -> Mock Ref:  mail_2_rmq.gen_libs.help_func
-            mock_run -> Mock Ref:  mail_2_rmq.run_program
+            None
 
         """
 
         mock_arg.arg_parse2.return_value = self.args
         mock_help.return_value = False
-        mock_arg.arg_require.return_value = True
+        mock_arg.arg_require.return_value = False
         mock_arg.arg_xor_dict.return_value = True
         mock_arg.arg_dir_chk_crt.return_value = False
         mock_run.return_value = True
@@ -108,8 +106,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_dir_chk_crt returns True.
 
         Arguments:
-            mock_arg -> Mock Ref:  mail_2_rmq.arg_parser
-            mock_help -> Mock Ref:  mail_2_rmq.gen_libs.help_func
+            None
 
         """
 
@@ -130,8 +127,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_xor_dict returns True.
 
         Arguments:
-            mock_arg -> Mock Ref:  mail_2_rmq.arg_parser
-            mock_help -> Mock Ref:  mail_2_rmq.gen_libs.help_func
+            None
 
         """
 
@@ -152,8 +148,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_xor_dict returns False.
 
         Arguments:
-            mock_arg -> Mock Ref:  mail_2_rmq.arg_parser
-            mock_help -> Mock Ref:  mail_2_rmq.gen_libs.help_func
+            None
 
         """
 
@@ -173,8 +168,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_require returns False.
 
         Arguments:
-            mock_arg -> Mock Ref:  mail_2_rmq.arg_parser
-            mock_help -> Mock Ref:  mail_2_rmq.gen_libs.help_func
+            None
 
         """
 
@@ -194,8 +188,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_require returns True.
 
         Arguments:
-            mock_arg -> Mock Ref:  mail_2_rmq.arg_parser
-            mock_help -> Mock Ref:  mail_2_rmq.gen_libs.help_func
+            None
 
         """
 
@@ -214,8 +207,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with help_func returns False.
 
         Arguments:
-            mock_arg -> Mock Ref:  mail_2_rmq.arg_parser
-            mock_help -> Mock Ref:  mail_2_rmq.gen_libs.help_func
+            None
 
         """
 
@@ -234,8 +226,7 @@ class UnitTest(unittest.TestCase):
         Description:  Test with help_func returns True.
 
         Arguments:
-            mock_arg -> Mock Ref:  mail_2_rmq.arg_parser.arg_parse2
-            mock_help -> Mock Ref:  mail_2_rmq.gen_libs.help_func
+            None
 
         """
 

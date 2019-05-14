@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [0.3.6] - 2019-05-08
+### Fixed
+- run_program:  Fixed problem with mutable default arguments issue.
+
+### Added
+- camelize:  Camelcases a string.
+- create_rq:  Function to create and return a RabbitMQ instance.
+
+### Changed
+- process_message:  Refactored, added camelize call on subject, and replaced create instance with create_rq call.
+
+
 ## [0.3.5] - 2019-03-01
 ### Added
 - filter_subject:  Filters strings out of the message subject line.
