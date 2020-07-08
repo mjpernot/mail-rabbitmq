@@ -13,6 +13,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - main:  Fixed handling command line arguments from SonarQube scan finding.
 
 ### Changed
+- create_rq:  Changed positional args for rabbitmq_class.RabbitMQPub to kwargs.
 - process_message:  Changed variable name to standard naming convention.
 - connect_process:  Changed variable name to standard naming convention.
 - archive_email:  Changed variable name to standard naming convention.
