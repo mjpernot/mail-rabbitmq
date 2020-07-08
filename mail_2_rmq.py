@@ -166,9 +166,10 @@ def parse_email(**kwargs):
 
     """
 
+    cmdline = gen_libs.get_inst(sys)
     parser = email.Parser.Parser()
 
-    return parser.parsestr("".join(sys.stdin.readlines()))
+    return parser.parsestr("".join(cmdline.stdin.readlines()))
 
 
 def archive_email(rmq, log, cfg, msg, **kwargs):
@@ -209,8 +210,10 @@ def get_text(msg, **kwargs):
     msg_list = []
 
     for part in msg.walk():
+
         if part.get_content_maintype() == "multipart" \
            or not part.get_payload(decode=True):
+
             continue
 
         msg_list.append(part.get_payload(decode=True))

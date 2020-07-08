@@ -8,6 +8,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - General Production Release
 
 ### Fixed
+- parse_email:  Fixed handling command line arguments from SonarQube scan finding.
 - run_program:  Fixed handling command line arguments from SonarQube scan finding.
 - main:  Fixed handling command line arguments from SonarQube scan finding.
 
