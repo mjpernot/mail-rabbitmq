@@ -423,7 +423,6 @@ def main():
        and not arg_parser.arg_require(args_array, opt_req_list) \
        and arg_parser.arg_xor_dict(args_array, opt_xor_dict) \
        and not arg_parser.arg_dir_chk_crt(args_array, dir_chk_list):
-
         run_program(args_array, func_dict)
 
 
