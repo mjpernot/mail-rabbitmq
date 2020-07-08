@@ -343,8 +343,8 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - log_file = "DIRECTORY_PATH/mail_rabbitmq/logs/mail_2_rmq.log"
 
 ```
-cd test/blackbox/config
-cp ../../config/rabbitmq.py.TEMPLATE rabbitmq.py
+cd test/blackbox/mail_2_rmq/config
+cp ../../../config/rabbitmq.py.TEMPLATE rabbitmq.py
 vim rabbitmq.py
 chmod 644 rabbitmq.py
 ```
@@ -360,8 +360,8 @@ chmod 644 rabbitmq_2.py
 
 Add two email aliases to allow functional testing.
   * Add the following lines to the aliases file:
-    - `mailrabbit: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/test/blackbox/config -M"`
-    - `mailrabbit_2:   "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq_2 -d {Python_Project}/mail-rabbitmq/test/blackbox/config -M"`
+    - `mailrabbit: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/test/blackbox/mail_2_rmq/config -M"`
+    - `mailrabbit_2:   "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq_2 -d {Python_Project}/mail-rabbitmq/test/blackbox/mail_2_rmq/config -M"`
 
 ```
 sudo vim /etc/aliases
@@ -378,7 +378,7 @@ sudo ln -s {Python_Project}/mail-rabbitmq/mail_2_rmq.py mail_2_rmq.py
 ### Testing:
 
 ```
-cd {Python_Project}/mail-rabbitmq/test/blackbox
+cd {Python_Project}/mail-rabbitmq/test/blackbox/mail_2_rmq
 ./mail_2_rmq_functional_test.sh
 ```
 
@@ -386,6 +386,6 @@ cd {Python_Project}/mail-rabbitmq/test/blackbox
 
 ```
 cd {Python_Project}/mail-rabbitmq
-test/blackbox/mail_2_rmq_cleanup.py
+test/blackbox/mail_2_rmq/mail_2_rmq_cleanup.py
 ```
 
