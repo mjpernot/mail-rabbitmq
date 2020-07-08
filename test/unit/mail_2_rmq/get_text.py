@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/get_text.py
 
     Arguments:
-        None
 
 """
 
@@ -32,7 +31,6 @@ sys.path.append(os.getcwd())
 import mail_2_rmq
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -41,10 +39,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -65,7 +59,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -74,10 +67,6 @@ class UnitTest(unittest.TestCase):
             """Class:  MsgTest
 
             Description:  Is a representation of a email message instance.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -92,7 +81,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the RQTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -105,7 +93,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for walk method.
 
                 Arguments:
-                        None
 
                 """
 
@@ -117,10 +104,6 @@ class UnitTest(unittest.TestCase):
 
             Description:  Is a representation of a part of an email message
                 instance.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -136,7 +119,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the RQTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -150,7 +132,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for get_content_maintype method.
 
                 Arguments:
-                        None
 
                 """
 
@@ -163,7 +144,7 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for get_payload method.
 
                 Arguments:
-                        decode = Place holder for decode variable.
+                    (input) decode ->  Place holder for decode variable.
 
                 """
 
@@ -182,7 +163,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test returning multiple part messages.
 
         Arguments:
-            None
 
         """
 
@@ -205,7 +185,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test multipart and empty payload msg.
 
         Arguments:
-            None
 
         """
 
@@ -225,7 +204,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test when payload returns empty.
 
         Arguments:
-            None
 
         """
 
@@ -244,7 +222,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test multi-part message is returned.
 
         Arguments:
-            None
 
         """
 
@@ -262,7 +239,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test two part message is returned.
 
         Arguments:
-            None
 
         """
 
@@ -279,7 +255,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test single part message is returned.
 
         Arguments:
-            None
 
         """
 
@@ -296,7 +271,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test empty message is returned.
 
         Arguments:
-            None
 
         """
 
