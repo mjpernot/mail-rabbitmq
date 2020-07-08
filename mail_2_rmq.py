@@ -73,10 +73,10 @@ from __future__ import print_function
 import sys
 import os
 import datetime
-import email.Parser
-import re
 
 # Third-party
+import email.Parser
+import re
 
 # Local
 import lib.arg_parser as arg_parser
