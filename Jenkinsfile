@@ -15,6 +15,8 @@ pipeline {
                     git branch: "master", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/rabbitmq-lib.git"
                 }
                 sh """
+                virtualenv test_env
+                source test_env/bin/activate
                 pip2 install mock==2.0.0 --user
                 pip2 install pika==0.11.0 --user
                 test/unit/mail_2_rmq/help_message.py
@@ -30,6 +32,8 @@ pipeline {
                 test/unit/mail_2_rmq/filter_subject.py
                 test/unit/mail_2_rmq/run_program.py
                 test/unit/mail_2_rmq/main.py
+                deactivate
+                rm -rf test_env
                 """
             }
         }
@@ -51,32 +55,32 @@ pipeline {
             steps {
                 script {
                     server = Artifactory.server('Artifactory')
-                    server.credentialsId = 'svc-highpoint-artifactory'
+                    server.credentialsId = 'art-svc-highpoint-dev'
                     uploadSpec = """{
                         "files": [
                             {
                                 "pattern": "./*.py",
                                 "recursive": false,
                                 "excludePatterns": [],
-                                "target": "generic-local/highpoint/mail-rabbitmq/"
+                                "target": "pypi-proj-local/highpoint/mail-rabbitmq/"
                             },
                             {
                                 "pattern": "./*.txt",
                                 "recursive": false,
                                 "excludePatterns": [],
-                                "target": "generic-local/highpoint/mail-rabbitmq/"
+                                "target": "pypi-proj-local/highpoint/mail-rabbitmq/"
                             },
                             {
                                 "pattern": "./*.md",
                                 "recursive": false,
                                 "excludePatterns": [],
-                                "target": "generic-local/highpoint/mail-rabbitmq/"
+                                "target": "pypi-proj-local/highpoint/mail-rabbitmq/"
                             },
                             {
                                 "pattern": "*.TEMPLATE",
                                 "recursive": true,
                                 "excludePatterns": [],
-                                "target": "generic-local/highpoint/mail-rabbitmq/config/"
+                                "target": "pypi-proj-local/highpoint/mail-rabbitmq/config/"
                             }
                         ]
                     }"""
