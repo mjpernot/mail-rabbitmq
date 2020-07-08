@@ -317,13 +317,13 @@ def process_message(cfg, log, **kwargs):
     # Is email subject a valid queue.
     if subj in cfg.valid_queues:
         log.log_info("Valid email subject:  %s" % (subj))
-        rq = create_rq(cfg, subj, subj)
+        rmq = create_rq(cfg, subj, subj)
 
     else:
         log.log_warn("Invalid email subject:  %s" % (subj))
-        rq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
+        rmq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
 
-    connect_process(rq, log, cfg, msg)
+    connect_process(rmq, log, cfg, msg)
 
 
 def check_nonprocess(cfg, log, **kwargs):
