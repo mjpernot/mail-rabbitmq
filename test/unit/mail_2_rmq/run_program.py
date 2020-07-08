@@ -129,6 +129,7 @@ class LoggerTest(object):
 
         pass
 
+
 class ProgramLock(object):
 
     """Class:  ProgramLock
