@@ -8,16 +8,17 @@
 
     Usage:
         -M option
-        email_alias: "| /{directory_path}/mail_2_rmq.py -M -c file -d path"
+        email_alias: "| /PROJECT_PATH/mail_2_rmq.py -c file -d path -M"
 
         All other options.
-        mail_2_rmq.py [ -C ] [ -c file -d path ] [ -v | -h ]
+        mail_2_rmq.py -c file -d path [-C]
+            [ -v | -h ]
 
     Arguments:
-        -M => Receive email messages from email pipe and process.
-        -C => Check for non-processed messages in email archive directory.
         -c file => ISSE Guard configuration file.  Required argument.
         -d dir path => Directory path for option '-c'.  Required argument.
+        -M => Receive email messages from email pipe and process.
+        -C => Check for non-processed messages in email archive directory.
         -v => Display version of this program.
         -h => Help and usage message.
 
@@ -25,21 +26,18 @@
         NOTE 2:  -M and -C are XOR options.
 
     Notes:
-        The configuration file below is required to run this program.  Create
-        them and replace those variables (i.e. <VARIABLE>) with a value.
+        RabbitMQ configuration file format (config/rabbitmq.py.TEMPLATE).
 
-        Configuration file format (rabbitmq.py).  The configuration file format
-        is for the initial environment setup for the program.
             # RabbitMQ Configuration file
             # Classification (U)
             # Unclassified until filled.
-            user = "<USER>"
-            passwd = "<PASSWORD>"
-            host = "<HOSTNAME>"
+            user = "USER"
+            passwd = "PASSWORD"
+            host = "HOSTNAME"
             # RabbitMQ listening port, default is 5672.
             port = 5672
             # RabbitMQ Exchange name for each instance run.
-            exchange_name = "<EXCHANGE_NAME>"
+            exchange_name = "EXCHANGE_NAME"
             # Type of exchange:  direct, topic, fanout, headers
             exchange_type = "direct"
             # Is exchange durable: True|False
@@ -49,13 +47,13 @@
             # Do queues delete once message is processed:  True|False
             auto_delete = False
             # List of valid queues in RabbitMQ.
-            valid_queues = [ "QUEUE_NAME1", "QUEUE_NAME2", ... ]
+            valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2", ... ]
             # Name of error queue to handle incorrect email subjects.
-            err_queue = "<ERROR_QUEUE_NAME>"
+            err_queue = "ERROR_QUEUE_NAME"
             # Archive directory path for non-processed email files.
-            email_dir = "/<DIRECTORY_PATH>/email_dir"
+            email_dir = "DIRECTORY_PATH/email_dir"
             # Directory path and file name to the program log.
-            log_file = "/<DIRECTORY_PATH>/logs/mail_2_rmq.log"
+            log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
             # Filter out strings within the subject line.
             # Do not modify this setting unless you understand regular
             #   expressions.
@@ -87,7 +85,6 @@ import lib.gen_class as gen_class
 import rabbit_lib.rabbitmq_class as rabbitmq_class
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -99,8 +96,6 @@ def help_message(**kwargs):
         message when -h option is selected.
 
     Arguments:
-        (input) **kwargs:
-            None
 
     """
 
@@ -117,8 +112,6 @@ def load_cfg(cfg_name, cfg_dir, **kwargs):
     Arguments:
         (input) cfg_name -> Configuration file name.
         (input) cfg_dir -> Directory path to the configuration file.
-        (input) **kwargs:
-            None
         (output) cfg -> Configuration module handler.
         (output) status_flag -> True|False - successfully validate config file.
 
@@ -151,8 +144,6 @@ def create_rq(cfg, q_name, r_key, **kwargs):
         (input) cfg -> Configuration settings module for the program.
         (input) q_name -> Queue name in RabbitMQ.
         (input) r_key -> Routing key in RabbitMQ.
-        (input) **kwargs:
-            None
         (output) RabbitMQ instance.
 
     """
@@ -171,8 +162,6 @@ def parse_email(**kwargs):
         for RabbitMQ.
 
     Arguments:
-        (input) **kwargs:
-            None
         (output) Email in list format.
 
     """
@@ -193,8 +182,6 @@ def archive_email(rq, log, cfg, msg, **kwargs):
         (input) log -> Log class instance.
         (input) cfg -> Configuration settings module for the program.
         (input) msg -> Email message instance.
-        (input) **kwargs:
-            None
 
     """
 
@@ -215,8 +202,6 @@ def get_text(msg, **kwargs):
 
     Arguments:
         (input) msg -> Email message instance.
-        (input) **kwargs:
-            None
         (output) All texts in email joined together in a single string.
 
     """
@@ -244,8 +229,6 @@ def connect_process(rq, log, cfg, msg, **kwargs):
         (input) log -> Log class instance.
         (input) cfg -> Configuration settings module for the program.
         (input) msg -> Email message instance.
-        (input) **kwargs:
-            None
 
     """
 
@@ -286,8 +269,6 @@ def filter_subject(subj, cfg, **kwargs):
     Arguments:
         (input) subj -> Message subject line.
         (input) cfg -> Configuration settings module for the program.
-        (input) **kwargs:
-            None
         (output) subj -> Filtered message subject line.
 
     """
@@ -306,8 +287,6 @@ def camelize(data_str, **kwargs):
 
     Arguments:
         (input) data_str -> String to be camelcased.
-        (input) **kwargs:
-            None
         (output) CamelCased string.
 
     """
@@ -326,8 +305,6 @@ def process_message(cfg, log, **kwargs):
     Arguments:
         (input) cfg -> Configuration settings module for the program.
         (input) log -> Log class instance.
-        (input) **kwargs:
-            None
 
     """
 
@@ -359,8 +336,6 @@ def check_nonprocess(cfg, log, **kwargs):
     Arguments:
         (input) cfg -> Configuration settings module for the program.
         (input) log -> Log class instance.
-        (input) **kwargs:
-            None
 
     """
 
@@ -377,8 +352,6 @@ def run_program(args_array, func_dict, **kwargs):
     Arguments:
         (input) args_array -> Dict of command line options and values.
         (input) func_dict -> Dictionary list of functions and options.
-        (input) **kwargs:
-            None
 
     """
 

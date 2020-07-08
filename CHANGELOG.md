@@ -9,6 +9,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ### Changed
 - config/rabbitmq.py.TEMPLATE:  Changed format.
+- Documentation updates.
 
 
 ## [0.3.6] - 2019-05-08
