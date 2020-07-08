@@ -82,7 +82,6 @@ class UnitTest(unittest.TestCase):
                 self.subj_filter = ["\[.*\]"]
 
         self.cfg = CfgTest()
-
         self.subj_base = "package-admin"
 
     def test_no_filter(self):
@@ -109,6 +108,7 @@ class UnitTest(unittest.TestCase):
         """
 
         subj = "[FromSomePlace] package-admin"
+
         self.assertEqual(mail_2_rmq.filter_subject(subj, self.cfg),
                          self.subj_base)
 
@@ -123,6 +123,7 @@ class UnitTest(unittest.TestCase):
         """
 
         subj = "[FromSomePlace] package-admin "
+
         self.assertEqual(mail_2_rmq.filter_subject(subj, self.cfg),
                          self.subj_base)
 

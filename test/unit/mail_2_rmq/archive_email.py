@@ -105,7 +105,7 @@ class UnitTest(unittest.TestCase):
                 self.email_dir = "/dir/path"
 
         self.cfg = CfgTest()
-        self.RQ = RQTest()
+        self.rmq = RQTest()
         self.msg = "Email Message"
         self.dtg = "20190205-124217"
 
@@ -127,7 +127,7 @@ class UnitTest(unittest.TestCase):
         mock_date.strftime.return_value = self.dtg
         mock_file.return_value = True
 
-        self.assertFalse(mail_2_rmq.archive_email(self.RQ, mock_log, self.cfg,
+        self.assertFalse(mail_2_rmq.archive_email(self.rmq, mock_log, self.cfg,
                                                   self.msg))
 
 

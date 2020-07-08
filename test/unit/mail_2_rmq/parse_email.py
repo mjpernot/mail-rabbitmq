@@ -94,7 +94,7 @@ class UnitTest(unittest.TestCase):
                 return msg
 
         self.raw_msg = ["Raw", "Email", "Message"]
-        self.PT = ParserTest()
+        self.part = ParserTest()
         self.processed_msg = "RawEmailMessage"
 
     @mock.patch("mail_2_rmq.email.Parser")
@@ -109,7 +109,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_parse.Parser.return_value = self.PT
+        mock_parse.Parser.return_value = self.part
         mock_stdin.readlines.return_value = self.raw_msg
 
         self.assertEqual(mail_2_rmq.parse_email(), self.processed_msg)

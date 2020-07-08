@@ -92,7 +92,6 @@ class UnitTest(unittest.TestCase):
                 self.subj_filter = ["\[.*\]"]
 
         self.cfg = CfgTest()
-
         self.email_msg = {"subject": "Queue1"}
 
     @mock.patch("mail_2_rmq.filter_subject")

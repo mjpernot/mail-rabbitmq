@@ -84,7 +84,6 @@ class UnitTest(unittest.TestCase):
                 self.log_file = "Log_Directory"
 
         self.cfg = CfgTest()
-
         self.cfg_name = "Configuration_File"
         self.cfg_dir = "Configuration_Directory"
 

@@ -120,7 +120,6 @@ class UnitTest(unittest.TestCase):
                 self.email_dir = "EMAIL_DIRECTORY"
 
         self.cfg = CfgTest()
-
         self.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
         self.func_dict = {"-M": process_message, "-C": check_nonprocess}
 
