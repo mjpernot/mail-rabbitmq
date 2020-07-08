@@ -171,21 +171,21 @@ def parse_email(**kwargs):
     return parser.parsestr("".join(sys.stdin.readlines()))
 
 
-def archive_email(rq, log, cfg, msg, **kwargs):
+def archive_email(rmq, log, cfg, msg, **kwargs):
 
     """Function:  archive_email
 
     Description:  Save an email to file in an archive directory.
 
     Arguments:
-        (input) rq -> RabbitMQ class instance.
+        (input) rmq -> RabbitMQ class instance.
         (input) log -> Log class instance.
         (input) cfg -> Configuration settings module for the program.
         (input) msg -> Email message instance.
 
     """
 
-    e_file = rq.exchange + "-" + rq.queue_name + "-" \
+    e_file = rmq.exchange + "-" + rmq.queue_name + "-" \
         + datetime.datetime.strftime(datetime.datetime.now(),
                                      "%Y%m%d-%H%M%S") + ".email.txt"
     log.log_info("Saving email to: %s" %
