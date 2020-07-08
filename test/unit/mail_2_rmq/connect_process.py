@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/connect_process.py
 
     Arguments:
-        None
 
 """
 
@@ -25,15 +24,14 @@ else:
     import unittest
 
 # Third-party
-import mock
 import collections
+import mock
 
 # Local
 sys.path.append(os.getcwd())
 import mail_2_rmq
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -42,10 +40,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -67,7 +61,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -76,10 +69,6 @@ class UnitTest(unittest.TestCase):
             """Class:  RQTest
 
             Description:  Class which is a representation of a RQ class.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -96,7 +85,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the RQTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -115,7 +103,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for create_connection method.
 
                 Arguments:
-                        None
 
                 """
 
@@ -128,7 +115,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for publish_msg method.
 
                 Arguments:
-                        None
 
                 """
 
@@ -141,7 +127,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Change channel status.
 
                 Arguments:
-                        None
 
                 """
 
@@ -152,10 +137,6 @@ class UnitTest(unittest.TestCase):
             """Class:  CfgTest
 
             Description:  Class which is a representation of a cfg module.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -169,7 +150,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the CfgTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -190,7 +170,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test publish returns false.
 
         Arguments:
-            None
 
         """
 
@@ -212,7 +191,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test publish returns true.
 
         Arguments:
-            None
 
         """
 
@@ -231,7 +209,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test message sent to error queue.
 
         Arguments:
-            None
 
         """
 
@@ -252,7 +229,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test message sent to non-error queue.
 
         Arguments:
-            None
 
         """
 
@@ -271,7 +247,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with true/true status.
 
         Arguments:
-            None
 
         """
 
@@ -290,7 +265,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with false/false status.
 
         Arguments:
-            None
 
         """
 
@@ -311,7 +285,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with false/true status.
 
         Arguments:
-            None
 
         """
 
@@ -331,7 +304,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with true/false status.
 
         Arguments:
-            None
 
         """
 
