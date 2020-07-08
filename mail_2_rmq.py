@@ -355,6 +355,7 @@ def run_program(args_array, func_dict, **kwargs):
 
     """
 
+    cmdline = gen_libs.get_inst(sys)
     args_array = dict(args_array)
     func_dict = dict(func_dict)
     cfg, status_flag = load_cfg(args_array["-c"], args_array["-d"])
@@ -377,7 +378,7 @@ def run_program(args_array, func_dict, **kwargs):
 
         try:
             flavor_id = cfg.exchange_name
-            prog_lock = gen_class.ProgramLock(sys.argv, flavor_id)
+            prog_lock = gen_class.ProgramLock(cmdline.argv, flavor_id)
 
             # Intersect args_array & func_dict to find which functions to call.
             for opt in set(args_array.keys()) & set(func_dict.keys()):
