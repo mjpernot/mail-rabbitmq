@@ -148,10 +148,10 @@ def create_rq(cfg, q_name, r_key, **kwargs):
 
     """
 
-    return rabbitmq_class.RabbitMQPub(cfg.user, cfg.passwd, cfg.host, cfg.port,
-                                      cfg.exchange_name, cfg.exchange_type,
-                                      q_name, r_key, cfg.x_durable,
-                                      cfg.q_durable, cfg.auto_delete)
+    return rabbitmq_class.RabbitMQPub(
+        cfg.user, cfg.passwd, cfg.host, cfg.port, cfg.exchange_name,
+        cfg.exchange_type, q_name, r_key, cfg.x_durable, cfg.q_durable,
+        cfg.auto_delete)
 
 
 def parse_email(**kwargs):
@@ -166,9 +166,9 @@ def parse_email(**kwargs):
 
     """
 
-    p = email.Parser.Parser()
+    parser = email.Parser.Parser()
 
-    return p.parsestr("".join(sys.stdin.readlines()))
+    return parser.parsestr("".join(sys.stdin.readlines()))
 
 
 def archive_email(rq, log, cfg, msg, **kwargs):
