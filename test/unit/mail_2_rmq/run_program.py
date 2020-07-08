@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/run_program.py
 
     Arguments:
-        None
 
 """
 
@@ -33,7 +32,6 @@ import mail_2_rmq
 import lib.gen_libs as gen_libs
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -44,8 +42,8 @@ def process_message(cfg, log, **kwargs):
     Description:  This is a function stub for mail_2_rmq.process_message.
 
     Arguments:
-        cfg -> Stub argument holder.
-        log -> Stub argument holder.
+        (input) cfg -> Stub argument holder.
+        (input) log -> Stub argument holder.
 
     """
 
@@ -59,8 +57,8 @@ def check_nonprocess(cfg, log, **kwargs):
     Description:  This is a function stub for mail_2_rmq.check_nonprocess.
 
     Arguments:
-        cfg -> Stub argument holder.
-        log -> Stub argument holder.
+        (input) cfg -> Stub argument holder.
+        (input) log -> Stub argument holder.
 
     """
 
@@ -72,10 +70,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -94,7 +88,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -103,10 +96,6 @@ class UnitTest(unittest.TestCase):
             """Class:  CfgTest
 
             Description:  Class which is a representation of a cfg module.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -120,7 +109,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the CfgTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -146,7 +134,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with exception handler.
 
         Arguments:
-            None
 
         """
 
@@ -166,7 +153,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with all functions.
 
         Arguments:
-            None
 
         """
 
@@ -188,7 +174,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with true status and function.
 
         Arguments:
-            None
 
         """
 
@@ -209,7 +194,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with true status flag.
 
         Arguments:
-            None
 
         """
 
@@ -227,7 +211,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with false status flag.
 
         Arguments:
-            None
 
         """
 

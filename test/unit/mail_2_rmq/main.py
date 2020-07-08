@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/main.py
 
     Arguments:
-        None
 
 """
 
@@ -32,7 +31,6 @@ sys.path.append(os.getcwd())
 import mail_2_rmq
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -41,10 +39,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -66,7 +60,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -84,7 +77,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_dir_chk_crt returns False.
 
         Arguments:
-            None
 
         """
 
@@ -106,7 +98,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_dir_chk_crt returns True.
 
         Arguments:
-            None
 
         """
 
@@ -127,7 +118,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_xor_dict returns True.
 
         Arguments:
-            None
 
         """
 
@@ -148,7 +138,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_xor_dict returns False.
 
         Arguments:
-            None
 
         """
 
@@ -168,7 +157,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_require returns False.
 
         Arguments:
-            None
 
         """
 
@@ -188,7 +176,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with arg_require returns True.
 
         Arguments:
-            None
 
         """
 
@@ -207,7 +194,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with help_func returns False.
 
         Arguments:
-            None
 
         """
 
@@ -226,7 +212,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with help_func returns True.
 
         Arguments:
-            None
 
         """
 
