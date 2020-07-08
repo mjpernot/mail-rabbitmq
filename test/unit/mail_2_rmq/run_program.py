@@ -65,6 +65,97 @@ def check_nonprocess(cfg, log, **kwargs):
     pass
 
 
+class LoggerTest(object):
+
+    """Class:  LoggerTest
+
+    Description:  Class which is a representation of a Logger class.
+
+    Methods:
+        __init__ -> Initialize configuration environment.
+        log_info -> Stub holder for Logger.log_info method.
+        log_warn -> Stub holder for Logger.log_warn method.
+        log_close -> Stub holder for Logger.log_close method.
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Initialization instance of the LoggerTest class.
+
+        Arguments:
+
+        """
+
+        self.data = None
+
+    def log_info(self, data):
+
+        """Method:  log_info
+
+        Description:  Stub holder for Logger.log_info method.
+
+        Arguments:
+            (input) data -> Data string.
+
+        """
+
+        self.data = data
+
+    def log_warn(self, data):
+
+        """Method:  log_warn
+
+        Description:  Stub holder for Logger.log_warn method.
+
+        Arguments:
+            (input) data -> Data string.
+
+        """
+
+        self.data = data
+
+    def log_close(self):
+
+        """Method:  log_close
+
+        Description:  Stub holder for Logger.log_close method.
+
+        Arguments:
+
+        """
+
+        pass
+
+class ProgramLock(object):
+
+    """Class:  ProgramLock
+
+    Description:  Class stub holder for gen_class.ProgramLock class.
+
+    Methods:
+        __init__ -> Class initialization.
+
+    """
+
+    def __init__(self, cmdline, flavor):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+            (input) cmdline -> Argv command line.
+            (input) flavor -> Lock flavor ID.
+
+        """
+
+        self.cmdline = cmdline
+        self.flavor = flavor
+
+
 class UnitTest(unittest.TestCase):
 
     """Class:  UnitTest
@@ -120,6 +211,8 @@ class UnitTest(unittest.TestCase):
                 self.email_dir = "EMAIL_DIRECTORY"
 
         self.cfg = CfgTest()
+        self.log = LoggerTest()
+        self.proglock = ProgramLock(["cmdline"], "FlavorID")
         self.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
         self.func_dict = {"-M": process_message, "-C": check_nonprocess}
 
@@ -137,7 +230,7 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_cfg.return_value = (self.cfg, True)
-        mock_log.return_value = mail_2_rmq.gen_class.Logger
+        mock_log.return_value = self.log
         mock_lock.side_effect = mail_2_rmq.gen_class.SingleInstanceException
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
@@ -156,8 +249,8 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_cfg.return_value = (self.cfg, True)
-        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
-        mock_class.ProgramLock.return_value = mail_2_rmq.gen_class.ProgramLock
+        mock_class.Logger.return_value = self.log
+        mock_class.ProgramLock.return_value = self.proglock
 
         self.args_array["-M"] = True
         self.args_array["-C"] = True
@@ -177,8 +270,8 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_cfg.return_value = (self.cfg, True)
-        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
-        mock_class.ProgramLock.return_value = mail_2_rmq.gen_class.ProgramLock
+        mock_class.Logger.return_value = self.log
+        mock_class.ProgramLock.return_value = self.proglock
 
         self.args_array["-M"] = True
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
@@ -197,7 +290,7 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_cfg.return_value = (self.cfg, True)
-        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
+        mock_class.Logger.return_value = self.log
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
                                                 self.func_dict))
