@@ -8,6 +8,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - General Production Release
 
 ### Changed
+- connect_process:  Changed variable name to standard naming convention.
 - archive_email:  Changed variable name to standard naming convention.
 - parse_email:  Changed variable name to standard naming convention.
 - config/rabbitmq.py.TEMPLATE:  Changed format.

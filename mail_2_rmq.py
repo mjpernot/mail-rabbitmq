@@ -218,14 +218,14 @@ def get_text(msg, **kwargs):
     return "".join(msg_list)
 
 
-def connect_process(rq, log, cfg, msg, **kwargs):
+def connect_process(rmq, log, cfg, msg, **kwargs):
 
     """Function:  connect_process
 
     Description:  Connect to RabbitMQ and injest email message.
 
     Arguments:
-        (input) rq -> RabbitMQ class instance.
+        (input) rmq -> RabbitMQ class instance.
         (input) log -> Log class instance.
         (input) cfg -> Configuration settings module for the program.
         (input) msg -> Email message instance.
@@ -233,13 +233,13 @@ def connect_process(rq, log, cfg, msg, **kwargs):
     """
 
     log.log_info("Connection info: %s->%s" % (cfg.host, cfg.exchange_name))
-    connect_status, err_msg = rq.create_connection()
+    connect_status, err_msg = rmq.create_connection()
 
-    if connect_status and rq.channel.is_open:
+    if connect_status and rmq.channel.is_open:
         log.log_info("Connected to RabbitMQ mode")
 
         # Send entire email to error queue, otherwise just the body.
-        if rq.queue_name == cfg.err_queue:
+        if rmq.queue_name == cfg.err_queue:
             t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
                     + " Subject: " + msg["subject"] + " Body: " \
                     + get_text(msg)
@@ -247,17 +247,17 @@ def connect_process(rq, log, cfg, msg, **kwargs):
         else:
             t_msg = get_text(msg)
 
-        if rq.publish_msg(t_msg):
+        if rmq.publish_msg(t_msg):
             log.log_info("Message ingested into RabbitMQ")
 
         else:
             log.log_err("Failed to injest message into RabbitMQ")
-            archive_email(rq, log, cfg, msg)
+            archive_email(rmq, log, cfg, msg)
 
     else:
         log.log_err("Failed to connnect to RabbitMQ Node...")
         log.log_err("Message:  %s" % (err_msg))
-        archive_email(rq, log, cfg, msg)
+        archive_email(rmq, log, cfg, msg)
 
 
 def filter_subject(subj, cfg, **kwargs):
