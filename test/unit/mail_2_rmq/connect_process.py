@@ -158,7 +158,8 @@ class UnitTest(unittest.TestCase):
                 self.err_queue = "ERROR_QUEUE"
 
         self.cfg = CfgTest()
-        self.RQ = RQTest()
+        self.rmq = RQTest()
+        self.msg = "Email message"
 
     @mock.patch("mail_2_rmq.get_text")
     @mock.patch("mail_2_rmq.archive_email")
@@ -175,11 +176,11 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
         mock_archive.return_value = True
-        mock_msg.return_value = "Email message"
+        mock_msg.return_value = self.msg
 
-        self.RQ.pub_status = False
+        self.rmq.pub_status = False
 
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, mock_msg))
 
     @mock.patch("mail_2_rmq.get_text")
@@ -195,9 +196,9 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_log.return_value = True
-        mock_msg.return_value = "Email message"
+        mock_msg.return_value = self.msg
 
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, mock_msg))
 
     @mock.patch("mail_2_rmq.get_text")
@@ -213,11 +214,11 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_log.return_value = True
-        mock_msg.return_value = "Email message"
+        mock_msg.return_value = self.msg
 
-        self.RQ.queue_name = self.cfg.err_queue
+        self.rmq.queue_name = self.cfg.err_queue
 
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, mock_msg))
 
     @mock.patch("mail_2_rmq.get_text")
@@ -233,9 +234,9 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_log.return_value = True
-        mock_msg.return_value = "Email message"
+        mock_msg.return_value = self.msg
 
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, mock_msg))
 
     @mock.patch("mail_2_rmq.get_text")
@@ -251,9 +252,9 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_log.return_value = True
-        mock_msg.return_value = "Email message"
+        mock_msg.return_value = self.msg
 
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, mock_msg))
 
     @mock.patch("mail_2_rmq.archive_email")
@@ -271,9 +272,9 @@ class UnitTest(unittest.TestCase):
         mock_log.return_value = True
         mock_archive.return_value = True
 
-        self.RQ.conn_status = False
-        self.RQ.change_channel(False)
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.rmq.conn_status = False
+        self.rmq.change_channel(False)
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, ""))
 
     @mock.patch("mail_2_rmq.archive_email")
@@ -291,8 +292,8 @@ class UnitTest(unittest.TestCase):
         mock_log.return_value = True
         mock_archive.return_value = True
 
-        self.RQ.conn_status = False
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.rmq.conn_status = False
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, ""))
 
     @mock.patch("mail_2_rmq.archive_email")
@@ -310,8 +311,8 @@ class UnitTest(unittest.TestCase):
         mock_log.return_value = True
         mock_archive.return_value = True
 
-        self.RQ.change_channel(False)
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.rmq.change_channel(False)
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, ""))
 
 
