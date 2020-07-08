@@ -7,6 +7,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ## [1.0.0] - 2020-07-08
 - General Production Release
 
+### Fixed
+- main:  Fixed handling command line arguments from SonarQube scan finding.
+
 ### Changed
 - process_message:  Changed variable name to standard naming convention.
 - connect_process:  Changed variable name to standard naming convention.
