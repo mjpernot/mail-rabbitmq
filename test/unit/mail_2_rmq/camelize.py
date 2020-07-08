@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/camelize.py
 
     Arguments:
-        None
 
 """
 
@@ -32,7 +31,6 @@ sys.path.append(os.getcwd())
 import mail_2_rmq
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -41,10 +39,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -62,7 +56,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -70,7 +63,6 @@ class UnitTest(unittest.TestCase):
         self.data_str1 = "This is a test of camel case"
         self.data_str2 = "This is a test with numer1cal numb5r5 in it"
         self.data_str3 = "This string h@s special chars' and other things."
-
         self.data_test = ""
         self.data_test1 = "ThisIsATestOfCamelCase"
         self.data_test2 = "ThisIsATestWithNumer1calNumb5r5InIt"
@@ -83,7 +75,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with a string with special characters.
 
         Arguments:
-            None
 
         """
 
@@ -96,7 +87,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with a string with numerics in it.
 
         Arguments:
-            None
 
         """
 
@@ -109,7 +99,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with a string with only characters.
 
         Arguments:
-            None
 
         """
 
@@ -122,7 +111,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with an empty string.
 
         Arguments:
-            None
 
         """
 
