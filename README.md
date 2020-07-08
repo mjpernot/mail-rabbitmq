@@ -78,10 +78,10 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - passwd = "PASSWORD"
     - host = "HOSTNAME"
     - exchange_name = "EXCHANGE_NAME"
-    - valid_queues = ["QueueName1", "QueueName2"]
+    - valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2"]
     - err_queue = "ERROR_QUEUE_NAME"
-    - email_dir = "DIRECTORY_PATH/mail_rabbitmq/email_dir"
-    - log_file = "DIRECTORY_PATH/mail_rabbitmq/logs/mail_2_rmq.log"
+    - email_dir = "DIRECTORY_PATH/email_dir"
+    - log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 
 ```
 cd config
@@ -337,10 +337,10 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - passwd = "PASSWORD"
     - host = "HOSTNAME"
     - exchange_name = "EXCHANGE_NAME"
-    - valid_queues = ["QueueName1", "QueueName2"]
+    - valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2"]
     - err_queue = "ERROR_QUEUE_NAME"
-    - email_dir = "DIRECTORY_PATH/mail_rabbitmq/email_dir"
-    - log_file = "DIRECTORY_PATH/mail_rabbitmq/logs/mail_2_rmq.log"
+    - email_dir = "DIRECTORY_PATH/email_dir"
+    - log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 
 ```
 cd test/blackbox/mail_2_rmq/config
