@@ -102,7 +102,7 @@ class UnitTest(unittest.TestCase):
 
                 """
 
-                self.email_dir = "/tmp"
+                self.email_dir = "/dir/path"
 
         self.cfg = CfgTest()
         self.RQ = RQTest()
