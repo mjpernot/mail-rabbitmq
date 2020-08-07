@@ -35,7 +35,7 @@ import version
 __version__ = version.__version__
 
 
-def process_message(cfg, log, **kwargs):
+def process_message(cfg, log):
 
     """Function:  process_message
 
@@ -55,7 +55,7 @@ def process_message(cfg, log, **kwargs):
     return status
 
 
-def check_nonprocess(cfg, log, **kwargs):
+def check_nonprocess(cfg, log):
 
     """Function:  check_nonprocess
 
