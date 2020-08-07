@@ -47,7 +47,12 @@ def process_message(cfg, log, **kwargs):
 
     """
 
-    pass
+    status = True
+
+    if cfg and log:
+        status = True
+
+    return status
 
 
 def check_nonprocess(cfg, log, **kwargs):
@@ -62,7 +67,12 @@ def check_nonprocess(cfg, log, **kwargs):
 
     """
 
-    pass
+    status = True
+
+    if cfg and log:
+        status = True
+
+    return status
 
 
 class LoggerTest(object):
