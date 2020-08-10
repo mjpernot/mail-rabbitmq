@@ -8,13 +8,13 @@ host = "HOSTNAME"
 exchange_name = "EXCHANGE_NAME"
 # List of valid queues in RabbitMQ.
 # Note:  Queues names must be UpperCamelCase style.
-valid_queues = ["QueueName1", "QueueName2", ...]
+valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2", ...]
 # Name of error queue to handle incorrectly routed emails.
-err_queue = "<ERROR_QUEUE_NAME>"
+err_queue = "ERROR_QUEUE_NAME"
 # Archive directory path for non-processed email files.
-email_dir = "/DIRECTORY_PATH/mail_rabbitmq/email_dir"
+email_dir = "DIRECTORY_PATH/email_dir"
 # Directory path and file name to the program log.
-log_file = "/DIRECTORY_PATH/mail_rabbitmq/logs/mail_2_rmq.log"
+log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 # Filter out strings within the subject line.
 # Do not modify unless you understand regular expressions.
 subj_filter = ["\[.*\]"]

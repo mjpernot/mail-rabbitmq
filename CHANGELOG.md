@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [1.0.0] - 2020-07-08
+- General Production Release
+
+### Fixed
+- parse_email:  Fixed handling command line arguments from SonarQube scan finding.
+- run_program:  Fixed handling command line arguments from SonarQube scan finding.
+- main:  Fixed handling command line arguments from SonarQube scan finding.
+
+### Changed
+- create_rq:  Changed positional args for rabbitmq_class.RabbitMQPub to kwargs.
+- process_message:  Changed variable name to standard naming convention.
+- connect_process:  Changed variable name to standard naming convention.
+- archive_email:  Changed variable name to standard naming convention.
+- parse_email:  Changed variable name to standard naming convention.
+- config/rabbitmq.py.TEMPLATE:  Changed format.
+- Documentation updates.
+
+
 ## [0.3.6] - 2019-05-08
 ### Fixed
 - run_program:  Fixed problem with mutable default arguments issue.

@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/run_program.py
 
     Arguments:
-        None
 
 """
 
@@ -33,38 +32,139 @@ import mail_2_rmq
 import lib.gen_libs as gen_libs
 import version
 
-# Version
 __version__ = version.__version__
 
 
-def process_message(cfg, log, **kwargs):
+def process_message(cfg, log):
 
     """Function:  process_message
 
     Description:  This is a function stub for mail_2_rmq.process_message.
 
     Arguments:
-        cfg -> Stub argument holder.
-        log -> Stub argument holder.
+        (input) cfg -> Stub argument holder.
+        (input) log -> Stub argument holder.
 
     """
 
-    pass
+    status = True
+
+    if cfg and log:
+        status = True
+
+    return status
 
 
-def check_nonprocess(cfg, log, **kwargs):
+def check_nonprocess(cfg, log):
 
     """Function:  check_nonprocess
 
     Description:  This is a function stub for mail_2_rmq.check_nonprocess.
 
     Arguments:
-        cfg -> Stub argument holder.
-        log -> Stub argument holder.
+        (input) cfg -> Stub argument holder.
+        (input) log -> Stub argument holder.
 
     """
 
-    pass
+    status = True
+
+    if cfg and log:
+        status = True
+
+    return status
+
+
+class LoggerTest(object):
+
+    """Class:  LoggerTest
+
+    Description:  Class which is a representation of a Logger class.
+
+    Methods:
+        __init__ -> Initialize configuration environment.
+        log_info -> Stub holder for Logger.log_info method.
+        log_warn -> Stub holder for Logger.log_warn method.
+        log_close -> Stub holder for Logger.log_close method.
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Initialization instance of the LoggerTest class.
+
+        Arguments:
+
+        """
+
+        self.data = None
+
+    def log_info(self, data):
+
+        """Method:  log_info
+
+        Description:  Stub holder for Logger.log_info method.
+
+        Arguments:
+            (input) data -> Data string.
+
+        """
+
+        self.data = data
+
+    def log_warn(self, data):
+
+        """Method:  log_warn
+
+        Description:  Stub holder for Logger.log_warn method.
+
+        Arguments:
+            (input) data -> Data string.
+
+        """
+
+        self.data = data
+
+    def log_close(self):
+
+        """Method:  log_close
+
+        Description:  Stub holder for Logger.log_close method.
+
+        Arguments:
+
+        """
+
+        pass
+
+
+class ProgramLock(object):
+
+    """Class:  ProgramLock
+
+    Description:  Class stub holder for gen_class.ProgramLock class.
+
+    Methods:
+        __init__ -> Class initialization.
+
+    """
+
+    def __init__(self, cmdline, flavor):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+            (input) cmdline -> Argv command line.
+            (input) flavor -> Lock flavor ID.
+
+        """
+
+        self.cmdline = cmdline
+        self.flavor = flavor
 
 
 class UnitTest(unittest.TestCase):
@@ -72,10 +172,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -94,7 +190,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -103,10 +198,6 @@ class UnitTest(unittest.TestCase):
             """Class:  CfgTest
 
             Description:  Class which is a representation of a cfg module.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -120,7 +211,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the CfgTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -132,7 +222,8 @@ class UnitTest(unittest.TestCase):
                 self.email_dir = "EMAIL_DIRECTORY"
 
         self.cfg = CfgTest()
-
+        self.log = LoggerTest()
+        self.proglock = ProgramLock(["cmdline"], "FlavorID")
         self.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
         self.func_dict = {"-M": process_message, "-C": check_nonprocess}
 
@@ -146,12 +237,11 @@ class UnitTest(unittest.TestCase):
         Description:  Test with exception handler.
 
         Arguments:
-            None
 
         """
 
         mock_cfg.return_value = (self.cfg, True)
-        mock_log.return_value = mail_2_rmq.gen_class.Logger
+        mock_log.return_value = self.log
         mock_lock.side_effect = mail_2_rmq.gen_class.SingleInstanceException
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
@@ -166,13 +256,12 @@ class UnitTest(unittest.TestCase):
         Description:  Test with all functions.
 
         Arguments:
-            None
 
         """
 
         mock_cfg.return_value = (self.cfg, True)
-        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
-        mock_class.ProgramLock.return_value = mail_2_rmq.gen_class.ProgramLock
+        mock_class.Logger.return_value = self.log
+        mock_class.ProgramLock.return_value = self.proglock
 
         self.args_array["-M"] = True
         self.args_array["-C"] = True
@@ -188,13 +277,12 @@ class UnitTest(unittest.TestCase):
         Description:  Test with true status and function.
 
         Arguments:
-            None
 
         """
 
         mock_cfg.return_value = (self.cfg, True)
-        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
-        mock_class.ProgramLock.return_value = mail_2_rmq.gen_class.ProgramLock
+        mock_class.Logger.return_value = self.log
+        mock_class.ProgramLock.return_value = self.proglock
 
         self.args_array["-M"] = True
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
@@ -209,12 +297,11 @@ class UnitTest(unittest.TestCase):
         Description:  Test with true status flag.
 
         Arguments:
-            None
 
         """
 
         mock_cfg.return_value = (self.cfg, True)
-        mock_class.Logger.return_value = mail_2_rmq.gen_class.Logger
+        mock_class.Logger.return_value = self.log
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
                                                 self.func_dict))
@@ -227,7 +314,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test with false status flag.
 
         Arguments:
-            None
 
         """
 

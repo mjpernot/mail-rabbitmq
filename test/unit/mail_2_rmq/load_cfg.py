@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/load_cfg.py
 
     Arguments:
-        None
 
 """
 
@@ -32,7 +31,6 @@ sys.path.append(os.getcwd())
 import mail_2_rmq
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -41,10 +39,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -62,7 +56,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -71,10 +64,6 @@ class UnitTest(unittest.TestCase):
             """Class:  CfgTest
 
             Description:  Class which is a representation of a cfg module.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -88,7 +77,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the CfgTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -96,7 +84,6 @@ class UnitTest(unittest.TestCase):
                 self.log_file = "Log_Directory"
 
         self.cfg = CfgTest()
-
         self.cfg_name = "Configuration_File"
         self.cfg_dir = "Configuration_Directory"
 
@@ -108,7 +95,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test False and False statuses.
 
         Arguments:
-            None
 
         """
 
@@ -126,7 +112,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test False and True statuses.
 
         Arguments:
-            None
 
         """
 
@@ -144,7 +129,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test True and False statuses.
 
         Arguments:
-            None
 
         """
 
@@ -162,7 +146,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test True and True statuses.
 
         Arguments:
-            None
 
         """
 
