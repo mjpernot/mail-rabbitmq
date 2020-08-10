@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/archive_email.py
 
     Arguments:
-        None
 
 """
 
@@ -32,7 +31,6 @@ sys.path.append(os.getcwd())
 import mail_2_rmq
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -41,10 +39,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -60,7 +54,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -69,10 +62,6 @@ class UnitTest(unittest.TestCase):
             """Class:  RQTest
 
             Description:  Class which is a representation of a RQ class.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -86,7 +75,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the RQTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -98,10 +86,6 @@ class UnitTest(unittest.TestCase):
             """Class:  CfgTest
 
             Description:  Class which is a representation of a cfg module.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -115,15 +99,13 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the CfgTest class.
 
                 Arguments:
-                        None
 
                 """
 
-                self.email_dir = "/tmp"
+                self.email_dir = "/dir/path"
 
         self.cfg = CfgTest()
-        self.RQ = RQTest()
-
+        self.rmq = RQTest()
         self.msg = "Email Message"
         self.dtg = "20190205-124217"
 
@@ -137,7 +119,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test archiving an email.
 
         Arguments:
-            None
 
         """
 
@@ -146,7 +127,7 @@ class UnitTest(unittest.TestCase):
         mock_date.strftime.return_value = self.dtg
         mock_file.return_value = True
 
-        self.assertFalse(mail_2_rmq.archive_email(self.RQ, mock_log, self.cfg,
+        self.assertFalse(mail_2_rmq.archive_email(self.rmq, mock_log, self.cfg,
                                                   self.msg))
 
 

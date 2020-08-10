@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/check_nonprocess.py
 
     Arguments:
-        None
 
 """
 
@@ -25,7 +24,6 @@ else:
     import unittest
 
 # Third-party
-import mock
 
 # Local
 sys.path.append(os.getcwd())
@@ -33,7 +31,6 @@ import mail_2_rmq
 import lib.gen_libs as gen_libs
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -42,10 +39,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -60,7 +53,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -73,7 +65,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test processing of non-processed emails.
 
         Arguments:
-            None
 
         """
 

@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/connect_process.py
 
     Arguments:
-        None
 
 """
 
@@ -25,15 +24,14 @@ else:
     import unittest
 
 # Third-party
-import mock
 import collections
+import mock
 
 # Local
 sys.path.append(os.getcwd())
 import mail_2_rmq
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -42,10 +40,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -67,7 +61,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -76,10 +69,6 @@ class UnitTest(unittest.TestCase):
             """Class:  RQTest
 
             Description:  Class which is a representation of a RQ class.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -96,7 +85,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the RQTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -107,6 +95,7 @@ class UnitTest(unittest.TestCase):
                 self.conn_status = True
                 self.err_msg = ""
                 self.pub_status = True
+                self.msg = None
 
             def create_connection(self):
 
@@ -115,7 +104,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for create_connection method.
 
                 Arguments:
-                        None
 
                 """
 
@@ -128,9 +116,10 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for publish_msg method.
 
                 Arguments:
-                        None
 
                 """
+
+                self.msg = msg
 
                 return self.pub_status
 
@@ -141,7 +130,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Change channel status.
 
                 Arguments:
-                        None
 
                 """
 
@@ -152,10 +140,6 @@ class UnitTest(unittest.TestCase):
             """Class:  CfgTest
 
             Description:  Class which is a representation of a cfg module.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -169,7 +153,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the CfgTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -178,7 +161,8 @@ class UnitTest(unittest.TestCase):
                 self.err_queue = "ERROR_QUEUE"
 
         self.cfg = CfgTest()
-        self.RQ = RQTest()
+        self.rmq = RQTest()
+        self.msg = "Email message"
 
     @mock.patch("mail_2_rmq.get_text")
     @mock.patch("mail_2_rmq.archive_email")
@@ -190,17 +174,16 @@ class UnitTest(unittest.TestCase):
         Description:  Test publish returns false.
 
         Arguments:
-            None
 
         """
 
         mock_log.return_value = True
         mock_archive.return_value = True
-        mock_msg.return_value = "Email message"
+        mock_msg.return_value = self.msg
 
-        self.RQ.pub_status = False
+        self.rmq.pub_status = False
 
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, mock_msg))
 
     @mock.patch("mail_2_rmq.get_text")
@@ -212,14 +195,13 @@ class UnitTest(unittest.TestCase):
         Description:  Test publish returns true.
 
         Arguments:
-            None
 
         """
 
         mock_log.return_value = True
-        mock_msg.return_value = "Email message"
+        mock_msg.return_value = self.msg
 
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, mock_msg))
 
     @mock.patch("mail_2_rmq.get_text")
@@ -231,16 +213,15 @@ class UnitTest(unittest.TestCase):
         Description:  Test message sent to error queue.
 
         Arguments:
-            None
 
         """
 
         mock_log.return_value = True
-        mock_msg.return_value = "Email message"
+        mock_msg.return_value = self.msg
 
-        self.RQ.queue_name = self.cfg.err_queue
+        self.rmq.queue_name = self.cfg.err_queue
 
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, mock_msg))
 
     @mock.patch("mail_2_rmq.get_text")
@@ -252,14 +233,13 @@ class UnitTest(unittest.TestCase):
         Description:  Test message sent to non-error queue.
 
         Arguments:
-            None
 
         """
 
         mock_log.return_value = True
-        mock_msg.return_value = "Email message"
+        mock_msg.return_value = self.msg
 
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, mock_msg))
 
     @mock.patch("mail_2_rmq.get_text")
@@ -271,14 +251,13 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with true/true status.
 
         Arguments:
-            None
 
         """
 
         mock_log.return_value = True
-        mock_msg.return_value = "Email message"
+        mock_msg.return_value = self.msg
 
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, mock_msg))
 
     @mock.patch("mail_2_rmq.archive_email")
@@ -290,16 +269,15 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with false/false status.
 
         Arguments:
-            None
 
         """
 
         mock_log.return_value = True
         mock_archive.return_value = True
 
-        self.RQ.conn_status = False
-        self.RQ.change_channel(False)
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.rmq.conn_status = False
+        self.rmq.change_channel(False)
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, ""))
 
     @mock.patch("mail_2_rmq.archive_email")
@@ -311,15 +289,14 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with false/true status.
 
         Arguments:
-            None
 
         """
 
         mock_log.return_value = True
         mock_archive.return_value = True
 
-        self.RQ.conn_status = False
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.rmq.conn_status = False
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, ""))
 
     @mock.patch("mail_2_rmq.archive_email")
@@ -331,15 +308,14 @@ class UnitTest(unittest.TestCase):
         Description:  Test connecting to RabbitMQ with true/false status.
 
         Arguments:
-            None
 
         """
 
         mock_log.return_value = True
         mock_archive.return_value = True
 
-        self.RQ.change_channel(False)
-        self.assertFalse(mail_2_rmq.connect_process(self.RQ, mock_log,
+        self.rmq.change_channel(False)
+        self.assertFalse(mail_2_rmq.connect_process(self.rmq, mock_log,
                                                     self.cfg, ""))
 
 

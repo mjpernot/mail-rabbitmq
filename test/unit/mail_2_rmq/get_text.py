@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/get_text.py
 
     Arguments:
-        None
 
 """
 
@@ -25,14 +24,12 @@ else:
     import unittest
 
 # Third-party
-import mock
 
 # Local
 sys.path.append(os.getcwd())
 import mail_2_rmq
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -41,10 +38,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -65,7 +58,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -74,10 +66,6 @@ class UnitTest(unittest.TestCase):
             """Class:  MsgTest
 
             Description:  Is a representation of a email message instance.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -92,7 +80,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the RQTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -105,7 +92,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for walk method.
 
                 Arguments:
-                        None
 
                 """
 
@@ -117,10 +103,6 @@ class UnitTest(unittest.TestCase):
 
             Description:  Is a representation of a part of an email message
                 instance.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -136,12 +118,12 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the RQTest class.
 
                 Arguments:
-                        None
 
                 """
 
                 self.type = ""
                 self.payload = ""
+                self.decode = None
 
             def get_content_maintype(self):
 
@@ -150,7 +132,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for get_content_maintype method.
 
                 Arguments:
-                        None
 
                 """
 
@@ -163,17 +144,20 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for get_payload method.
 
                 Arguments:
-                        decode = Place holder for decode variable.
+                    (input) decode ->  Place holder for decode variable.
 
                 """
 
+                self.decode = decode
+
                 return self.payload
 
-        self.MSG = MsgTest()
-        self.PART_MSG = PartMsgTest()
-        self.PART_MSG2 = PartMsgTest()
-        self.PART_MSG3 = PartMsgTest()
-        self.PART_MSG4 = PartMsgTest()
+        self.msg = MsgTest()
+        self.part_msg = PartMsgTest()
+        self.part_msg2 = PartMsgTest()
+        self.part_msg3 = PartMsgTest()
+        self.part_msg4 = PartMsgTest()
+        self.email_msg = "Email Message"
 
     def test_multiple_part_msg(self):
 
@@ -182,21 +166,20 @@ class UnitTest(unittest.TestCase):
         Description:  Test returning multiple part messages.
 
         Arguments:
-            None
 
         """
 
-        self.MSG.walk_list = [self.PART_MSG, self.PART_MSG2, self.PART_MSG3,
-                              self.PART_MSG4]
-        self.PART_MSG.type = "multipart"
-        self.PART_MSG2.type = "single"
-        self.PART_MSG2.payload = "Email"
-        self.PART_MSG3.type = "single"
-        self.PART_MSG3.payload = ""
-        self.PART_MSG4.type = "single"
-        self.PART_MSG4.payload = " Message"
+        self.msg.walk_list = [self.part_msg, self.part_msg2, self.part_msg3,
+                              self.part_msg4]
+        self.part_msg.type = "multipart"
+        self.part_msg2.type = "single"
+        self.part_msg2.payload = "Email"
+        self.part_msg3.type = "single"
+        self.part_msg3.payload = ""
+        self.part_msg4.type = "single"
+        self.part_msg4.payload = " Message"
 
-        self.assertEqual(mail_2_rmq.get_text(self.MSG), "Email Message")
+        self.assertEqual(mail_2_rmq.get_text(self.msg), self.email_msg)
 
     def test_multipart_empty_payload_msg(self):
 
@@ -205,18 +188,17 @@ class UnitTest(unittest.TestCase):
         Description:  Test multipart and empty payload msg.
 
         Arguments:
-            None
 
         """
 
-        self.MSG.walk_list = [self.PART_MSG, self.PART_MSG2, self.PART_MSG3]
-        self.PART_MSG.type = "multipart"
-        self.PART_MSG2.type = "single"
-        self.PART_MSG2.payload = ""
-        self.PART_MSG3.type = "single"
-        self.PART_MSG3.payload = "Email"
+        self.msg.walk_list = [self.part_msg, self.part_msg2, self.part_msg3]
+        self.part_msg.type = "multipart"
+        self.part_msg2.type = "single"
+        self.part_msg2.payload = ""
+        self.part_msg3.type = "single"
+        self.part_msg3.payload = "Email"
 
-        self.assertEqual(mail_2_rmq.get_text(self.MSG), "Email")
+        self.assertEqual(mail_2_rmq.get_text(self.msg), "Email")
 
     def test_empty_payload_msg(self):
 
@@ -225,17 +207,16 @@ class UnitTest(unittest.TestCase):
         Description:  Test when payload returns empty.
 
         Arguments:
-            None
 
         """
 
-        self.MSG.walk_list = [self.PART_MSG, self.PART_MSG2]
-        self.PART_MSG.type = "single"
-        self.PART_MSG.payload = ""
-        self.PART_MSG2.type = "single"
-        self.PART_MSG2.payload = "Email"
+        self.msg.walk_list = [self.part_msg, self.part_msg2]
+        self.part_msg.type = "single"
+        self.part_msg.payload = ""
+        self.part_msg2.type = "single"
+        self.part_msg2.payload = "Email"
 
-        self.assertEqual(mail_2_rmq.get_text(self.MSG), "Email")
+        self.assertEqual(mail_2_rmq.get_text(self.msg), "Email")
 
     def test_multi_part_msg(self):
 
@@ -244,16 +225,15 @@ class UnitTest(unittest.TestCase):
         Description:  Test multi-part message is returned.
 
         Arguments:
-            None
 
         """
 
-        self.MSG.walk_list = [self.PART_MSG, self.PART_MSG2]
-        self.PART_MSG.type = "multipart"
-        self.PART_MSG2.type = "single"
-        self.PART_MSG2.payload = "Email"
+        self.msg.walk_list = [self.part_msg, self.part_msg2]
+        self.part_msg.type = "multipart"
+        self.part_msg2.type = "single"
+        self.part_msg2.payload = "Email"
 
-        self.assertEqual(mail_2_rmq.get_text(self.MSG), "Email")
+        self.assertEqual(mail_2_rmq.get_text(self.msg), "Email")
 
     def test_two_part_msg(self):
 
@@ -262,15 +242,14 @@ class UnitTest(unittest.TestCase):
         Description:  Test two part message is returned.
 
         Arguments:
-            None
 
         """
 
-        self.MSG.walk_list = [self.PART_MSG, self.PART_MSG]
-        self.PART_MSG.type = "single"
-        self.PART_MSG.payload = "Email"
+        self.msg.walk_list = [self.part_msg, self.part_msg]
+        self.part_msg.type = "single"
+        self.part_msg.payload = "Email"
 
-        self.assertEqual(mail_2_rmq.get_text(self.MSG), "EmailEmail")
+        self.assertEqual(mail_2_rmq.get_text(self.msg), "EmailEmail")
 
     def test_single_part_msg(self):
 
@@ -279,15 +258,14 @@ class UnitTest(unittest.TestCase):
         Description:  Test single part message is returned.
 
         Arguments:
-            None
 
         """
 
-        self.MSG.walk_list = [self.PART_MSG]
-        self.PART_MSG.type = "single"
-        self.PART_MSG.payload = "Email Message"
+        self.msg.walk_list = [self.part_msg]
+        self.part_msg.type = "single"
+        self.part_msg.payload = self.email_msg
 
-        self.assertEqual(mail_2_rmq.get_text(self.MSG), "Email Message")
+        self.assertEqual(mail_2_rmq.get_text(self.msg), self.email_msg)
 
     def test_empty_msg(self):
 
@@ -296,11 +274,10 @@ class UnitTest(unittest.TestCase):
         Description:  Test empty message is returned.
 
         Arguments:
-            None
 
         """
 
-        self.assertEqual(mail_2_rmq.get_text(self.MSG), "")
+        self.assertEqual(mail_2_rmq.get_text(self.msg), "")
 
 
 if __name__ == "__main__":

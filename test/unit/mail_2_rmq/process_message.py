@@ -9,7 +9,6 @@
         test/unit/mail_2_rmq/process_message.py
 
     Arguments:
-        None
 
 """
 
@@ -32,7 +31,6 @@ sys.path.append(os.getcwd())
 import mail_2_rmq
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -41,10 +39,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:  None
 
     Methods:
         setUp -> Unit testing initilization.
@@ -60,7 +54,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
@@ -69,10 +62,6 @@ class UnitTest(unittest.TestCase):
             """Class:  CfgTest
 
             Description:  Class which is a representation of a cfg module.
-
-            Super-Class:  object
-
-            Sub-Classes:  None
 
             Methods:
                 __init__ -> Initialize configuration environment.
@@ -86,7 +75,6 @@ class UnitTest(unittest.TestCase):
                 Description:  Initialization instance of the CfgTest class.
 
                 Arguments:
-                        None
 
                 """
 
@@ -104,7 +92,6 @@ class UnitTest(unittest.TestCase):
                 self.subj_filter = ["\[.*\]"]
 
         self.cfg = CfgTest()
-
         self.email_msg = {"subject": "Queue1"}
 
     @mock.patch("mail_2_rmq.filter_subject")
@@ -120,7 +107,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test email with invalid subject.
 
         Arguments:
-            None
 
         """
 
@@ -146,7 +132,6 @@ class UnitTest(unittest.TestCase):
         Description:  Test email with valid subject.
 
         Arguments:
-            None
 
         """
 
