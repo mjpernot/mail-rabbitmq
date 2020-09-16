@@ -5,6 +5,8 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ### [1.1.0] - 2020-09-16
+### Changed
+- config/rabbitmq.py.TEMPLATE:  Changed entry in configuration file.
 
 
 ## [1.0.0] - 2020-07-08

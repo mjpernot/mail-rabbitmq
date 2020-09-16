@@ -2,7 +2,7 @@
 # Classification (U)
 # Unclassified until filled.
 user = "USER"
-passwd = "PASSWORD"
+japd = "PASSWORD"
 host = "HOSTNAME"
 # RabbitMQ Exchange name for each instance run.
 exchange_name = "EXCHANGE_NAME"
