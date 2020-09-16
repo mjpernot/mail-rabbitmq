@@ -80,6 +80,7 @@ import datetime
 # Third-party
 import email.Parser
 import re
+import base64
 
 # Local
 import lib.arg_parser as arg_parser
@@ -330,6 +331,7 @@ def process_attach(msg, log, cfg, **kwargs):
                 log.log_info("Attachment detected: %s" % (item.get_filename()))
                 open(tname, "wb").write(item.get_payload(decode=True))
                 fname = tname + ".encoded"
+                base64.encode(open(tname, 'rb'), open(fname, 'wb'))
                 err_flag, err_msg = gen_libs.rm_file(tname)
 
                 if err_flag:
