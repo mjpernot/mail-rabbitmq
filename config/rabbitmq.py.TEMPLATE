@@ -8,7 +8,7 @@ host = "HOSTNAME"
 exchange_name = "EXCHANGE_NAME"
 # List of valid queues in RabbitMQ.
 # Note:  Queues names must be UpperCamelCase style.
-valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2", ...]
+valid_queues = ["QueueName1", "QueueName2", ...]
 # Name of error queue to handle incorrectly routed emails.
 err_queue = "ERROR_QUEUE_NAME"
 # Archive directory path for non-processed email files.
