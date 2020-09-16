@@ -300,6 +300,41 @@ def camelize(data_str, **kwargs):
                    if item.isalnum())
 
 
+def process_attach(msg, log, cfg, **kwargs):
+
+    """Function:  process_attach
+
+    Description:  Locate, extract, and process attachment from email based on
+        specified attachment types.
+
+    Arguments:
+        (input) msg -> Email message instance.
+        (input) log -> Log class instance.
+        (input) cfg -> Configuration settings module for the program.
+        (output) fname -> Name of attachment encoded file.
+
+    """
+
+    fname = None
+    log.log_info("Locating attachments...")
+
+    if msg.is_multipart():
+        for item in msg.walk():
+            if item.get_content_type() in cfg.attach_types:
+                tname = os.path.join(cfg.tmp_dir, item.get_filename())
+                log.log_info("Attachment detected: %s" % (item.get_filename()))
+                open(tname, "wb").write(item.get_payload(decode=True))
+                fname = tname + ".encoded"
+                err_flag, err_msg = gen_libs.rm_file(tname)
+
+                if err_flag:
+                    log.log_warn("process_attach:  Message: %s" % (err_msg))
+
+                break
+
+    return fname
+
+    
 def process_message(cfg, log, **kwargs):
 
     """Function:  process_message

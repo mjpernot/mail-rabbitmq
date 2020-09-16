@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ### [1.1.0] - 2020-09-16
 ### Added
+- process_attach:  Locate, extract, and process attachment from email based on specified attachment types.
 - config/rabbitmq.py.TEMPLATE:  Added tmp_dir and attach_types entries.
 
 ### Changed
