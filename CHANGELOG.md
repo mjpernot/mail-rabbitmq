@@ -5,6 +5,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ### [1.1.0] - 2020-09-16
+### Added
+- config/rabbitmq.py.TEMPLATE:  Added tmp_dir and attach_types entries.
+
 ### Changed
 - config/rabbitmq.py.TEMPLATE:  Changed entry in configuration file.
 

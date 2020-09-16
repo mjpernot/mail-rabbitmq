@@ -15,9 +15,14 @@ err_queue = "ERROR_QUEUE_NAME"
 email_dir = "DIRECTORY_PATH/email_dir"
 # Directory path and file name to the program log.
 log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
+# Directory path to temporary staging directory.
+tmp_dir = "DIRECTORY_PATH/tmp"
+# Do not modify settings below unless you know what you are doing.
 # Filter out strings within the subject line.
 # Do not modify unless you understand regular expressions.
 subj_filter = ["\[.*\]"]
+# Types of attachments to extract from email.
+attach_types = ["application/pdf"]
 # RabbitMQ listening port, default is 5672.
 port = 5672
 # Type of exchange:  direct, topic, fanout, headers
