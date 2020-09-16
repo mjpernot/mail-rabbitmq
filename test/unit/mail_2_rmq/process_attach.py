@@ -199,6 +199,7 @@ class UnitTest(unittest.TestCase):
     Methods:
         setUp -> Unit testing initilization.
         test_one_valid_attach -> Test email with valid subject.
+        tearDown -> Clean up of unit testing.
 
     """
 
@@ -232,6 +233,19 @@ class UnitTest(unittest.TestCase):
         fname = mail_2_rmq.process_attach(self.msg, mock_log, self.cfg)
 
         self.assertEqual(fname, self.results)
+
+    def tearDown(self):
+
+        """Function:  tearDown
+
+        Description:  Clean up of unit testing.
+
+        Arguments:
+
+        """
+
+        if os.path.isfile(self.results):
+            os.remove(self.results)
 
 
 if __name__ == "__main__":
