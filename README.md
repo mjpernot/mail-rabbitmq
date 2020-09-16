@@ -344,7 +344,7 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
 
 ```
 cd test/blackbox/mail_2_rmq/config
-cp ../../../config/rabbitmq.py.TEMPLATE rabbitmq.py
+cp ../../../../config/rabbitmq.py.TEMPLATE rabbitmq.py
 vim rabbitmq.py
 chmod 644 rabbitmq.py
 ```
