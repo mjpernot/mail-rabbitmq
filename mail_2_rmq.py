@@ -322,7 +322,9 @@ def process_attach(msg, log, cfg, **kwargs):
     log.log_info("Locating attachments...")
 
     if msg.is_multipart():
+
         for item in msg.walk():
+
             if item.get_content_type() in cfg.attach_types:
                 tname = os.path.join(cfg.tmp_dir, item.get_filename())
                 log.log_info("Attachment detected: %s" % (item.get_filename()))
