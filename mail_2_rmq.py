@@ -139,6 +139,12 @@ def load_cfg(cfg_name, cfg_dir, **kwargs):
     if not status:
         status_flag = status
 
+    status, err_msg = gen_libs.chk_crt_dir(os.path.dirname(cfg.tmp_dir),
+                                           write=True, read=True)
+
+    if not status:
+        status_flag = status
+
     return cfg, status_flag
 
 
