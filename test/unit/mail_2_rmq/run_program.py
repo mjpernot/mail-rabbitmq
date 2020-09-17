@@ -167,6 +167,35 @@ class ProgramLock(object):
         self.flavor = flavor
 
 
+class CfgTest(object):
+
+    """Class:  CfgTest
+
+    Description:  Class which is a representation of a cfg module.
+
+    Methods:
+        __init__ -> Initialize configuration environment.
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Initialization instance of the CfgTest class.
+
+        Arguments:
+
+        """
+
+        self.log_file = "LOG_FILE"
+        self.host = "HOSTNAME"
+        self.exchange_name = "EXCHANGE_NAME"
+        self.exchange_type = "EXCAHNGE_TYPE"
+        self.valid_queues = ["QUEUE1", "QUEUE2"]
+        self.email_dir = "EMAIL_DIRECTORY"
+
+
 class UnitTest(unittest.TestCase):
 
     """Class:  UnitTest
@@ -175,6 +204,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Unit testing initilization.
+        test_flavor_id -> Test with -y option passed.
         test_exception_handler -> Test with exception handler.
         test_all_func -> Test with all functions.
         test_true_func -> Test with true status and function.
@@ -193,39 +223,31 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        class CfgTest(object):
-
-            """Class:  CfgTest
-
-            Description:  Class which is a representation of a cfg module.
-
-            Methods:
-                __init__ -> Initialize configuration environment.
-
-            """
-
-            def __init__(self):
-
-                """Method:  __init__
-
-                Description:  Initialization instance of the CfgTest class.
-
-                Arguments:
-
-                """
-
-                self.log_file = "LOG_FILE"
-                self.host = "HOSTNAME"
-                self.exchange_name = "EXCHANGE_NAME"
-                self.exchange_type = "EXCAHNGE_TYPE"
-                self.valid_queues = ["QUEUE1", "QUEUE2"]
-                self.email_dir = "EMAIL_DIRECTORY"
-
         self.cfg = CfgTest()
         self.log = LoggerTest()
         self.proglock = ProgramLock(["cmdline"], "FlavorID")
         self.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
+        self.args_array2 = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY",
+                            "-y": "flavorid"}
         self.func_dict = {"-M": process_message, "-C": check_nonprocess}
+
+    @mock.patch("mail_2_rmq.gen_class")
+    @mock.patch("mail_2_rmq.load_cfg")
+    def test_flavor_id(self, mock_cfg, mock_class):
+
+        """Function:  test_flavor_id
+
+        Description:  Test with -y option passed.
+
+        Arguments:
+
+        """
+
+        mock_cfg.return_value = (self.cfg, True)
+        mock_class.Logger.return_value = self.log
+
+        self.assertFalse(mail_2_rmq.run_program(self.args_array2,
+                                                self.func_dict))
 
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.gen_class.ProgramLock")
