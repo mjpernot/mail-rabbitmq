@@ -315,7 +315,7 @@ def process_attach(msg, log, cfg, **kwargs):
         (input) msg -> Email message instance.
         (input) log -> Log class instance.
         (input) cfg -> Configuration settings module for the program.
-        (output) fname -> Name of attachment encoded file.
+        (output) fname -> Name of encoded attachment file.
 
     """
 
