@@ -106,6 +106,7 @@ class RQTest(object):
 
         self.channel = self.status(stat)
 
+
 class CfgTest(object):
 
     """Class:  CfgTest
@@ -163,7 +164,6 @@ class UnitTest(unittest.TestCase):
         Arguments:
 
         """
-
 
         self.cfg = CfgTest()
         self.rmq = RQTest()
