@@ -217,6 +217,25 @@ class UnitTest(unittest.TestCase):
         self.msg = Email()
         self.results = os.path.join(self.cfg.tmp_dir, "Filename.pdf.encoded")
 
+    @mock.patch("mail_2_rmq.gen_libs.rm_file")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_remove_fail(self, mock_log, mock_rm):
+
+        """Function:  test_remove_fail
+
+        Description:  Test with file removal failure.
+
+        Arguments:
+
+        """
+
+        mock_log.return_value = True
+        mock_rm.return_value = (True, "Error Message")
+
+        fname = mail_2_rmq.process_attach(self.msg, mock_log, self.cfg)
+
+        self.assertEqual(fname, self.results)
+
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_one_valid_attach(self, mock_log):
 
@@ -246,6 +265,9 @@ class UnitTest(unittest.TestCase):
 
         if os.path.isfile(self.results):
             os.remove(self.results)
+
+        if os.path.isfile(os.path.join(self.cfg.tmp_dir, "Filename.pdf")):
+            os.remove(os.path.join(self.cfg.tmp_dir, "Filename.pdf"))
 
 
 if __name__ == "__main__":
