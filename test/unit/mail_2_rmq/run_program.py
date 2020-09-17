@@ -230,6 +230,7 @@ class UnitTest(unittest.TestCase):
         self.args_array2 = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY",
                             "-y": "flavorid"}
         self.func_dict = {"-M": process_message, "-C": check_nonprocess}
+        self.err_msgs = ["Error Msg1", "Error Msg3"]
 
     @mock.patch("mail_2_rmq.gen_class")
     @mock.patch("mail_2_rmq.load_cfg")
@@ -243,7 +244,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_cfg.return_value = (self.cfg, True)
+        mock_cfg.return_value = (self.cfg, True, [])
         mock_class.Logger.return_value = self.log
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array2,
@@ -262,7 +263,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_cfg.return_value = (self.cfg, True)
+        mock_cfg.return_value = (self.cfg, True, [])
         mock_log.return_value = self.log
         mock_lock.side_effect = mail_2_rmq.gen_class.SingleInstanceException
 
@@ -281,7 +282,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_cfg.return_value = (self.cfg, True)
+        mock_cfg.return_value = (self.cfg, True, [])
         mock_class.Logger.return_value = self.log
         mock_class.ProgramLock.return_value = self.proglock
 
@@ -302,7 +303,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_cfg.return_value = (self.cfg, True)
+        mock_cfg.return_value = (self.cfg, True, [])
         mock_class.Logger.return_value = self.log
         mock_class.ProgramLock.return_value = self.proglock
 
@@ -322,7 +323,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_cfg.return_value = (self.cfg, True)
+        mock_cfg.return_value = (self.cfg, True, [])
         mock_class.Logger.return_value = self.log
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
@@ -339,7 +340,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_cfg.return_value = (self.cfg, False)
+        mock_cfg.return_value = (self.cfg, False, self.err_msgs)
 
         with gen_libs.no_std_out():
             self.assertFalse(mail_2_rmq.run_program(self.args_array,
