@@ -169,7 +169,7 @@ def parse_email(**kwargs):
         for RabbitMQ.
 
     Arguments:
-        (output) Email in list format.
+        (output) Email instance.
 
     """
 
