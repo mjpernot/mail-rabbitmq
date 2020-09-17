@@ -95,10 +95,14 @@ class UnitTest(unittest.TestCase):
         self.cfg_name = "Configuration_File"
         self.cfg_dir = "Configuration_Directory"
         self.results = [[True, ""], [True, ""], [True, ""]]
-        self.results2 = [[False, ""], [False, ""], [False, ""]]
-        self.results3 = [[False, ""], [True, ""], [True, ""]]
-        self.results4 = [[True, ""], [False, ""], [True, ""]]
-        self.results5 = [[True, ""], [True, ""], [False, ""]]
+        self.results2 = [[False, "Err1"], [False, "Err2"], [False, "Err3"]]
+        self.results3 = [[False, "Err1"], [True, ""], [True, ""]]
+        self.results4 = [[True, ""], [False, "Err2"], [True, ""]]
+        self.results5 = [[True, ""], [True, ""], [False, "Err3"]]
+        self.err_results = ["Err1", "Err2", "Err3"]
+        self.err_results2 = ["Err1"]
+        self.err_results3 = ["Err2"]
+        self.err_results4 = ["Err3"]
 
     @mock.patch("mail_2_rmq.gen_libs")
     def test_tmp_dir_false(self, mock_lib):
@@ -115,7 +119,7 @@ class UnitTest(unittest.TestCase):
         mock_lib.chk_crt_dir.side_effect = self.results5
 
         self.assertEqual(mail_2_rmq.load_cfg(self.cfg_name, self.cfg_dir),
-                         (self.cfg, False))
+                         (self.cfg, False, self.err_results4))
 
     @mock.patch("mail_2_rmq.gen_libs")
     def test_tmp_dir_true(self, mock_lib):
@@ -132,7 +136,7 @@ class UnitTest(unittest.TestCase):
         mock_lib.chk_crt_dir.side_effect = self.results
 
         self.assertEqual(mail_2_rmq.load_cfg(self.cfg_name, self.cfg_dir),
-                         (self.cfg, True))
+                         (self.cfg, True, []))
 
     @mock.patch("mail_2_rmq.gen_libs")
     def test_log_file_false(self, mock_lib):
@@ -149,7 +153,7 @@ class UnitTest(unittest.TestCase):
         mock_lib.chk_crt_dir.side_effect = self.results4
 
         self.assertEqual(mail_2_rmq.load_cfg(self.cfg_name, self.cfg_dir),
-                         (self.cfg, False))
+                         (self.cfg, False, self.err_results3))
 
     @mock.patch("mail_2_rmq.gen_libs")
     def test_log_file_true(self, mock_lib):
@@ -166,7 +170,7 @@ class UnitTest(unittest.TestCase):
         mock_lib.chk_crt_dir.side_effect = self.results
 
         self.assertEqual(mail_2_rmq.load_cfg(self.cfg_name, self.cfg_dir),
-                         (self.cfg, True))
+                         (self.cfg, True, []))
 
     @mock.patch("mail_2_rmq.gen_libs")
     def test_email_dir_false(self, mock_lib):
@@ -183,7 +187,7 @@ class UnitTest(unittest.TestCase):
         mock_lib.chk_crt_dir.side_effect = self.results3
 
         self.assertEqual(mail_2_rmq.load_cfg(self.cfg_name, self.cfg_dir),
-                         (self.cfg, False))
+                         (self.cfg, False, self.err_results2))
 
     @mock.patch("mail_2_rmq.gen_libs")
     def test_email_dir_true(self, mock_lib):
@@ -200,7 +204,7 @@ class UnitTest(unittest.TestCase):
         mock_lib.chk_crt_dir.side_effect = self.results
 
         self.assertEqual(mail_2_rmq.load_cfg(self.cfg_name, self.cfg_dir),
-                         (self.cfg, True))
+                         (self.cfg, True, []))
 
     @mock.patch("mail_2_rmq.gen_libs")
     def test_false_false_cfg(self, mock_lib):
@@ -217,7 +221,7 @@ class UnitTest(unittest.TestCase):
         mock_lib.chk_crt_dir.side_effect = self.results2
 
         self.assertEqual(mail_2_rmq.load_cfg(self.cfg_name, self.cfg_dir),
-                         (self.cfg, False))
+                         (self.cfg, False, self.err_results))
 
     @mock.patch("mail_2_rmq.gen_libs")
     def test_false_true_cfg(self, mock_lib):
@@ -234,7 +238,7 @@ class UnitTest(unittest.TestCase):
         mock_lib.chk_crt_dir.side_effect = self.results3
 
         self.assertEqual(mail_2_rmq.load_cfg(self.cfg_name, self.cfg_dir),
-                         (self.cfg, False))
+                         (self.cfg, False, self.err_results2))
 
     @mock.patch("mail_2_rmq.gen_libs")
     def test_true_false_cfg(self, mock_lib):
@@ -251,7 +255,7 @@ class UnitTest(unittest.TestCase):
         mock_lib.chk_crt_dir.side_effect = self.results4
 
         self.assertEqual(mail_2_rmq.load_cfg(self.cfg_name, self.cfg_dir),
-                         (self.cfg, False))
+                         (self.cfg, False, self.err_results3))
 
     @mock.patch("mail_2_rmq.gen_libs")
     def test_true_true_cfg(self, mock_lib):
@@ -268,7 +272,7 @@ class UnitTest(unittest.TestCase):
         mock_lib.chk_crt_dir.side_effect = self.results
 
         self.assertEqual(mail_2_rmq.load_cfg(self.cfg_name, self.cfg_dir),
-                         (self.cfg, True))
+                         (self.cfg, True, []))
 
 
 if __name__ == "__main__":
