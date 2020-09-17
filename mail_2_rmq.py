@@ -448,7 +448,7 @@ def run_program(args_array, func_dict, **kwargs):
         log.log_info("%s" % (str_val))
 
         try:
-            flavor_id = cfg.exchange_name
+            flavor_id = args_array.get("-y", cfg.exchange_name)
             prog_lock = gen_class.ProgramLock(cmdline.argv, flavor_id)
 
             # Intersect args_array & func_dict to find which functions to call.
