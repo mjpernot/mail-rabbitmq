@@ -432,10 +432,7 @@ def run_program(args_array, func_dict, **kwargs):
     func_dict = dict(func_dict)
     cfg, status_flag = load_cfg(args_array["-c"], args_array["-d"])
 
-    if not status_flag:
-        print("Error:  Problem in configuration file.")
-
-    else:
+    if status_flag:
         log = gen_class.Logger(cfg.log_file, cfg.log_file, "INFO",
                                "%(asctime)s %(levelname)s %(message)s",
                                "%Y-%m-%dT%H:%M:%SZ")
@@ -462,6 +459,9 @@ def run_program(args_array, func_dict, **kwargs):
             log.log_warn("mail_2_rmq lock in place for: %s" % (flavor_id))
 
         log.log_close()
+
+    else:
+        print("Error:  Problem in configuration file.")
 
 
 def main():
