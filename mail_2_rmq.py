@@ -8,10 +8,11 @@
 
     Usage:
         -M option
-        email_alias: "| /PROJECT_PATH/mail_2_rmq.py -c file -d path -M"
+        email_alias: "| /PROJECT_PATH/mail_2_rmq.py -c file -d path -M
+            [-y flavor_id]"
 
         All other options.
-        mail_2_rmq.py -c file -d path [-C]
+        mail_2_rmq.py -c file -d path [-C] [-y flavor_id]
             [ -v | -h ]
 
     Arguments:
@@ -19,6 +20,7 @@
         -d dir path => Directory path for option '-c'.  Required argument.
         -M => Receive email messages from email pipe and process.
         -C => Check for non-processed messages in email archive directory.
+        -y value => A flavor id for the program lock.  To create unique lock.
         -v => Display version of this program.
         -h => Help and usage message.
 
