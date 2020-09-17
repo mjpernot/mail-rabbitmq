@@ -39,6 +39,8 @@
             valid_queues = ["QueueName1", "QueueName2", ...]
             # Name of error queue to handle incorrectly routed emails.
             err_queue = "ERROR_QUEUE_NAME"
+            # Name of queue for handling file attachments.
+            file_queue = "FILE_QUEUE_NAME"
             # Archive directory path for non-processed email files.
             email_dir = "DIRECTORY_PATH/email_dir"
             # Directory path and file name to the program log.
