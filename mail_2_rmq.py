@@ -359,7 +359,8 @@ def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
 
-    Description:  Capture email message, process it, and send to RabbitMQ.
+    Description:  Capture email message, process email body or email
+        attachment, and send the data to RabbitMQ.
 
     Arguments:
         (input) cfg -> Configuration settings module for the program.
@@ -377,12 +378,24 @@ def process_message(cfg, log, **kwargs):
     if subj in cfg.valid_queues:
         log.log_info("Valid email subject:  %s" % (subj))
         rmq = create_rq(cfg, subj, subj)
+        connect_process(rmq, log, cfg, msg)
 
     else:
-        log.log_warn("Invalid email subject:  %s" % (subj))
-        rmq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
+        fname = process_attach(msg, log, cfg)
 
-    connect_process(rmq, log, cfg, msg)
+        if fname:
+            log.log_info("Valid file attachment:  %s" % (fname))
+            rmq = create_rq(cfg, cfg.file_queue, cfg.file_queue)
+            connect_process(rmq, log, cfg, msg, fname=fname)
+            err_flag, err_msg = gen_libs.rm_file(fname)
+
+            if err_flag:
+                log.log_warn("process_message:  Message: %s" % (err_msg))
+
+        else:
+            log.log_warn("Invalid email subject:  %s" % (subj))
+            rmq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
+            connect_process(rmq, log, cfg, msg)
 
 
 def check_nonprocess(cfg, log, **kwargs):
