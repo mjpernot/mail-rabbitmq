@@ -445,9 +445,9 @@ def run_program(args_array, func_dict, **kwargs):
     cfg, status_flag, err_msgs = load_cfg(args_array["-c"], args_array["-d"])
 
     if status_flag:
-        log = gen_class.Logger(cfg.log_file, cfg.log_file, "INFO",
-                               "%(asctime)s %(levelname)s %(message)s",
-                               "%Y-%m-%dT%H:%M:%SZ")
+        log = gen_class.Logger(
+            cfg.log_file, cfg.log_file, "INFO",
+            "%(asctime)s %(levelname)s %(message)s", "%Y-%m-%dT%H:%M:%SZ")
         str_val = "=" * 80
         log.log_info("%s:%s Initialized" % (cfg.host, cfg.exchange_name))
         log.log_info("%s" % (str_val))
