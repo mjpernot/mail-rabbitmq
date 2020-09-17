@@ -11,6 +11,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - config/rabbitmq.py.TEMPLATE:  Added file_queue, tmp_dir, and attach_types entries.
 
 ### Changed
+- main:  Added -y option to the setup.
 - run_program:  Refactored status_flag check.
 - create_rq:  Changed configuration settings to reflect changes in config file.
 - process_message:  Added call to process_attach and process any attachment found.

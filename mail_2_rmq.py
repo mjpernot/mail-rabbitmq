@@ -489,7 +489,7 @@ def main():
     dir_chk_list = ["-d"]
     func_dict = {"-M": process_message, "-C": check_nonprocess}
     opt_req_list = ["-c", "-d"]
-    opt_val_list = ["-c", "-d"]
+    opt_val_list = ["-c", "-d", "-y"]
     opt_xor_dict = {"-M": ["-C"], "-C": ["-M"]}
 
     # Process argument list from command line.
