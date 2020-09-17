@@ -366,7 +366,7 @@ def process_attach(msg, log, cfg, **kwargs):
 
     return fname
 
-    
+
 def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
