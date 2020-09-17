@@ -216,6 +216,7 @@ class UnitTest(unittest.TestCase):
         self.cfg = CfgTest()
         self.msg = Email()
         self.results = os.path.join(self.cfg.tmp_dir, "Filename.pdf.encoded")
+        self.fname = "Filename.pdf"
 
     @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.gen_class.Logger")
@@ -266,8 +267,8 @@ class UnitTest(unittest.TestCase):
         if os.path.isfile(self.results):
             os.remove(self.results)
 
-        if os.path.isfile(os.path.join(self.cfg.tmp_dir, "Filename.pdf")):
-            os.remove(os.path.join(self.cfg.tmp_dir, "Filename.pdf"))
+        if os.path.isfile(os.path.join(self.cfg.tmp_dir, self.fname)):
+            os.remove(os.path.join(self.cfg.tmp_dir, self.fname))
 
 
 if __name__ == "__main__":
