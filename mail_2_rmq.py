@@ -239,25 +239,36 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
         (input) log -> Log class instance.
         (input) cfg -> Configuration settings module for the program.
         (input) msg -> Email message instance.
+        (input) kwargs:
+            fname -> File name of email/attachment.
 
     """
 
+    fname = kwargs.get("fname", None)
     log.log_info("Connection info: %s->%s" % (cfg.host, cfg.exchange_name))
     connect_status, err_msg = rmq.create_connection()
 
     if connect_status and rmq.channel.is_open:
         log.log_info("Connected to RabbitMQ mode")
 
-        # Send entire email to error queue, otherwise just the body.
-        if rmq.queue_name == cfg.err_queue:
+        # Process email or file/attachment.
+        if fname:
+            log.log_info("Processing file/attachment...")
+
+            with open(fname, "r") as f_hldr:
+                t_msg = f_hldr.read()
+
+        elif rmq.queue_name == cfg.err_queue:
+            log.log_info("Processing error message...")
             t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
                     + " Subject: " + msg["subject"] + " Body: " \
                     + get_text(msg)
 
         else:
+            log.log_info("Processing email body...")
             t_msg = get_text(msg)
 
-        if rmq.publish_msg(t_msg):
+        if t_msg and rmq.publish_msg(t_msg):
             log.log_info("Message ingested into RabbitMQ")
 
         else:
