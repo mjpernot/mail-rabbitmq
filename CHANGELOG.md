@@ -11,6 +11,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - config/rabbitmq.py.TEMPLATE:  Added file_queue, tmp_dir, and attach_types entries.
 
 ### Changed
+- load_cfg:  Returned err_msg from gen_libs.chk_crt_dir to calling function.
 - load_cfg:  Added configuration setting tmp_dir to directory check.
 - run_program:  Setup flavor_id to use -y option value or exchange_name as a default.
 - main:  Added -y option to the setup.

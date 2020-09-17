@@ -122,30 +122,34 @@ def load_cfg(cfg_name, cfg_dir, **kwargs):
         (input) cfg_dir -> Directory path to the configuration file.
         (output) cfg -> Configuration module handler.
         (output) status_flag -> True|False - successfully validate config file.
+        (output) combined_msg -> List of error messages detected.
 
     """
 
     status_flag = True
+    combined_msg = []
     cfg = gen_libs.load_module(cfg_name, cfg_dir)
     status, err_msg = gen_libs.chk_crt_dir(cfg.email_dir, write=True,
                                            read=True)
 
     if not status:
         status_flag = status
+        combined_msg.append(err_msg)
 
     status, err_msg = gen_libs.chk_crt_dir(os.path.dirname(cfg.log_file),
                                            write=True, read=True)
 
     if not status:
         status_flag = status
+        combined_msg.append(err_msg)
 
-    status, err_msg = gen_libs.chk_crt_dir(os.path.dirname(cfg.tmp_dir),
-                                           write=True, read=True)
+    status, err_msg = gen_libs.chk_crt_dir(cfg.tmp_dir, write=True, read=True)
 
     if not status:
         status_flag = status
+        combined_msg.append(err_msg)
 
-    return cfg, status_flag
+    return cfg, status_flag, combined_msg
 
 
 def create_rq(cfg, q_name, r_key, **kwargs):
