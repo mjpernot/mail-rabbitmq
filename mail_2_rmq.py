@@ -442,7 +442,7 @@ def run_program(args_array, func_dict, **kwargs):
     cmdline = gen_libs.get_inst(sys)
     args_array = dict(args_array)
     func_dict = dict(func_dict)
-    cfg, status_flag = load_cfg(args_array["-c"], args_array["-d"])
+    cfg, status_flag, err_msgs = load_cfg(args_array["-c"], args_array["-d"])
 
     if status_flag:
         log = gen_class.Logger(cfg.log_file, cfg.log_file, "INFO",
@@ -473,7 +473,10 @@ def run_program(args_array, func_dict, **kwargs):
         log.log_close()
 
     else:
-        print("Error:  Problem in configuration file.")
+        print("Error:  Problem(s) in configuration file.")
+
+        for line in err_msgs:
+            print(line)
 
 
 def main():
