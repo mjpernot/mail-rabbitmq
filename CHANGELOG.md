@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+### [1.1.0] - 2020-09-16
+### Added
+- Added -y option to create unique program lock flavor id.
+- process_attach:  Locate, extract, and process attachment from email based on specified attachment types.
+- config/rabbitmq.py.TEMPLATE:  Added file_queue, tmp_dir, and attach_types entries.
+
+### Changed
+- run_program:  Captured error messages from load_cfg and processed them.
+- load_cfg:  Returned err_msg from gen_libs.chk_crt_dir to calling function.
+- load_cfg:  Added configuration setting tmp_dir to directory check.
+- run_program:  Setup flavor_id to use -y option value or exchange_name as a default.
+- main:  Added -y option to the setup.
+- run_program:  Refactored status_flag check.
+- create_rq:  Changed configuration settings to reflect changes in config file.
+- process_message:  Added call to process_attach and process any attachment found.
+- connect_process:  Added ability to process file attachment in an email.
+- config/rabbitmq.py.TEMPLATE:  Changed entry in configuration file.
+- Documentation updates.
+
+
 ## [1.0.0] - 2020-07-08
 - General Production Release
 

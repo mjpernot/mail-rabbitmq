@@ -46,6 +46,7 @@ setuptools.setup(
         "Operating System :: Linux :: Centos",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
         "Topic :: Message",
         "Topic :: Message :: RabbitMQ",
         "Topic :: Message :: RabbitMQ :: 3.6.6",
