@@ -8,10 +8,11 @@
 
     Usage:
         -M option
-        email_alias: "| /PROJECT_PATH/mail_2_rmq.py -c file -d path -M"
+        email_alias: "| /PROJECT_PATH/mail_2_rmq.py -c file -d path -M
+            [-y flavor_id]"
 
         All other options.
-        mail_2_rmq.py -c file -d path [-C]
+        mail_2_rmq.py -c file -d path [-C] [-y flavor_id]
             [ -v | -h ]
 
     Arguments:
@@ -19,6 +20,7 @@
         -d dir path => Directory path for option '-c'.  Required argument.
         -M => Receive email messages from email pipe and process.
         -C => Check for non-processed messages in email archive directory.
+        -y value => A flavor id for the program lock.  To create unique lock.
         -v => Display version of this program.
         -h => Help and usage message.
 
@@ -29,35 +31,40 @@
         RabbitMQ configuration file format (config/rabbitmq.py.TEMPLATE).
 
             # RabbitMQ Configuration file
-            # Classification (U)
-            # Unclassified until filled.
             user = "USER"
-            passwd = "PASSWORD"
+            japd = "PASSWORD"
             host = "HOSTNAME"
-            # RabbitMQ listening port, default is 5672.
-            port = 5672
             # RabbitMQ Exchange name for each instance run.
             exchange_name = "EXCHANGE_NAME"
+            # List of valid queues in RabbitMQ.
+            # Note:  Queues names must be UpperCamelCase style.
+            valid_queues = ["QueueName1", "QueueName2", ...]
+            # Name of error queue to handle incorrectly routed emails.
+            err_queue = "ERROR_QUEUE_NAME"
+            # Name of queue for handling file attachments.
+            file_queue = "FILE_QUEUE_NAME"
+            # Archive directory path for non-processed email files.
+            email_dir = "DIRECTORY_PATH/email_dir"
+            # Directory path and file name to the program log.
+            log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
+            # Directory path to temporary staging directory.
+            tmp_dir = "DIRECTORY_PATH/tmp"
+            # Do not modify settings below unless you know what you are doing.
+            # Filter out strings within the subject line.
+            # Do not modify unless you understand regular expressions.
+            subj_filter = ["\[.*\]"]
+            # Types of attachments to extract from email.
+            attach_types = ["application/pdf"]
+            # RabbitMQ listening port, default is 5672.
+            port = 5672
             # Type of exchange:  direct, topic, fanout, headers
             exchange_type = "direct"
             # Is exchange durable: True|False
             x_durable = True
             # Are queues durable: True|False
             q_durable = True
-            # Do queues delete once message is processed:  True|False
+            # Do queues automatically delete once message is processed.
             auto_delete = False
-            # List of valid queues in RabbitMQ.
-            valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2", ... ]
-            # Name of error queue to handle incorrect email subjects.
-            err_queue = "ERROR_QUEUE_NAME"
-            # Archive directory path for non-processed email files.
-            email_dir = "DIRECTORY_PATH/email_dir"
-            # Directory path and file name to the program log.
-            log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
-            # Filter out strings within the subject line.
-            # Do not modify this setting unless you understand regular
-            #   expressions.
-            subj_filter = ["\[.*\]"]
 
     Example:
         alias: "| /opt/local/mail_2_rmq.py -M -c rabbitmq -d /opt/local/config"
@@ -77,6 +84,7 @@ import datetime
 # Third-party
 import email.Parser
 import re
+import base64
 
 # Local
 import lib.arg_parser as arg_parser
@@ -114,24 +122,34 @@ def load_cfg(cfg_name, cfg_dir, **kwargs):
         (input) cfg_dir -> Directory path to the configuration file.
         (output) cfg -> Configuration module handler.
         (output) status_flag -> True|False - successfully validate config file.
+        (output) combined_msg -> List of error messages detected.
 
     """
 
     status_flag = True
+    combined_msg = []
     cfg = gen_libs.load_module(cfg_name, cfg_dir)
     status, err_msg = gen_libs.chk_crt_dir(cfg.email_dir, write=True,
                                            read=True)
 
     if not status:
         status_flag = status
+        combined_msg.append(err_msg)
 
     status, err_msg = gen_libs.chk_crt_dir(os.path.dirname(cfg.log_file),
                                            write=True, read=True)
 
     if not status:
         status_flag = status
+        combined_msg.append(err_msg)
 
-    return cfg, status_flag
+    status, err_msg = gen_libs.chk_crt_dir(cfg.tmp_dir, write=True, read=True)
+
+    if not status:
+        status_flag = status
+        combined_msg.append(err_msg)
+
+    return cfg, status_flag, combined_msg
 
 
 def create_rq(cfg, q_name, r_key, **kwargs):
@@ -149,7 +167,7 @@ def create_rq(cfg, q_name, r_key, **kwargs):
     """
 
     return rabbitmq_class.RabbitMQPub(
-        cfg.user, cfg.passwd, cfg.host, cfg.port,
+        cfg.user, cfg.japd, cfg.host, cfg.port,
         exchange_name=cfg.exchange_name, exchange_type=cfg.exchange_type,
         queue_name=q_name, routing_key=r_key, x_durable=cfg.x_durable,
         q_durable=cfg.q_durable, auto_delete=cfg.auto_delete)
@@ -163,7 +181,7 @@ def parse_email(**kwargs):
         for RabbitMQ.
 
     Arguments:
-        (output) Email in list format.
+        (output) Email instance.
 
     """
 
@@ -233,25 +251,36 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
         (input) log -> Log class instance.
         (input) cfg -> Configuration settings module for the program.
         (input) msg -> Email message instance.
+        (input) kwargs:
+            fname -> File name of email/attachment.
 
     """
 
+    fname = kwargs.get("fname", None)
     log.log_info("Connection info: %s->%s" % (cfg.host, cfg.exchange_name))
     connect_status, err_msg = rmq.create_connection()
 
     if connect_status and rmq.channel.is_open:
         log.log_info("Connected to RabbitMQ mode")
 
-        # Send entire email to error queue, otherwise just the body.
-        if rmq.queue_name == cfg.err_queue:
+        # Process email or file/attachment.
+        if fname:
+            log.log_info("Processing file/attachment...")
+
+            with open(fname, "r") as f_hldr:
+                t_msg = f_hldr.read()
+
+        elif rmq.queue_name == cfg.err_queue:
+            log.log_info("Processing error message...")
             t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
                     + " Subject: " + msg["subject"] + " Body: " \
                     + get_text(msg)
 
         else:
+            log.log_info("Processing email body...")
             t_msg = get_text(msg)
 
-        if rmq.publish_msg(t_msg):
+        if t_msg and rmq.publish_msg(t_msg):
             log.log_info("Message ingested into RabbitMQ")
 
         else:
@@ -300,11 +329,50 @@ def camelize(data_str, **kwargs):
                    if item.isalnum())
 
 
+def process_attach(msg, log, cfg, **kwargs):
+
+    """Function:  process_attach
+
+    Description:  Locate, extract, and process attachment from email based on
+        specified attachment types.
+
+    Arguments:
+        (input) msg -> Email message instance.
+        (input) log -> Log class instance.
+        (input) cfg -> Configuration settings module for the program.
+        (output) fname -> Name of encoded attachment file.
+
+    """
+
+    fname = None
+    log.log_info("Locating attachments...")
+
+    if msg.is_multipart():
+
+        for item in msg.walk():
+
+            if item.get_content_type() in cfg.attach_types:
+                tname = os.path.join(cfg.tmp_dir, item.get_filename())
+                log.log_info("Attachment detected: %s" % (item.get_filename()))
+                open(tname, "wb").write(item.get_payload(decode=True))
+                fname = tname + ".encoded"
+                base64.encode(open(tname, 'rb'), open(fname, 'wb'))
+                err_flag, err_msg = gen_libs.rm_file(tname)
+
+                if err_flag:
+                    log.log_warn("process_attach:  Message: %s" % (err_msg))
+
+                break
+
+    return fname
+
+
 def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
 
-    Description:  Capture email message, process it, and send to RabbitMQ.
+    Description:  Capture email message, process email body or email
+        attachment, and send the data to RabbitMQ.
 
     Arguments:
         (input) cfg -> Configuration settings module for the program.
@@ -322,12 +390,24 @@ def process_message(cfg, log, **kwargs):
     if subj in cfg.valid_queues:
         log.log_info("Valid email subject:  %s" % (subj))
         rmq = create_rq(cfg, subj, subj)
+        connect_process(rmq, log, cfg, msg)
 
     else:
-        log.log_warn("Invalid email subject:  %s" % (subj))
-        rmq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
+        fname = process_attach(msg, log, cfg)
 
-    connect_process(rmq, log, cfg, msg)
+        if fname:
+            log.log_info("Valid file attachment:  %s" % (fname))
+            rmq = create_rq(cfg, cfg.file_queue, cfg.file_queue)
+            connect_process(rmq, log, cfg, msg, fname=fname)
+            err_flag, err_msg = gen_libs.rm_file(fname)
+
+            if err_flag:
+                log.log_warn("process_message:  Message: %s" % (err_msg))
+
+        else:
+            log.log_warn("Invalid email subject:  %s" % (subj))
+            rmq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
+            connect_process(rmq, log, cfg, msg)
 
 
 def check_nonprocess(cfg, log, **kwargs):
@@ -362,15 +442,12 @@ def run_program(args_array, func_dict, **kwargs):
     cmdline = gen_libs.get_inst(sys)
     args_array = dict(args_array)
     func_dict = dict(func_dict)
-    cfg, status_flag = load_cfg(args_array["-c"], args_array["-d"])
+    cfg, status_flag, err_msgs = load_cfg(args_array["-c"], args_array["-d"])
 
-    if not status_flag:
-        print("Error:  Problem in configuration file.")
-
-    else:
-        log = gen_class.Logger(cfg.log_file, cfg.log_file, "INFO",
-                               "%(asctime)s %(levelname)s %(message)s",
-                               "%Y-%m-%dT%H:%M:%SZ")
+    if status_flag:
+        log = gen_class.Logger(
+            cfg.log_file, cfg.log_file, "INFO",
+            "%(asctime)s %(levelname)s %(message)s", "%Y-%m-%dT%H:%M:%SZ")
         str_val = "=" * 80
         log.log_info("%s:%s Initialized" % (cfg.host, cfg.exchange_name))
         log.log_info("%s" % (str_val))
@@ -381,7 +458,7 @@ def run_program(args_array, func_dict, **kwargs):
         log.log_info("%s" % (str_val))
 
         try:
-            flavor_id = cfg.exchange_name
+            flavor_id = args_array.get("-y", cfg.exchange_name)
             prog_lock = gen_class.ProgramLock(cmdline.argv, flavor_id)
 
             # Intersect args_array & func_dict to find which functions to call.
@@ -394,6 +471,12 @@ def run_program(args_array, func_dict, **kwargs):
             log.log_warn("mail_2_rmq lock in place for: %s" % (flavor_id))
 
         log.log_close()
+
+    else:
+        print("Error:  Problem(s) in configuration file.")
+
+        for line in err_msgs:
+            print(line)
 
 
 def main():
@@ -419,7 +502,7 @@ def main():
     dir_chk_list = ["-d"]
     func_dict = {"-M": process_message, "-C": check_nonprocess}
     opt_req_list = ["-c", "-d"]
-    opt_val_list = ["-c", "-d"]
+    opt_val_list = ["-c", "-d", "-y"]
     opt_xor_dict = {"-M": ["-C"], "-C": ["-M"]}
 
     # Process argument list from command line.

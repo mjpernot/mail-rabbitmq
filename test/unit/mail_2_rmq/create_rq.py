@@ -34,6 +34,41 @@ import version
 __version__ = version.__version__
 
 
+class CfgTest(object):
+
+    """Class:  CfgTest
+
+    Description:  Class which is a representation of a cfg module.
+
+    Methods:
+        __init__ -> Initialize configuration environment.
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Initialization instance of the CfgTest class.
+
+        Arguments:
+
+        """
+
+        self.user = "USERNAME"
+        self.japd = "JAPD"
+        self.host = "HOSTNAME"
+        self.port = 1111
+        self.exchange_name = "EXCHANGE_NAME"
+        self.exchange_type = "EXCAHNGE_TYPE"
+        self.x_durable = True
+        self.q_durable = True
+        self.auto_delete = True
+        self.err_queue = "ERROR_QUEUE"
+        self.valid_queues = ["QUEUE1", "QUEUE2"]
+        self.subj_filter = ["\[.*\]"]
+
+
 class UnitTest(unittest.TestCase):
 
     """Class:  UnitTest
@@ -55,40 +90,6 @@ class UnitTest(unittest.TestCase):
         Arguments:
 
         """
-
-        class CfgTest(object):
-
-            """Class:  CfgTest
-
-            Description:  Class which is a representation of a cfg module.
-
-            Methods:
-                __init__ -> Initialize configuration environment.
-
-            """
-
-            def __init__(self):
-
-                """Method:  __init__
-
-                Description:  Initialization instance of the CfgTest class.
-
-                Arguments:
-
-                """
-
-                self.user = "USERNAME"
-                self.passwd = "PASSWD"
-                self.host = "HOSTNAME"
-                self.port = 1111
-                self.exchange_name = "EXCHANGE_NAME"
-                self.exchange_type = "EXCAHNGE_TYPE"
-                self.x_durable = True
-                self.q_durable = True
-                self.auto_delete = True
-                self.err_queue = "ERROR_QUEUE"
-                self.valid_queues = ["QUEUE1", "QUEUE2"]
-                self.subj_filter = ["\[.*\]"]
 
         self.cfg = CfgTest()
         self.q_name = "Queue_Name"
