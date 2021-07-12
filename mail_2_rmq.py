@@ -18,8 +18,11 @@
     Arguments:
         -c file => RabbitMQ configuration file.  Required argument.
         -d dir path => Directory path for option '-c'.  Required argument.
-        -M => Receive email messages from email pipe and process.
+
+        -M => Receive email messages from email pipe.
+
         -C => Check for non-processed messages in email archive directory.
+
         -y value => A flavor id for the program lock.  To create unique lock.
         -v => Display version of this program.
         -h => Help and usage message.
