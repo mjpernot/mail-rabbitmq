@@ -16,7 +16,7 @@
             [ -v | -h ]
 
     Arguments:
-        -c file => ISSE Guard configuration file.  Required argument.
+        -c file => RabbitMQ configuration file.  Required argument.
         -d dir path => Directory path for option '-c'.  Required argument.
         -M => Receive email messages from email pipe and process.
         -C => Check for non-processed messages in email archive directory.
