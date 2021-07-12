@@ -395,7 +395,16 @@ def process_message(cfg, log, **kwargs):
     else:
         fname = process_attach(msg, log, cfg)
 
-        if fname:
+        if fname and subj in cfg.valid_file_queues:
+            log.log_info("Valid subject with file attachment: %s" % (fname))
+            rmq = create_rq(cfg, subj, subj)
+            connect_process(rmq, log, cfg, msg, fname=fname)
+            err_flag, err_msg = gen_libs.rm_file(fname)
+
+            if err_flag:
+                log.log_warn("process_message:  Message: %s" % (err_msg))
+
+        elif fname:
             log.log_info("Valid file attachment:  %s" % (fname))
             rmq = create_rq(cfg, cfg.file_queue, cfg.file_queue)
             connect_process(rmq, log, cfg, msg, fname=fname)
