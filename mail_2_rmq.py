@@ -391,7 +391,7 @@ def process_message(cfg, log, **kwargs):
 
     # Is email subject a valid queue.
     if subj in cfg.valid_queues:
-        log.log_info("Valid email subject:  %s" % (subj))
+        log.log_info("Valid email subject: %s" % (subj))
         rmq = create_rq(cfg, subj, subj)
         connect_process(rmq, log, cfg, msg)
 
@@ -405,19 +405,19 @@ def process_message(cfg, log, **kwargs):
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
-                log.log_warn("process_message:  Message: %s" % (err_msg))
+                log.log_warn("process_message: Message: %s" % (err_msg))
 
         elif fname:
-            log.log_info("Valid file attachment:  %s" % (fname))
-            rmq = create_rq(cfg, cfg.file_queue, cfg.file_queue)
+            log.log_info("Invalid subject with file attached: %s" % (fname))
+            rmq = create_rq(cfg, cfg.err_file_queue, cfg.err_file_queue)
             connect_process(rmq, log, cfg, msg, fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
-                log.log_warn("process_message:  Message: %s" % (err_msg))
+                log.log_warn("process_message: Message: %s" % (err_msg))
 
         else:
-            log.log_warn("Invalid email subject:  %s" % (subj))
+            log.log_warn("Invalid email subject: %s" % (subj))
             rmq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
             connect_process(rmq, log, cfg, msg)
 
