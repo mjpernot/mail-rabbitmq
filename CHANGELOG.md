@@ -5,14 +5,11 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ### [1.2.0] - 2021-07-12
-### Added
-- Added to documentation on how to send an email file to the program to be processed.
-
 ### Changed
-- run_program:  Added information about file queues to the log information.
-- Removed unnecessary \*\*kwargs in function argument list.
 - process_message:  Added check to process and send file attachments to specify queues.
 - config/rabbitmq.py.TEMPLATE:  Added file_queues and err_file_queue, and removed file_queue.
+- run_program:  Added information about file queues to the log information.
+- Removed unnecessary \*\*kwargs in function argument list.
 - Documentation updates.
 
 
