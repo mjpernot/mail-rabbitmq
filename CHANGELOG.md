@@ -5,6 +5,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ### [1.2.0] - 2021-07-12
+### Added
+- Added to documentation on how to send an email file to the program to be processed.
+
 ### Changed
 - run_program:  Added information about file queues to the log information.
 - Removed unnecessary \*\*kwargs in function argument list.
