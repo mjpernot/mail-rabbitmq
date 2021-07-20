@@ -69,7 +69,8 @@ class CfgTest(object):
         self.subj_filter = ["\[.*\]"]
         self.tmp_dir = "test/unit/mail_2_rmq/tmp"
         self.attach_types = ["application/pdf"]
-        self.file_queue = "FileQueue"
+        self.file_queues = ["FileQueue1", "FileQueue2"]
+        self.err_file_queue = "ERROR_FILE_QUEUE"
 
 
 class UnitTest(unittest.TestCase):
