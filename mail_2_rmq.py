@@ -7,9 +7,9 @@
         RabbitMQ queue.
 
     Usage:
-        -M option
-        email_alias: "| /PROJECT_PATH/mail_2_rmq.py -c file -d path -M
-            [-y flavor_id]"
+        -M options:
+        email_alias: "| /path/mail_2_rmq.py -c file -d path -M [-y flavor_id]"
+        cat email_file | /path/mail_2_rmq.py -c file -d path -M [-y flavor_id]
 
         All other options.
         mail_2_rmq.py -c file -d path [-C] [-y flavor_id]
@@ -73,8 +73,8 @@
 
     Example:
         alias: "| /opt/local/mail_2_rmq.py -M -c rabbitmq -d /opt/local/config"
-
-        mail_2_rmq.py -c file -d path -C
+        cat email_file | mail_2_rmq.py -c rabbitmq -d config -M
+        mail_2_rmq.py -c rabbitmq -d config -C
 
 """
 
