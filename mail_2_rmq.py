@@ -40,12 +40,14 @@
             # RabbitMQ Exchange name for each instance run.
             exchange_name = "EXCHANGE_NAME"
             # List of valid queues in RabbitMQ.
-            # Note:  Queues names must be UpperCamelCase style.
+            # Note:  Queues names must be PascalCase style.
             valid_queues = ["QueueName1", "QueueName2", ...]
+            # List of queues for file attachment queues.
+            file_queues = ["FileQueueName1", "FileQueueName2", ...]
             # Name of error queue to handle incorrectly routed emails.
             err_queue = "ERROR_QUEUE_NAME"
-            # Name of queue for handling file attachments.
-            file_queue = "FILE_QUEUE_NAME"
+            # Name of queue for handling error file attachments.
+            err_file_queues = "ERROR_FILE_QUEUE_NAME"
             # Archive directory path for non-processed email files.
             email_dir = "DIRECTORY_PATH/email_dir"
             # Directory path and file name to the program log.
@@ -319,11 +321,11 @@ def camelize(data_str, **kwargs):
 
     """Function:  camelize
 
-    Description:  Camelcases a string.
+    Description:  Pascal cases a string.
 
     Arguments:
         (input) data_str -> String to be camelcased.
-        (output) CamelCased string.
+        (output) PascalCased string.
 
     """
 
