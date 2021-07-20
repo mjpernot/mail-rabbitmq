@@ -199,7 +199,7 @@ class CfgTest(object):
         self.auto_delete = True
         self.err_queue = "ERROR_QUEUE"
         self.valid_queues = ["Queue1", "Queue2"]
-        self.subj_filter = ["\[.*\]"]
+        self.subj_filter = [r"\[.*\]"]
         self.tmp_dir = "test/unit/mail_2_rmq/tmp"
         self.attach_types = ["application/pdf"]
         self.file_queues = ["FileQueue1", "FileQueue2"]
