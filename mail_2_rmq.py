@@ -467,7 +467,8 @@ def run_program(args_array, func_dict, **kwargs):
         log.log_info("%s" % (str_val))
         log.log_info("Exchange Name:  %s" % (cfg.exchange_name))
         log.log_info("Exchange Type:  %s" % (cfg.exchange_type))
-        log.log_info("Valid Queues:  %s" % (cfg.valid_queues))
+        log.log_info("Message Queues:  %s" % (cfg.valid_queues))
+        log.log_info("File Queues:  %s" % (cfg.file_queues))
         log.log_info("Email Archive:  %s" % (cfg.email_dir))
         log.log_info("%s" % (str_val))
 
