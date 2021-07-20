@@ -400,7 +400,7 @@ def process_message(cfg, log):
     else:
         fname = process_attach(msg, log, cfg)
 
-        if fname and subj in cfg.valid_file_queues:
+        if fname and subj in cfg.file_queues:
             log.log_info("Valid subject with file attachment: %s" % (fname))
             rmq = create_rq(cfg, subj, subj)
             connect_process(rmq, log, cfg, msg, fname=fname)
