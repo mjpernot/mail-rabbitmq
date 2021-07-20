@@ -41,7 +41,7 @@ class CfgTest(object):
     Description:  Class which is a representation of a cfg module.
 
     Methods:
-        __init__ -> Initialize configuration environment.
+        __init__
 
     """
 
@@ -67,17 +67,17 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Unit testing initilization.
-        test_tmp_dir_false -> Test with tmp_dir check failure.
-        test_tmp_dir_true -> Test with tmp_dir check success.
-        test_log_file_false -> Test with log_file check failure.
-        test_log_file_true -> Test with log_file check success.
-        test_email_dir_false -> Test with email_dir check failure.
-        test_email_dir_true -> Test with email_dir check success.
-        test_false_false_cfg -> Test False and False statuses.
-        test_false_true_cfg -> Test False and True statuses.
-        test_true_false_cfg -> Test True and False statuses.
-        test_true_true_cfg -> Test True and True statuses.
+        setUp
+        test_tmp_dir_false
+        test_tmp_dir_true
+        test_log_file_false
+        test_log_file_true
+        test_email_dir_false
+        test_email_dir_true
+        test_false_false_cfg
+        test_false_true_cfg
+        test_true_false_cfg
+        test_true_true_cfg
 
     """
 
