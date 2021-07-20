@@ -101,7 +101,7 @@ import version
 __version__ = version.__version__
 
 
-def help_message(**kwargs):
+def help_message():
 
     """Function:  help_message
 
@@ -115,7 +115,7 @@ def help_message(**kwargs):
     print(__doc__)
 
 
-def load_cfg(cfg_name, cfg_dir, **kwargs):
+def load_cfg(cfg_name, cfg_dir):
 
     """Function:  load_cfg
 
@@ -157,7 +157,7 @@ def load_cfg(cfg_name, cfg_dir, **kwargs):
     return cfg, status_flag, combined_msg
 
 
-def create_rq(cfg, q_name, r_key, **kwargs):
+def create_rq(cfg, q_name, r_key):
 
     """Function:  create_rq
 
@@ -178,7 +178,7 @@ def create_rq(cfg, q_name, r_key, **kwargs):
         q_durable=cfg.q_durable, auto_delete=cfg.auto_delete)
 
 
-def parse_email(**kwargs):
+def parse_email():
 
     """Function:  parse_email
 
@@ -196,7 +196,7 @@ def parse_email(**kwargs):
     return parser.parsestr("".join(cmdline.stdin.readlines()))
 
 
-def archive_email(rmq, log, cfg, msg, **kwargs):
+def archive_email(rmq, log, cfg, msg):
 
     """Function:  archive_email
 
@@ -219,7 +219,7 @@ def archive_email(rmq, log, cfg, msg, **kwargs):
     log.log_info("Email saved to:  %s" % (e_file))
 
 
-def get_text(msg, **kwargs):
+def get_text(msg):
 
     """Function:  get_text
 
@@ -298,7 +298,7 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
         archive_email(rmq, log, cfg, msg)
 
 
-def filter_subject(subj, cfg, **kwargs):
+def filter_subject(subj, cfg):
 
     """Function:  filter_subject
 
@@ -317,7 +317,7 @@ def filter_subject(subj, cfg, **kwargs):
     return subj
 
 
-def camelize(data_str, **kwargs):
+def camelize(data_str):
 
     """Function:  camelize
 
@@ -334,7 +334,7 @@ def camelize(data_str, **kwargs):
                    if item.isalnum())
 
 
-def process_attach(msg, log, cfg, **kwargs):
+def process_attach(msg, log, cfg):
 
     """Function:  process_attach
 
@@ -372,7 +372,7 @@ def process_attach(msg, log, cfg, **kwargs):
     return fname
 
 
-def process_message(cfg, log, **kwargs):
+def process_message(cfg, log):
 
     """Function:  process_message
 
@@ -424,7 +424,7 @@ def process_message(cfg, log, **kwargs):
             connect_process(rmq, log, cfg, msg)
 
 
-def check_nonprocess(cfg, log, **kwargs):
+def check_nonprocess(cfg, log):
 
     """Function:  check_nonprocess
 

@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ### [1.2.0] - 2021-07-12
 ### Changed
+- Removed unnecessary \*\*kwargs in function argument list.
 - process_message:  Added check to process and send file attachments to specify queues.
 - config/rabbitmq.py.TEMPLATE:  Added file_queues and err_file_queue, and removed file_queue.
 - Documentation updates.
@@ -35,16 +36,11 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - General Production Release
 
 ### Fixed
-- parse_email:  Fixed handling command line arguments from SonarQube scan finding.
-- run_program:  Fixed handling command line arguments from SonarQube scan finding.
-- main:  Fixed handling command line arguments from SonarQube scan finding.
+- parse_email, run_program, main:  Fixed handling command line arguments.
 
 ### Changed
 - create_rq:  Changed positional args for rabbitmq_class.RabbitMQPub to kwargs.
-- process_message:  Changed variable name to standard naming convention.
-- connect_process:  Changed variable name to standard naming convention.
-- archive_email:  Changed variable name to standard naming convention.
-- parse_email:  Changed variable name to standard naming convention.
+- process_message, connect_process, archive_email, parse_email:  Changed variable names to standard naming convention.
 - config/rabbitmq.py.TEMPLATE:  Changed format.
 - Documentation updates.
 
@@ -54,7 +50,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - run_program:  Fixed problem with mutable default arguments issue.
 
 ### Added
-- camelize:  Camelcases a string.
+- camelize:  PascalCase a string.
 - create_rq:  Function to create and return a RabbitMQ instance.
 
 ### Changed
@@ -67,8 +63,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ### Changed
 - archive_email:  Replaced "open()" with call to "gen_libs.write_file".
-- run_program:  Changed "LOG" to "log" and "PROG_LOCK" to "prog_lock" to meet convention standards.
-- process_message:  Changed "RQ" to "rq" to meet convention standards.
+- run_program, process_message:  Changed variable names to standard naming convention.
 - run_program:  Moved program lock from inside for loop to outside of for loop.
 - process_message:  Added function call to filter_subject, replaced msg['subject'] with subj.
 
@@ -85,10 +80,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ## [0.3.3] - 2019-02-12
 ### Changed
 - main:  Refactored code.
-- check_nonprocess:  Changed "LOG" to "log".
-- process_message:  Changed "LOG" to "log".
-- connect_process:  Changed "LOG" to "log" and "RQ" to "rq".
-- archive_email:  Changed "LOG" to "log" and "RQ" to "rq".
+- check_nonprocess, process_message, connect_process, archive_email:  Changed variable names to standard naming convention.
 
 
 ## [0.3.2] - 2018-11-19
@@ -113,8 +105,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Add single source version control to program.
 
 ### Changed
-- run_program:  Changed Single_Instance_Exception to SingleInstanceException.
-- run_program:  Changed Program_Lock to ProgramLock.
+- run_program:  Changed Single_Instance_Exception to SingleInstanceException and changed Program_Lock to ProgramLock.
 - archive_email:  Added ".email.txt" to archive email file name.
 
 
@@ -180,9 +171,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [0.0.3] - 2017-11-14
 ### Added
-- Parse_Email:  Added function.
-- Check_Nonprocess:  Added function stub holder.
-- Archive_Email:  Added function stub holder.
+- Parse_Email
+- Check_Nonprocess
+- Archive_Email
 
 ### Changed
 - main:  Allow the processing of different options from the command line.
@@ -192,11 +183,11 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [0.0.2] - 2017-11-13
 ### Added
-- Process_Message:  Added function.
+- Process_Message
 
 
 ## [0.0.1] - 2017-11-10
 ### Added
-- mail:  Added function.
-- Run_Program:  Added function.
-- Help_Message:  Added function.
+- mail
+- Run_Program
+- Help_Message
