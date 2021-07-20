@@ -71,6 +71,8 @@ class CfgTest(object):
         self.attach_types = ["application/pdf"]
         self.file_queues = ["FileQueue1", "FileQueue2"]
         self.err_file_queue = "ERROR_FILE_QUEUE"
+        self.log_file = "LOG_FILE"
+        self.email_dir = "EMAIL_DIRECTORY"
 
 
 class UnitTest(unittest.TestCase):
