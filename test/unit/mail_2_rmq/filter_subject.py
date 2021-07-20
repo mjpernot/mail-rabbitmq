@@ -78,7 +78,7 @@ class UnitTest(unittest.TestCase):
 
                 """
 
-                self.subj_filter = ["\[.*\]"]
+                self.subj_filter = [r"\[.*\]"]
 
         self.cfg = CfgTest()
         self.subj_base = "package-admin"
