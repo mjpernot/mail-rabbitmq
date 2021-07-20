@@ -66,7 +66,7 @@ class CfgTest(object):
         self.auto_delete = True
         self.err_queue = "ERROR_QUEUE"
         self.valid_queues = ["QUEUE1", "QUEUE2"]
-        self.subj_filter = ["\[.*\]"]
+        self.subj_filter = [r"\[.*\]"]
 
 
 class UnitTest(unittest.TestCase):
