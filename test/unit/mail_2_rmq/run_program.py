@@ -188,11 +188,23 @@ class CfgTest(object):
 
         """
 
-        self.log_file = "LOG_FILE"
+        self.user = "USERNAME"
+        self.japd = "JAPD"
         self.host = "HOSTNAME"
+        self.port = 1111
         self.exchange_name = "EXCHANGE_NAME"
         self.exchange_type = "EXCAHNGE_TYPE"
-        self.valid_queues = ["QUEUE1", "QUEUE2"]
+        self.x_durable = True
+        self.q_durable = True
+        self.auto_delete = True
+        self.err_queue = "ERROR_QUEUE"
+        self.valid_queues = ["Queue1", "Queue2"]
+        self.subj_filter = ["\[.*\]"]
+        self.tmp_dir = "test/unit/mail_2_rmq/tmp"
+        self.attach_types = ["application/pdf"]
+        self.file_queues = ["FileQueue1", "FileQueue2"]
+        self.err_file_queue = "ERROR_FILE_QUEUE"
+        self.log_file = "LOG_FILE"
         self.email_dir = "EMAIL_DIRECTORY"
 
 
