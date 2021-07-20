@@ -83,9 +83,10 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
+        test_fname_valid_subj
         test_fname_error
-        test_fname_valid
-        test_fname_invalid
+        test_fname_invalid_subj
+        test_fname_miss
         test_invalid_subj
         test_valid_subj
 
@@ -107,23 +108,26 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_fname_error(self, mock_log, mock_parse, mock_filter, mock_rm):
+    def test_fname_error2(self, mock_log, mock_parse, mock_filter,
+                          mock_rm, mock_camel):
 
-        """Function:  test_fname_error
+        """Function:  test_fname_error2
 
-        Description:  Test with error removing file.
+        Description:  Test with file attachment found and valid subject.
 
         Arguments:
 
         """
 
         mock_log.return_value = True
-        mock_parse.return_value = {"subject": "invalid"}
-        mock_filter.return_value = "invalid"
+        mock_parse.return_value = {"subject": "FileQueue1"}
+        mock_filter.return_value = "FileQueue1"
+        mock_camel.return_value = "FileQueue1"
         mock_rm.return_value = (True, "Error Message")
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
@@ -131,15 +135,44 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_fname_valid(self, mock_log, mock_parse, mock_filter, mock_rm):
+    def test_fname_valid_subj(self, mock_log, mock_parse, mock_filter,
+                              mock_rm, mock_camel):
 
-        """Function:  test_fname_valid
+        """Function:  test_fname_valid_subj
 
-        Description:  Test with attachment found.
+        Description:  Test with file attachment found and valid subject.
+
+        Arguments:
+
+        """
+
+        mock_log.return_value = True
+        mock_parse.return_value = {"subject": "FileQueue1"}
+        mock_filter.return_value = "FileQueue1"
+        mock_camel.return_value = "FileQueue1"
+        mock_rm.return_value = (False, None)
+
+        self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
+
+    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
+    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.camelize")
+    @mock.patch("mail_2_rmq.gen_libs.rm_file")
+    @mock.patch("mail_2_rmq.filter_subject")
+    @mock.patch("mail_2_rmq.parse_email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_fname_error(self, mock_log, mock_parse, mock_filter, mock_rm,
+                         mock_camel):
+
+        """Function:  test_fname_error
+
+        Description:  Test with error removing file with invalid subject.
 
         Arguments:
 
@@ -148,6 +181,34 @@ class UnitTest(unittest.TestCase):
         mock_log.return_value = True
         mock_parse.return_value = {"subject": "invalid"}
         mock_filter.return_value = "invalid"
+        mock_camel.return_value = "Invalid"
+        mock_rm.return_value = (True, "Error Message")
+
+        self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
+
+    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
+    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.camelize")
+    @mock.patch("mail_2_rmq.gen_libs.rm_file")
+    @mock.patch("mail_2_rmq.filter_subject")
+    @mock.patch("mail_2_rmq.parse_email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_fname_invalid_subj(self, mock_log, mock_parse, mock_filter,
+                                mock_rm, mock_camel):
+
+        """Function:  test_fname_invalid_subj
+
+        Description:  Test with file attachment found, but invalid subject.
+
+        Arguments:
+
+        """
+
+        mock_log.return_value = True
+        mock_parse.return_value = {"subject": "invalid"}
+        mock_filter.return_value = "invalid"
+        mock_camel.return_value = "Invalid"
         mock_rm.return_value = (False, None)
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
@@ -155,14 +216,15 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value=None))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_fname_invalid(self, mock_log, mock_parse, mock_filter):
+    def test_fname_miss(self, mock_log, mock_parse, mock_filter, mock_camel):
 
-        """Function:  test_fname_invalid
+        """Function:  test_fname_miss
 
-        Description:  Test with no attachment found.
+        Description:  Test with file name missing, no attachment found.
 
         Arguments:
 
@@ -170,6 +232,7 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
         mock_parse.return_value = {"subject": "invalid"}
+        mock_camel.return_value = "Invalid"
         mock_filter.return_value = "invalid"
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
@@ -177,10 +240,11 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value=None))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_invalid_subj(self, mock_log, mock_parse, mock_filter):
+    def test_invalid_subj(self, mock_log, mock_parse, mock_filter, mock_camel):
 
         """Function:  test_invalid_subj
 
@@ -192,6 +256,7 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
         mock_parse.return_value = {"subject": "invalid"}
+        mock_camel.return_value = "Invalid"
         mock_filter.return_value = "invalid"
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
