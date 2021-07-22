@@ -40,10 +40,10 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Unit testing initilization.
-        test_no_filter -> No filtering required.
-        test_filtering -> Filtering required.
-        test_white_space -> Test stripping white space from right.
+        setUp
+        test_no_filter
+        test_filtering
+        test_white_space
 
     """
 
@@ -64,7 +64,7 @@ class UnitTest(unittest.TestCase):
             Description:  Class which is a representation of a cfg module.
 
             Methods:
-                __init__ -> Initialize configuration environment.
+                __init__
 
             """
 
@@ -78,7 +78,7 @@ class UnitTest(unittest.TestCase):
 
                 """
 
-                self.subj_filter = ["\[.*\]"]
+                self.subj_filter = [r"\[.*\]"]
 
         self.cfg = CfgTest()
         self.subj_base = "package-admin"

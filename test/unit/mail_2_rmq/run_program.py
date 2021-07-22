@@ -42,8 +42,8 @@ def process_message(cfg, log):
     Description:  This is a function stub for mail_2_rmq.process_message.
 
     Arguments:
-        (input) cfg -> Stub argument holder.
-        (input) log -> Stub argument holder.
+        (input) cfg
+        (input) log
 
     """
 
@@ -62,8 +62,8 @@ def check_nonprocess(cfg, log):
     Description:  This is a function stub for mail_2_rmq.check_nonprocess.
 
     Arguments:
-        (input) cfg -> Stub argument holder.
-        (input) log -> Stub argument holder.
+        (input) cfg
+        (input) log
 
     """
 
@@ -82,10 +82,10 @@ class LoggerTest(object):
     Description:  Class which is a representation of a Logger class.
 
     Methods:
-        __init__ -> Initialize configuration environment.
-        log_info -> Stub holder for Logger.log_info method.
-        log_warn -> Stub holder for Logger.log_warn method.
-        log_close -> Stub holder for Logger.log_close method.
+        __init__
+        log_info
+        log_warn
+        log_close
 
     """
 
@@ -108,7 +108,7 @@ class LoggerTest(object):
         Description:  Stub holder for Logger.log_info method.
 
         Arguments:
-            (input) data -> Data string.
+            (input) data
 
         """
 
@@ -121,7 +121,7 @@ class LoggerTest(object):
         Description:  Stub holder for Logger.log_warn method.
 
         Arguments:
-            (input) data -> Data string.
+            (input) data
 
         """
 
@@ -147,7 +147,7 @@ class ProgramLock(object):
     Description:  Class stub holder for gen_class.ProgramLock class.
 
     Methods:
-        __init__ -> Class initialization.
+        __init__
 
     """
 
@@ -158,8 +158,8 @@ class ProgramLock(object):
         Description:  Class initialization.
 
         Arguments:
-            (input) cmdline -> Argv command line.
-            (input) flavor -> Lock flavor ID.
+            (input) cmdline
+            (input) flavor
 
         """
 
@@ -174,7 +174,7 @@ class CfgTest(object):
     Description:  Class which is a representation of a cfg module.
 
     Methods:
-        __init__ -> Initialize configuration environment.
+        __init__
 
     """
 
@@ -188,11 +188,23 @@ class CfgTest(object):
 
         """
 
-        self.log_file = "LOG_FILE"
+        self.user = "USERNAME"
+        self.japd = "JAPD"
         self.host = "HOSTNAME"
+        self.port = 1111
         self.exchange_name = "EXCHANGE_NAME"
         self.exchange_type = "EXCAHNGE_TYPE"
-        self.valid_queues = ["QUEUE1", "QUEUE2"]
+        self.x_durable = True
+        self.q_durable = True
+        self.auto_delete = True
+        self.err_queue = "ERROR_QUEUE"
+        self.valid_queues = ["Queue1", "Queue2"]
+        self.subj_filter = [r"\[.*\]"]
+        self.tmp_dir = "test/unit/mail_2_rmq/tmp"
+        self.attach_types = ["application/pdf"]
+        self.file_queues = ["FileQueue1", "FileQueue2"]
+        self.err_file_queue = "ERROR_FILE_QUEUE"
+        self.log_file = "LOG_FILE"
         self.email_dir = "EMAIL_DIRECTORY"
 
 
@@ -203,13 +215,13 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Unit testing initilization.
-        test_flavor_id -> Test with -y option passed.
-        test_exception_handler -> Test with exception handler.
-        test_all_func -> Test with all functions.
-        test_true_func -> Test with true status and function.
-        test_true_status -> Test with true status flag.
-        test_false_status -> Test with false status flag.
+        setUp
+        test_flavor_id
+        test_exception_handler
+        test_all_func
+        test_true_func
+        test_true_status
+        test_false_status
 
     """
 

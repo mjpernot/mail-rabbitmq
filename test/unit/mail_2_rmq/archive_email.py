@@ -41,9 +41,9 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Unit testing initilization.
-        test_archive_email -> Test parsing an email.
-        tearDown -> Clean up of unit testing.
+        setUp
+        test_archive_email
+        tearDown
 
     """
 
@@ -64,7 +64,7 @@ class UnitTest(unittest.TestCase):
             Description:  Class which is a representation of a RQ class.
 
             Methods:
-                __init__ -> Initialize configuration environment.
+                __init__
 
             """
 
@@ -88,7 +88,7 @@ class UnitTest(unittest.TestCase):
             Description:  Class which is a representation of a cfg module.
 
             Methods:
-                __init__ -> Initialize configuration environment.
+                __init__
 
             """
 

@@ -7,19 +7,22 @@
         RabbitMQ queue.
 
     Usage:
-        -M option
-        email_alias: "| /PROJECT_PATH/mail_2_rmq.py -c file -d path -M
-            [-y flavor_id]"
+        -M options:
+        email_alias: "| /path/mail_2_rmq.py -c file -d path -M [-y flavor_id]"
+        cat email_file | /path/mail_2_rmq.py -c file -d path -M [-y flavor_id]
 
         All other options.
         mail_2_rmq.py -c file -d path [-C] [-y flavor_id]
             [ -v | -h ]
 
     Arguments:
-        -c file => ISSE Guard configuration file.  Required argument.
+        -c file => RabbitMQ configuration file.  Required argument.
         -d dir path => Directory path for option '-c'.  Required argument.
-        -M => Receive email messages from email pipe and process.
+
+        -M => Receive email messages from email pipe.
+
         -C => Check for non-processed messages in email archive directory.
+
         -y value => A flavor id for the program lock.  To create unique lock.
         -v => Display version of this program.
         -h => Help and usage message.
@@ -37,12 +40,14 @@
             # RabbitMQ Exchange name for each instance run.
             exchange_name = "EXCHANGE_NAME"
             # List of valid queues in RabbitMQ.
-            # Note:  Queues names must be UpperCamelCase style.
+            # Note:  Queues names must be PascalCase style.
             valid_queues = ["QueueName1", "QueueName2", ...]
+            # List of queues for file attachment queues.
+            file_queues = ["FileQueueName1", "FileQueueName2", ...]
             # Name of error queue to handle incorrectly routed emails.
             err_queue = "ERROR_QUEUE_NAME"
-            # Name of queue for handling file attachments.
-            file_queue = "FILE_QUEUE_NAME"
+            # Name of queue for handling error file attachments.
+            err_file_queues = "ERROR_FILE_QUEUE_NAME"
             # Archive directory path for non-processed email files.
             email_dir = "DIRECTORY_PATH/email_dir"
             # Directory path and file name to the program log.
@@ -68,8 +73,8 @@
 
     Example:
         alias: "| /opt/local/mail_2_rmq.py -M -c rabbitmq -d /opt/local/config"
-
-        mail_2_rmq.py -c file -d path -C
+        cat email_file | mail_2_rmq.py -c rabbitmq -d config -M
+        mail_2_rmq.py -c rabbitmq -d config -C
 
 """
 
@@ -96,7 +101,7 @@ import version
 __version__ = version.__version__
 
 
-def help_message(**kwargs):
+def help_message():
 
     """Function:  help_message
 
@@ -110,7 +115,7 @@ def help_message(**kwargs):
     print(__doc__)
 
 
-def load_cfg(cfg_name, cfg_dir, **kwargs):
+def load_cfg(cfg_name, cfg_dir):
 
     """Function:  load_cfg
 
@@ -152,7 +157,7 @@ def load_cfg(cfg_name, cfg_dir, **kwargs):
     return cfg, status_flag, combined_msg
 
 
-def create_rq(cfg, q_name, r_key, **kwargs):
+def create_rq(cfg, q_name, r_key):
 
     """Function:  create_rq
 
@@ -173,7 +178,7 @@ def create_rq(cfg, q_name, r_key, **kwargs):
         q_durable=cfg.q_durable, auto_delete=cfg.auto_delete)
 
 
-def parse_email(**kwargs):
+def parse_email():
 
     """Function:  parse_email
 
@@ -191,7 +196,7 @@ def parse_email(**kwargs):
     return parser.parsestr("".join(cmdline.stdin.readlines()))
 
 
-def archive_email(rmq, log, cfg, msg, **kwargs):
+def archive_email(rmq, log, cfg, msg):
 
     """Function:  archive_email
 
@@ -214,7 +219,7 @@ def archive_email(rmq, log, cfg, msg, **kwargs):
     log.log_info("Email saved to:  %s" % (e_file))
 
 
-def get_text(msg, **kwargs):
+def get_text(msg):
 
     """Function:  get_text
 
@@ -293,7 +298,7 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
         archive_email(rmq, log, cfg, msg)
 
 
-def filter_subject(subj, cfg, **kwargs):
+def filter_subject(subj, cfg):
 
     """Function:  filter_subject
 
@@ -312,15 +317,15 @@ def filter_subject(subj, cfg, **kwargs):
     return subj
 
 
-def camelize(data_str, **kwargs):
+def camelize(data_str):
 
     """Function:  camelize
 
-    Description:  Camelcases a string.
+    Description:  Pascal cases a string.
 
     Arguments:
         (input) data_str -> String to be camelcased.
-        (output) CamelCased string.
+        (output) PascalCased string.
 
     """
 
@@ -329,7 +334,7 @@ def camelize(data_str, **kwargs):
                    if item.isalnum())
 
 
-def process_attach(msg, log, cfg, **kwargs):
+def process_attach(msg, log, cfg):
 
     """Function:  process_attach
 
@@ -367,7 +372,7 @@ def process_attach(msg, log, cfg, **kwargs):
     return fname
 
 
-def process_message(cfg, log, **kwargs):
+def process_message(cfg, log):
 
     """Function:  process_message
 
@@ -388,29 +393,38 @@ def process_message(cfg, log, **kwargs):
 
     # Is email subject a valid queue.
     if subj in cfg.valid_queues:
-        log.log_info("Valid email subject:  %s" % (subj))
+        log.log_info("Valid email subject: %s" % (subj))
         rmq = create_rq(cfg, subj, subj)
         connect_process(rmq, log, cfg, msg)
 
     else:
         fname = process_attach(msg, log, cfg)
 
-        if fname:
-            log.log_info("Valid file attachment:  %s" % (fname))
-            rmq = create_rq(cfg, cfg.file_queue, cfg.file_queue)
+        if fname and subj in cfg.file_queues:
+            log.log_info("Valid subject with file attachment: %s" % (fname))
+            rmq = create_rq(cfg, subj, subj)
             connect_process(rmq, log, cfg, msg, fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
-                log.log_warn("process_message:  Message: %s" % (err_msg))
+                log.log_warn("process_message: Message: %s" % (err_msg))
+
+        elif fname:
+            log.log_info("Invalid subject with file attached: %s" % (fname))
+            rmq = create_rq(cfg, cfg.err_file_queue, cfg.err_file_queue)
+            connect_process(rmq, log, cfg, msg, fname=fname)
+            err_flag, err_msg = gen_libs.rm_file(fname)
+
+            if err_flag:
+                log.log_warn("process_message: Message: %s" % (err_msg))
 
         else:
-            log.log_warn("Invalid email subject:  %s" % (subj))
+            log.log_warn("Invalid email subject: %s" % (subj))
             rmq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
             connect_process(rmq, log, cfg, msg)
 
 
-def check_nonprocess(cfg, log, **kwargs):
+def check_nonprocess(cfg, log):
 
     """Function:  check_nonprocess
 
@@ -453,7 +467,8 @@ def run_program(args_array, func_dict, **kwargs):
         log.log_info("%s" % (str_val))
         log.log_info("Exchange Name:  %s" % (cfg.exchange_name))
         log.log_info("Exchange Type:  %s" % (cfg.exchange_type))
-        log.log_info("Valid Queues:  %s" % (cfg.valid_queues))
+        log.log_info("Message Queues:  %s" % (cfg.valid_queues))
+        log.log_info("File Queues:  %s" % (cfg.file_queues))
         log.log_info("Email Archive:  %s" % (cfg.email_dir))
         log.log_info("%s" % (str_val))
 

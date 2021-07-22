@@ -41,7 +41,7 @@ class CfgTest(object):
     Description:  Class which is a representation of a cfg module.
 
     Methods:
-        __init__ -> Initialize configuration environment.
+        __init__
 
     """
 
@@ -66,7 +66,7 @@ class CfgTest(object):
         self.auto_delete = True
         self.err_queue = "ERROR_QUEUE"
         self.valid_queues = ["QUEUE1", "QUEUE2"]
-        self.subj_filter = ["\[.*\]"]
+        self.subj_filter = [r"\[.*\]"]
 
 
 class UnitTest(unittest.TestCase):
@@ -76,8 +76,8 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Unit testing initilization.
-        test_create_instance -> Test creating RabbitMQ Instance.
+        setUp
+        test_create_instance
 
     """
 

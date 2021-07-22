@@ -41,10 +41,10 @@ class MultiPart(object):
     Description:  Class which is a representation of a Email multipart class.
 
     Methods:
-        __init__ -> Initialize configuration environment.
-        get_content_type -> What is content type of this part of message.
-        get_filename -> Name of attachment in message.
-        get_payload -> Data string of attachment.
+        __init__
+        get_content_type
+        get_filename
+        get_payload
 
     """
 
@@ -109,9 +109,9 @@ class Email(object):
     Description:  Class which is a representation of a Email class.
 
     Methods:
-        __init__ -> Initialize configuration environment.
-        is_multipart -> Is email message multiple parts.
-        walk -> Return list of items to check in email multiple parts.
+        __init__
+        is_multipart
+        walk
 
     """
 
@@ -160,7 +160,7 @@ class CfgTest(object):
     Description:  Class which is a representation of a cfg module.
 
     Methods:
-        __init__ -> Initialize configuration environment.
+        __init__
 
     """
 
@@ -185,7 +185,7 @@ class CfgTest(object):
         self.auto_delete = True
         self.err_queue = "ERROR_QUEUE"
         self.valid_queues = ["Queue1", "Queue2"]
-        self.subj_filter = ["\[.*\]"]
+        self.subj_filter = [r"\[.*\]"]
         self.tmp_dir = "test/unit/mail_2_rmq/tmp"
         self.attach_types = ["application/pdf"]
 
@@ -197,9 +197,9 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Unit testing initilization.
-        test_one_valid_attach -> Test email with valid subject.
-        tearDown -> Clean up of unit testing.
+        setUp
+        test_one_valid_attach
+        tearDown
 
     """
 

@@ -19,6 +19,7 @@
 # Features:
   * Process and parse emails via mailing pipe.
   * Insert email into correct RabbitMQ queue based on email subject line.
+  * Insert email file attachments into correct RabbitMQ queue based on email subject line.
 
 # Prerequisites:
 
@@ -27,18 +28,16 @@
     - python-pip
 
   * Local dependencies within the program structure.
-    - lib/gen_class
-    - lib/arg_parser
-    - lib/gen_libs
-    - rabbit_lib/rabbitmq_class
+    - python-lib
+    - rabbitmq-lib
 
   * Setup a local account and group: rabbitmq:rabbitmq
 
 
 # Installation:
-  * Replace **{Python_Project}** with the baseline path of the python program.
 
 Install the program using git 
+  * From here on out, any reference to **{Python_Project}** or **PYTHON_PROJECT** replace with the baseline path of the python program.
 
 ```
 umask 022
@@ -70,8 +69,10 @@ Setup configuration file.
 Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file.
   * "user", "passwd", and "host" is connection information to a RabbitMQ node.
   * "exchange_name" is name of the exchange in the RabbitMQ node.
-  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.  Note:  Queues names must be UpperCamelCase style.
+  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.  Note:  Queues names must be PascalCase style.
+  * "file_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.  Note:  Queues names must be PascalCase style.
   * "err_queue" is the name of RabbitMQ queue that will contain any messages that do not fit in the other queues (i.e. invalid subject lines).
+  * "err_file_queue" is the name of RabbitMQ queue that will contain any file attachments that do not fit in the other queues (i.e. invalid subject lines).
   * "email_dir" is the location where non-processed emails will be saved to (e.g. when RabbitMQ is down).
   * "log_file" is the location of the mail_2_rmq.py log file.
     - user = "USER"
@@ -79,7 +80,9 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - host = "HOSTNAME"
     - exchange_name = "EXCHANGE_NAME"
     - valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2"]
+    - file_queues = ["FileQueueName1", "FileQueueName2"]
     - err_queue = "ERROR_QUEUE_NAME"
+    - err_file_queue = "ERROR_FILE_QUEUE_NAME"
     - email_dir = "DIRECTORY_PATH/email_dir"
     - log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 
@@ -185,7 +188,7 @@ sudo tail -f /var/log/messages
 Send test email to rabbitmq.
 
 ```
-echo "sipr-isse" | mailx -s sipr-isse rabbitmq@mail.eu.dodiis.ic.gov
+echo "sipr-isse" | mailx -s sipr-isse rabbitmq@mail.domain.name
 ```
 
 Monitor the messages file for SELinux exceptions, look for "run sealert".
@@ -241,7 +244,7 @@ sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
   * Replace **{Python_Project}** with the baseline path of the python program.
 
 ```
-`{Python_Project}/rmq-sysmon/mail_2_rmq.py -h`
+{Python_Project}/rmq-sysmon/mail_2_rmq.py -h
 ```
 
 
@@ -251,32 +254,7 @@ sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
 
 ### Installation:
 
-Install the program using git
-  * Replace **{Python_Project}** with the baseline path of the python program.
-  * Replace **{Branch_Name}** with the name of the Git branch being tested.  See Git Merge Request.
-
-```
-umask 022
-cd {Python_Project}
-git clone --branch {Branch_Name} git@sc.appdev.proj.coe.ic.gov:JAC-DSXD/mail-rabbitmq.git
-```
-
-Install/upgrade system modules.
-
-```
-cd mail-rabbitmq
-sudo bash
-umask 022
-pip install -r requirements.txt --upgrade --trusted-host pypi.appdev.proj.coe.ic.gov
-exit
-```
-
-Install supporting classes and libraries.
-
-```
-pip install -r requirements-python-lib.txt --target lib --trusted-host pypi.appdev.proj.coe.ic.gov
-pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host pypi.appdev.proj.coe.ic.gov
-```
+Install the project using the procedures in the Installation section.
 
 ### Testing:
 
@@ -292,36 +270,11 @@ cd {Python_Project}/mail-rabbitmq
 test/unit/mail_2_rmq/code_coverage.sh
 ```
 
-
 # Blackbox Testing:
 
 ### Installation:
 
-Install the program using git
-  * Replace **{Python_Project}** with the baseline path of the python program.
-  * Replace **{Branch_Name}** with the name of the Git branch being tested.  See Git Merge Request.
-
-```
-umask 022
-cd {Python_Project}
-git clone --branch {Branch_Name} git@sc.appdev.proj.coe.ic.gov:JAC-DSXD/mail-rabbitmq.git
-```
-
-Install/upgrade system modules.
-
-```
-cd mail-rabbitmq
-sudo bash
-umask 022
-pip install -r requirements.txt --upgrade --trusted-host pypi.appdev.proj.coe.ic.gov
-exit
-```
-
-Install supporting classes and libraries.
-```
-pip install -r requirements-python-lib.txt --target lib --trusted-host pypi.appdev.proj.coe.ic.gov
-pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host pypi.appdev.proj.coe.ic.gov
-```
+Install the project using the procedures in the Installation section.
 
 ### Configuration:
 
@@ -329,8 +282,10 @@ Create configuration file for testing.
 Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file.
   * "user", "passwd", and "host" is connection information to a RabbitMQ node.
   * "exchange_name" is name of the exchange in the RabbitMQ node.
-  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.  Note:  Queues names must be UpperCamelCase style.
+  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.  Note:  Queues names must be PascalCase style.
+  * "file_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.  Note:  Queues names must be PascalCase style.
   * "err_queue" is the name of RabbitMQ queue that will contain any messages that do not fit in the other queues (i.e. invalid subject lines).
+  * "err_file_queue" is the name of RabbitMQ queue that will contain any file attachments that do not fit in the other queues (i.e. invalid subject lines).
   * "email_dir" is the location where non-processed emails will be saved to (e.g. when RabbitMQ is down).
   * "log_file" is the location of the mail_2_rmq.py log file.
     - user = "USER"
@@ -338,7 +293,9 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - host = "HOSTNAME"
     - exchange_name = "EXCHANGE_NAME"
     - valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2"]
+    - file_queues = ["FileQueueName1", "FileQueueName2"]
     - err_queue = "ERROR_QUEUE_NAME"
+    - err_file_queue = "ERROR_FILE_QUEUE_NAME"
     - email_dir = "DIRECTORY_PATH/email_dir"
     - log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 
