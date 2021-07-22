@@ -40,14 +40,14 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Unit testing initilization.
-        test_empty_msg -> Test empty message is returned.
-        test_single_part_msg -> Test single part message is returned.
-        test_two_part_msg -> Test two part message is returned.
-        test_multi_part_msg -> Test multi-part message is returned.
-        test_empty_payload_msg -> Test when payload returns empty.
-        test_multipart_empty_payload_msg -> Test multipart & empty payload msg.
-        test_multiple_part_msg -> Test returning multiple part messages.
+        setUp
+        test_empty_msg
+        test_single_part_msg
+        test_two_part_msg
+        test_multi_part_msg
+        test_empty_payload_msg
+        test_multipart_empty_payload_msg
+        test_multiple_part_msg
 
     """
 
@@ -68,8 +68,8 @@ class UnitTest(unittest.TestCase):
             Description:  Is a representation of a email message instance.
 
             Methods:
-                __init__ -> Initialize configuration environment.
-                walk -> Stub holder for walk method.
+                __init__
+                walk
 
             """
 
@@ -105,9 +105,9 @@ class UnitTest(unittest.TestCase):
                 instance.
 
             Methods:
-                __init__ -> Initialize configuration environment.
-                get_content_maintype -> Stub holder for get_content_maintype.
-                get_payload -> Stub holder for get_payload method.
+                __init__
+                get_content_maintype
+                get_payload
 
             """
 
@@ -144,7 +144,7 @@ class UnitTest(unittest.TestCase):
                 Description:  Stub holder for get_payload method.
 
                 Arguments:
-                    (input) decode ->  Place holder for decode variable.
+                    (input) decode
 
                 """
 

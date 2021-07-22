@@ -42,10 +42,10 @@ class RQTest(object):
     Description:  Class which is a representation of a RQ class.
 
     Methods:
-        __init__ -> Initialize configuration environment.
-        create_connection -> Stub holder for create_connection method.
-        publish_msg -> Stub holder for publish_msg method.
-        change_channel -> Change channel status.
+        __init__
+        create_connection
+        publish_msg
+        change_channel
 
     """
 
@@ -114,7 +114,7 @@ class CfgTest(object):
     Description:  Class which is a representation of a cfg module.
 
     Methods:
-        __init__ -> Initialize configuration environment.
+        __init__
 
     """
 
@@ -140,18 +140,18 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Unit testing initilization.
-        test_empty_email -> Test with empty email body.
-        test_empty_file -> Test with empty file passed.
-        test_file_publish -> Test with file name passed.
-        test_false_publish -> Test publish returns false.
-        test_true_publish -> Test publish returns true.
-        test_error_queue -> Test message sent to error queue.
-        test_non_error_queue -> Test message sent to non-error queue.
-        test_true_true_connect -> Test connection with true/true status.
-        test_false_false_connect -> Test connection with false/false status.
-        test_false_true_connect -> Test connection with false/true status.
-        test_true_false_connect -> Test connection with true/false status.
+        setUp
+        test_empty_email
+        test_empty_file
+        test_file_publish
+        test_false_publish
+        test_true_publish
+        test_error_queue
+        test_non_error_queue
+        test_true_true_connect
+        test_false_false_connect
+        test_false_true_connect
+        test_true_false_connect
 
     """
 

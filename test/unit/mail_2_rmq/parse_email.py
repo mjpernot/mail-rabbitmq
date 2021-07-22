@@ -41,8 +41,8 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Unit testing initilization.
-        test_parse_email -> Test parsing an email.
+        setUp
+        test_parse_email
 
     """
 
@@ -64,8 +64,8 @@ class UnitTest(unittest.TestCase):
                 class.
 
             Methods:
-                __init__ -> Initialize configuration environment.
-                parsestr -> Stub holder for parsestr method.
+                __init__
+                parsestr
 
             """
 

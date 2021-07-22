@@ -109,9 +109,10 @@ def mail_2_rmq_cleanup(cfg, queue_name, drop_exch=False):
     """
 
     rmq = rabbitmq_class.RabbitMQPub(
-        cfg.user, cfg.japd, cfg.host, cfg.port, cfg.exchange_name,
-        cfg.exchange_type, queue_name, queue_name, cfg.x_durable,
-        cfg.q_durable, cfg.auto_delete)
+        cfg.user, cfg.japd, cfg.host, cfg.port,
+        exchange_name=cfg.exchange_name, exchange_type=cfg.exchange_type,
+        queue_name=queue_name, routing_key=queue_name, x_durable=cfg.x_durable,
+        q_durable=cfg.q_durable, auto_delete=cfg.auto_delete)
 
     if isinstance(rmq, rabbitmq_class.RabbitMQPub):
         connect_status, err_msg = rmq.connect()

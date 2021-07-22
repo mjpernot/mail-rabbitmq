@@ -41,8 +41,8 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Unit testing initilization.
-        test_check_nonprocess -> Test parsing an email.
+        setUp
+        test_check_nonprocess
 
     """
 
