@@ -35,41 +35,30 @@
 
             # RabbitMQ Configuration file
             user = "USER"
-            japd = "PASSWORD"
-            host = "HOSTNAME"
-            # RabbitMQ Exchange name for each instance run.
+            japd = "PSWORD"
+            host = "IP_ADDRESS"
             exchange_name = "EXCHANGE_NAME"
-            # List of valid queues in RabbitMQ.
-            # Note:  Queues names must be PascalCase style.
             valid_queues = ["QueueName1", "QueueName2", ...]
-            # List of queues for file attachment queues.
             file_queues = ["FileQueueName1", "FileQueueName2", ...]
-            # Name of error queue to handle incorrectly routed emails.
             err_queue = "ERROR_QUEUE_NAME"
-            # Name of queue for handling error file attachments.
             err_file_queues = "ERROR_FILE_QUEUE_NAME"
-            # Archive directory path for non-processed email files.
             email_dir = "DIRECTORY_PATH/email_dir"
-            # Directory path and file name to the program log.
             log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
-            # Directory path to temporary staging directory.
             tmp_dir = "DIRECTORY_PATH/tmp"
-            # Do not modify settings below unless you know what you are doing.
-            # Filter out strings within the subject line.
-            # Do not modify unless you understand regular expressions.
-            subj_filter = ["\[.*\]"]
-            # Types of attachments to extract from email.
             attach_types = ["application/pdf"]
-            # RabbitMQ listening port, default is 5672.
+            host_list = []
+
+            # Only change these entries if neccessary.
+            subj_filter = ["\[.*\]"]
             port = 5672
-            # Type of exchange:  direct, topic, fanout, headers
             exchange_type = "direct"
-            # Is exchange durable: True|False
             x_durable = True
-            # Are queues durable: True|False
             q_durable = True
-            # Do queues automatically delete once message is processed.
             auto_delete = False
+            heartbeat = 60
+
+        Note:  If connecting to a multiple node RabbitMQ cluster, use the
+            host_list entry.
 
     Example:
         alias: "| /opt/local/mail_2_rmq.py -M -c rabbitmq -d /opt/local/config"

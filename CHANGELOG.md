@@ -11,6 +11,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ### Changed
 - config/rabbitmq.py.TEMPLATE:  Added heartbeat and host_list entries.
+- Documentation updates.
 
 
 ## [1.2.0] - 2021-07-12
