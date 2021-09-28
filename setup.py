@@ -50,5 +50,6 @@ setuptools.setup(
         "Topic :: Message",
         "Topic :: Message :: RabbitMQ",
         "Topic :: Message :: RabbitMQ :: 3.6.6",
+        "Topic :: Message :: RabbitMQ :: 3.8.2",
         "Topic :: Server",
         "Topic :: Server :: Mail"])
