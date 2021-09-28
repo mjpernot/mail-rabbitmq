@@ -160,11 +160,15 @@ def create_rq(cfg, q_name, r_key):
 
     """
 
+    heartbeat = cfg.heartbeat if hasattr(cfg, "heartbeat") else 60
+    host_list = cfg.host_list if hasattr(cfg, "host_list") else list()
+
     return rabbitmq_class.RabbitMQPub(
         cfg.user, cfg.japd, cfg.host, cfg.port,
         exchange_name=cfg.exchange_name, exchange_type=cfg.exchange_type,
         queue_name=q_name, routing_key=r_key, x_durable=cfg.x_durable,
-        q_durable=cfg.q_durable, auto_delete=cfg.auto_delete)
+        q_durable=cfg.q_durable, auto_delete=cfg.auto_delete,
+        heartbeat=heartbeat, host_list=host_list)
 
 
 def parse_email():

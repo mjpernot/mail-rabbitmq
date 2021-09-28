@@ -10,6 +10,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Handle connecting to multiple node cluster
 
 ### Changed
+- create_rq:  Added heartbeat and host_list to class instance call.
 - config/rabbitmq.py.TEMPLATE:  Added heartbeat and host_list entries.
 - Documentation updates.
 
