@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
-### [1.2.0] - 2021-07-12
+## [1.3.0] - 2021-09-28
+- Update to work with Pika 1.2.0
+- Update to work with RabbitMQ 3.8.2
+- Handle connecting to multiple node cluster
+
+
+## [1.2.0] - 2021-07-12
 ### Changed
 - process_message:  Added check to process and send file attachments to specify queues.
 - config/rabbitmq.py.TEMPLATE:  Added file_queues and err_file_queue, and removed file_queue.
@@ -13,7 +19,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Documentation updates.
 
 
-### [1.1.0] - 2020-09-16
+## [1.1.0] - 2020-09-16
 ### Added
 - Added -y option to create unique program lock flavor id.
 - process_attach:  Locate, extract, and process attachment from email based on specified attachment types.
