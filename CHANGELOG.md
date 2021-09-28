@@ -9,6 +9,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Update to work with RabbitMQ 3.8.2
 - Handle connecting to multiple node cluster
 
+### Changed
+- config/rabbitmq.py.TEMPLATE:  Added heartbeat and host_list entries.
+
 
 ## [1.2.0] - 2021-07-12
 ### Changed
