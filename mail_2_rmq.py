@@ -314,11 +314,11 @@ def camelize(data_str):
 
     """Function:  camelize
 
-    Description:  Pascal cases a string.
+    Description:  Camel cases a string.
 
     Arguments:
         (input) data_str -> String to be camelcased.
-        (output) PascalCased string.
+        (output) CamelCased string.
 
     """
 
@@ -365,12 +365,32 @@ def process_attach(msg, log, cfg):
     return fname
 
 
+def get_email_addr(data):
+
+    """Function:  get_email_addr
+
+    Description:  Finds all email addresses in the data string.
+
+    Known Issue:  If a period (.) is at the end of the email address in the
+        data string the function will return the ending period as part of the
+        email address.
+
+    Arguments:
+        (input) data -> Data string with email addresses.
+        (output) email_list -> List of email addresses.
+
+    """
+
+    return re.findall(r"[\w\.-]+@[\w\.-]+", data)
+
+
 def process_message(cfg, log):
 
     """Function:  process_message
 
-    Description:  Capture email message, process email body or email
-        attachment, and send the data to RabbitMQ.
+    Description:  Parses email message, processes email body or attachment and
+        based on subject, from address and/or attachment, send the data to
+        queue in RabbitMQ.
 
     Arguments:
         (input) cfg -> Configuration settings module for the program.

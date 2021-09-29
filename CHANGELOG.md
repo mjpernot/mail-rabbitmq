@@ -9,6 +9,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Update to work with RabbitMQ 3.8.2
 - Added ability to handle connecting to multiple node cluster
 
+### Added
+- get_email_addr:  Finds all email addresses in the data string.
+
 ### Changed
 - process_message:  Replaced create_rq with rabbitmq_class.create_rmqpub call.
 - create_rq:  Added heartbeat and host_list to class instance call.
