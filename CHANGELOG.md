@@ -7,7 +7,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ## [1.3.0] - 2021-09-28
 - Update to work with Pika 1.2.0
 - Update to work with RabbitMQ 3.8.2
-- Handle connecting to multiple node cluster
+- Added ability to handle connecting to multiple node cluster
 
 ### Changed
 - create_rq:  Added heartbeat and host_list to class instance call.
