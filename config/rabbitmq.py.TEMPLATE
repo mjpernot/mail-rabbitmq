@@ -23,6 +23,11 @@ log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 tmp_dir = "DIRECTORY_PATH/tmp"
 # Types of attachments to extract from email.
 attach_types = ["application/pdf"]
+# Dictionary of valid email addresses and their associated queue names.
+# Format of email should be: "name@domain"
+queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}
+# Name of error queue to handle incorrect email address or missing attachment.
+err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
 # List of hosts along with their ports to a multiple node RabbitMQ cluster.
 # Format of each entry is: "IP:PORT".
 # Example: host_list = ["hostname:5672", "hostname2:5672", "hostname:5673"]
