@@ -402,6 +402,8 @@ def process_message(cfg, log):
     msg = parse_email()
     subj = filter_subject(msg["subject"], cfg)
     subj = camelize(subj)
+    email_list = get_email_addr(msg["from"])
+    from_addr = email_list[0] if email_list else None
     log.log_info("Instance creation")
 
     # Is email subject a valid queue.
@@ -409,6 +411,27 @@ def process_message(cfg, log):
         log.log_info("Valid email subject: %s" % (subj))
         rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
         connect_process(rmq, log, cfg, msg)
+
+    elif from_addr and from_addr in cfg.queue_dict.keys():
+        fname = process_attach(msg, log, cfg)
+
+        if fname:
+            log.log_info("Valid From address: %s with file attachment: %s"
+                         % (from_addr, fname))
+            rmq = rabbitmq_class.create_rmqpub(
+                cfg, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr])
+            connect_process(rmq, log, cfg, msg, fname=fname)
+            err_flag, err_msg = gen_libs.rm_file(fname)
+
+            if err_flag:
+                log.log_warn("process_message: Message: %s" % (err_msg))
+
+        else:
+            log.log_warn("Missing attachment for email address: %s"
+                         % (from_addr))
+            rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_addr_queue,
+                                               cfg.err_addr_queue)
+            connect_process(rmq, log, cfg, msg)
 
     else:
         fname = process_attach(msg, log, cfg)
@@ -434,8 +457,8 @@ def process_message(cfg, log):
 
         else:
             log.log_warn("Invalid email subject: %s" % (subj))
-            rmq = rabbitmq_class.create_rmqpub(
-                cfg, cfg.err_queue, cfg.err_queue)
+            rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_queue,
+                                               cfg.err_queue)
             connect_process(rmq, log, cfg, msg)
 
 
