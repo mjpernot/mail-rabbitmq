@@ -107,7 +107,8 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub",
+                mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.filter_subject")
@@ -134,7 +135,8 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub",
+                mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.filter_subject")
@@ -161,7 +163,8 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub",
+                mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.filter_subject")
@@ -188,7 +191,8 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub",
+                mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.filter_subject")
@@ -215,7 +219,8 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value=None))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub",
+                mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
@@ -239,7 +244,8 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value=None))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub",
+                mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
@@ -262,7 +268,8 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub",
+                mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
