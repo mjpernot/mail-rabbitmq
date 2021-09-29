@@ -387,7 +387,7 @@ def process_message(cfg, log):
     # Is email subject a valid queue.
     if subj in cfg.valid_queues:
         log.log_info("Valid email subject: %s" % (subj))
-        rmq = create_rq(cfg, subj, subj)
+        rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
         connect_process(rmq, log, cfg, msg)
 
     else:
@@ -395,7 +395,7 @@ def process_message(cfg, log):
 
         if fname and subj in cfg.file_queues:
             log.log_info("Valid subject with file attachment: %s" % (fname))
-            rmq = create_rq(cfg, subj, subj)
+            rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
             connect_process(rmq, log, cfg, msg, fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
@@ -404,7 +404,8 @@ def process_message(cfg, log):
 
         elif fname:
             log.log_info("Invalid subject with file attached: %s" % (fname))
-            rmq = create_rq(cfg, cfg.err_file_queue, cfg.err_file_queue)
+            rmq = rabbitmq_class.create_rmqpub(
+                cfg, cfg.err_file_queue, cfg.err_file_queue)
             connect_process(rmq, log, cfg, msg, fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
@@ -413,7 +414,8 @@ def process_message(cfg, log):
 
         else:
             log.log_warn("Invalid email subject: %s" % (subj))
-            rmq = create_rq(cfg, cfg.err_queue, cfg.err_queue)
+            rmq = rabbitmq_class.create_rmqpub(
+                cfg, cfg.err_queue, cfg.err_queue)
             connect_process(rmq, log, cfg, msg)
 
 
