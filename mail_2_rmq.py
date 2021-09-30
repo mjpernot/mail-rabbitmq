@@ -384,6 +384,26 @@ def get_email_addr(data):
     return re.findall(r"[\w\.-]+@[\w\.-]+", data)
 
 
+def process_subj(cfg, log, subj, msg):
+
+    """Function:  process_message
+
+    Description:  Process email using its subject line.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program.
+        (input) log -> Log class instance.
+        (input) subj -> Email subject line.
+        (input) msg -> Email message body.
+
+    """
+
+    log.log_info("Valid email subject: %s" % (subj))
+    rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
+    connect_process(rmq, log, cfg, msg)
+    rmq.close()
+
+
 def process_message(cfg, log):
 
     """Function:  process_message
