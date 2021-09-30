@@ -22,6 +22,7 @@ coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/main.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/parse_email.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_attach.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_message.py
+coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_subj.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/run_program.py
 
 echo ""
