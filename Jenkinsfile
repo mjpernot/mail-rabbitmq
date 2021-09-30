@@ -33,6 +33,7 @@ pipeline {
                 ./test/unit/mail_2_rmq/parse_email.py
                 ./test/unit/mail_2_rmq/process_attach.py
                 ./test/unit/mail_2_rmq/process_message.py
+                ./test/unit/mail_2_rmq/process_subj.py
                 ./test/unit/mail_2_rmq/run_program.py
                 deactivate
                 rm -rf test_env
