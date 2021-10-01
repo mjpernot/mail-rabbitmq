@@ -107,9 +107,9 @@ class UnitTest(unittest.TestCase):
 
         self.cfg = CfgTest()
         self.email_msg = {"subject": "Queue1", "from": "From: name@domain"}
-        self.email_msg2 = {"subject": "invalid", "from": "From: name@domain"}
+        self.email_msg2 = {"subject": "invalid", "from": "From: name2@domain"}
         self.email_msg3 = {"subject": "FileQueue1",
-                           "from": "From: name@domain"}
+                           "from": "From: name3@domain"}
         self.email_msg4 = {"subject": "invalid",
                            "from": "From: goodname@domain"}
         self.email_list = ["name@domain"]
