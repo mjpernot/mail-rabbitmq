@@ -21,6 +21,7 @@ coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/load_cfg.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/main.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/parse_email.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_attach.py
+coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_file.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_from.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_message.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_subj.py
