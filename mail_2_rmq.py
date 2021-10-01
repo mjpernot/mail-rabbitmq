@@ -362,8 +362,9 @@ def process_attach(msg, log, cfg):
                     log.log_warn("process_attach:  Message: %s" % (err_msg))
 
             else:
-                log.log_warn("Invalid attachment detected: %s"
-                             % (item.get_filename()))
+                if item.get_filename():
+                    log.log_warn("Invalid attachment detected: %s"
+                                 % (item.get_filename()))
 
     return fname_list
 
@@ -460,28 +461,30 @@ def process_file(cfg, log, subj, msg):
 
     """
 
-    fname = process_attach(msg, log, cfg)
+    fname_list = process_attach(msg, log, cfg)
 
-    if fname and subj in cfg.file_queues:
-        log.log_info("Valid subject with file attachment: %s" % (fname))
-        rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
-        connect_process(rmq, log, cfg, msg, fname=fname)
-        rmq.close()
-        err_flag, err_msg = gen_libs.rm_file(fname)
+    if fname_list and subj in cfg.file_queues:
+        for fname in fname_list:
+            log.log_info("Valid subject with file attachment: %s" % (fname))
+            rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
+            connect_process(rmq, log, cfg, msg, fname=fname)
+            rmq.close()
+            err_flag, err_msg = gen_libs.rm_file(fname)
 
-        if err_flag:
-            log.log_warn("process_file: Message: %s" % (err_msg))
+            if err_flag:
+                log.log_warn("process_file: Message: %s" % (err_msg))
 
-    elif fname:
-        log.log_info("Invalid subject with file attached: %s" % (fname))
-        rmq = rabbitmq_class.create_rmqpub(
-            cfg, cfg.err_file_queue, cfg.err_file_queue)
-        connect_process(rmq, log, cfg, msg, fname=fname)
-        rmq.close()
-        err_flag, err_msg = gen_libs.rm_file(fname)
+    elif fname_list:
+        for fname in fname_list:
+            log.log_info("Invalid subject with file attached: %s" % (fname))
+            rmq = rabbitmq_class.create_rmqpub(
+                cfg, cfg.err_file_queue, cfg.err_file_queue)
+            connect_process(rmq, log, cfg, msg, fname=fname)
+            rmq.close()
+            err_flag, err_msg = gen_libs.rm_file(fname)
 
-        if err_flag:
-            log.log_warn("process_file 2: Message: %s" % (err_msg))
+            if err_flag:
+                log.log_warn("process_file 2: Message: %s" % (err_msg))
 
     else:
         log.log_warn("Invalid email subject: %s" % (subj))
