@@ -342,7 +342,7 @@ def process_attach(msg, log, cfg):
 
     """
 
-    fname = None
+    fname_list = list()
     log.log_info("Locating attachments...")
 
     if msg.is_multipart():
@@ -354,15 +354,18 @@ def process_attach(msg, log, cfg):
                 log.log_info("Attachment detected: %s" % (item.get_filename()))
                 open(tname, "wb").write(item.get_payload(decode=True))
                 fname = tname + ".encoded"
+                fname_list.append(fname)
                 base64.encode(open(tname, 'rb'), open(fname, 'wb'))
                 err_flag, err_msg = gen_libs.rm_file(tname)
 
                 if err_flag:
                     log.log_warn("process_attach:  Message: %s" % (err_msg))
 
-                break
+            else:
+                log.log_warn("Invalid attachment detected: %s"
+                             % (item.get_filename()))
 
-    return fname
+    return fname_list
 
 
 def get_email_addr(data):

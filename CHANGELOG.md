@@ -16,6 +16,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - get_email_addr:  Finds all email addresses in the data string.
 
 ### Changed
+- process_attach:  Add ability to capture multiple attachments in an email.
 - process_message:  Refactored function and added ability to process emails based on the email's From address.
 - create_rq:  Added heartbeat and host_list to class instance call.
 - config/rabbitmq.py.TEMPLATE:  Added heartbeat, host_list, err_addr_queue and queue_dict entries.
