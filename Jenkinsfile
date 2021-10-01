@@ -23,7 +23,6 @@ pipeline {
                 ./test/unit/mail_2_rmq/camelize.py
                 ./test/unit/mail_2_rmq/check_nonprocess.py
                 ./test/unit/mail_2_rmq/connect_process.py
-                ./test/unit/mail_2_rmq/create_rq.py
                 ./test/unit/mail_2_rmq/filter_subject.py
                 ./test/unit/mail_2_rmq/get_email_addr.py
                 ./test/unit/mail_2_rmq/get_text.py
