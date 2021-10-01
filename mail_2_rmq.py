@@ -421,19 +421,20 @@ def process_from(cfg, log, msg, from_addr):
 
     """
 
-    fname = process_attach(msg, log, cfg)
+    fname_list = process_attach(msg, log, cfg)
 
-    if fname:
-        log.log_info("Valid From address: %s with file attachment: %s"
-                     % (from_addr, fname))
-        rmq = rabbitmq_class.create_rmqpub(
-            cfg, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr])
-        connect_process(rmq, log, cfg, msg, fname=fname)
-        rmq.close()
-        err_flag, err_msg = gen_libs.rm_file(fname)
+    if fname_list:
+        for fname in fname_list:
+            log.log_info("Valid From address: %s with file attachment: %s"
+                         % (from_addr, fname))
+            rmq = rabbitmq_class.create_rmqpub(
+                cfg, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr])
+            connect_process(rmq, log, cfg, msg, fname=fname)
+            rmq.close()
+            err_flag, err_msg = gen_libs.rm_file(fname)
 
-        if err_flag:
-            log.log_warn("process_from: Message: %s" % (err_msg))
+            if err_flag:
+                log.log_warn("process_from: Message: %s" % (err_msg))
 
     else:
         log.log_warn("Missing attachment for email address: %s"
