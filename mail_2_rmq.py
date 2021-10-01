@@ -432,6 +432,14 @@ def process_from(cfg, log, msg, from_addr):
         if err_flag:
             log.log_warn("process_message: Message: %s" % (err_msg))
 
+    else:
+        log.log_warn("Missing attachment for email address: %s"
+                     % (from_addr))
+        rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_addr_queue,
+                                           cfg.err_addr_queue)
+        connect_process(rmq, log, cfg, msg)
+        rmq.close()
+
 
 def process_file(cfg, log, subj, msg):
 
@@ -503,58 +511,13 @@ def process_message(cfg, log):
 
     # Is email subject a valid queue.
     if subj in cfg.valid_queues:
-        log.log_info("Valid email subject: %s" % (subj))
-        rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
-        connect_process(rmq, log, cfg, msg)
+        process_subj(cfg, log, subj, msg)
 
     elif from_addr and from_addr in cfg.queue_dict.keys():
-        fname = process_attach(msg, log, cfg)
-
-        if fname:
-            log.log_info("Valid From address: %s with file attachment: %s"
-                         % (from_addr, fname))
-            rmq = rabbitmq_class.create_rmqpub(
-                cfg, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr])
-            connect_process(rmq, log, cfg, msg, fname=fname)
-            err_flag, err_msg = gen_libs.rm_file(fname)
-
-            if err_flag:
-                log.log_warn("process_message: Message: %s" % (err_msg))
-
-        else:
-            log.log_warn("Missing attachment for email address: %s"
-                         % (from_addr))
-            rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_addr_queue,
-                                               cfg.err_addr_queue)
-            connect_process(rmq, log, cfg, msg)
+        process_from(cfg, log, msg, from_addr)
 
     else:
-        fname = process_attach(msg, log, cfg)
-
-        if fname and subj in cfg.file_queues:
-            log.log_info("Valid subject with file attachment: %s" % (fname))
-            rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
-            connect_process(rmq, log, cfg, msg, fname=fname)
-            err_flag, err_msg = gen_libs.rm_file(fname)
-
-            if err_flag:
-                log.log_warn("process_message: Message: %s" % (err_msg))
-
-        elif fname:
-            log.log_info("Invalid subject with file attached: %s" % (fname))
-            rmq = rabbitmq_class.create_rmqpub(
-                cfg, cfg.err_file_queue, cfg.err_file_queue)
-            connect_process(rmq, log, cfg, msg, fname=fname)
-            err_flag, err_msg = gen_libs.rm_file(fname)
-
-            if err_flag:
-                log.log_warn("process_message: Message: %s" % (err_msg))
-
-        else:
-            log.log_warn("Invalid email subject: %s" % (subj))
-            rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_queue,
-                                               cfg.err_queue)
-            connect_process(rmq, log, cfg, msg)
+        process_file(cfg, log, subj, msg)
 
 
 def check_nonprocess(cfg, log):
