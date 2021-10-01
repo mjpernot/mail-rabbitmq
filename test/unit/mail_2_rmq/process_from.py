@@ -144,12 +144,36 @@ class UnitTest(unittest.TestCase):
         self.subj = "SubjectLine"
         self.msg = "Message Body"
         self.from_addr = "From Line"
+        self.fname_list = ["Fname"]
+        self.fname_list2 = ["Fname", "Fname2"]
 
-    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value=None))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.process_attach")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_no_file(self, mock_rmq, mock_log):
+    def test_multiple_files(self, mock_rmq, mock_log, mock_attch):
+
+        """Function:  test_multiple_files
+
+        Description:  Test with multiple file attachments detected.
+
+        Arguments:
+
+        """
+
+        mock_rmq.return_value = self.rmq
+        mock_log.return_value = True
+        mock_attch.return_value = self.fname_list2
+
+        self.assertFalse(
+            mail_2_rmq.process_from(
+                self.cfg, mock_log, self.msg, self.from_addr))
+
+    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.process_attach")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
+    def test_no_file(self, mock_rmq, mock_log, mock_attch):
 
         """Function:  test_no_file
 
@@ -161,17 +185,18 @@ class UnitTest(unittest.TestCase):
 
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
+        mock_attch.return_value = list()
 
         self.assertFalse(
             mail_2_rmq.process_from(
                 self.cfg, mock_log, self.msg, self.from_addr))
 
-    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.process_attach")
     @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_rm_fail(self, mock_rmq, mock_log, mock_rm):
+    def test_rm_fail(self, mock_rmq, mock_log, mock_rm, mock_attch):
 
         """Function:  test_rm_fail
 
@@ -184,17 +209,18 @@ class UnitTest(unittest.TestCase):
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
         mock_rm.return_value = (True, "Error Message")
+        mock_attch.return_value = self.fname_list
 
         self.assertFalse(
             mail_2_rmq.process_from(
                 self.cfg, mock_log, self.msg, self.from_addr))
 
-    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.process_attach")
     @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_valid_from(self, mock_rmq, mock_log, mock_rm):
+    def test_valid_from(self, mock_rmq, mock_log, mock_rm, mock_attch):
 
         """Function:  test_valid_from
 
@@ -207,6 +233,7 @@ class UnitTest(unittest.TestCase):
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
         mock_rm.return_value = (False, None)
+        mock_attch.return_value = self.fname_list
 
         self.assertFalse(
             mail_2_rmq.process_from(
