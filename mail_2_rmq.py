@@ -433,6 +433,51 @@ def process_from(cfg, log, msg, from_addr):
             log.log_warn("process_message: Message: %s" % (err_msg))
 
 
+def process_file(cfg, log, subj, msg):
+
+    """Function:  process_file
+
+    Description:  Process email with a file attachment or process as an invalid
+        message.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program.
+        (input) log -> Log class instance.
+        (input) subj -> Email subject line.
+        (input) msg -> Email message body.
+
+    """
+
+    fname = process_attach(msg, log, cfg)
+
+    if fname and subj in cfg.file_queues:
+        log.log_info("Valid subject with file attachment: %s" % (fname))
+        rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
+        connect_process(rmq, log, cfg, msg, fname=fname)
+        rmq.close()
+        err_flag, err_msg = gen_libs.rm_file(fname)
+
+        if err_flag:
+            log.log_warn("process_message: Message: %s" % (err_msg))
+
+    elif fname:
+        log.log_info("Invalid subject with file attached: %s" % (fname))
+        rmq = rabbitmq_class.create_rmqpub(
+            cfg, cfg.err_file_queue, cfg.err_file_queue)
+        connect_process(rmq, log, cfg, msg, fname=fname)
+        rmq.close()
+        err_flag, err_msg = gen_libs.rm_file(fname)
+
+        if err_flag:
+            log.log_warn("process_message: Message: %s" % (err_msg))
+
+    else:
+        log.log_warn("Invalid email subject: %s" % (subj))
+        rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_queue,
+                                           cfg.err_queue)
+        connect_process(rmq, log, cfg, msg)
+        rmq.close()
+
 
 def process_message(cfg, log):
 
