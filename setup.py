@@ -44,11 +44,13 @@ setuptools.setup(
         "Development Status :: 5 - Production/Stable",
         "Operating System :: Linux",
         "Operating System :: Linux :: Centos",
+        "Operating System :: Linux :: Ubuntu",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
         "Topic :: Message",
         "Topic :: Message :: RabbitMQ",
         "Topic :: Message :: RabbitMQ :: 3.6.6",
+        "Topic :: Message :: RabbitMQ :: 3.8.2",
         "Topic :: Server",
         "Topic :: Server :: Mail"])

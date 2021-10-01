@@ -96,7 +96,6 @@ chmod 600 rabbitmq.py
 
 # Mail Alias Setup
   * If installing on a postfix system, use the **"Postfix system"** option.  Otherwise use the **"Alias system"** option for all other systems.
-  * Replace **{Python_Project}** with the baseline path of the python program.
 
 ### Postfix system
 
@@ -241,7 +240,6 @@ sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
 # Program Help Function:
 
   All of the programs, except the command and class files, will have an -h (Help option) that will show display a help message for that particular program.  The help message will usually consist of a description, usage, arugments to the program, example, notes about the program, and any known bugs not yet fixed.  To run the help command:
-  * Replace **{Python_Project}** with the baseline path of the python program.
 
 ```
 {Python_Project}/rmq-sysmon/mail_2_rmq.py -h
