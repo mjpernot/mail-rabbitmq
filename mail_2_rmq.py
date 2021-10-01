@@ -146,31 +146,6 @@ def load_cfg(cfg_name, cfg_dir):
     return cfg, status_flag, combined_msg
 
 
-def create_rq(cfg, q_name, r_key):
-
-    """Function:  create_rq
-
-    Description:  Create and return a RabbitMQ instance.
-
-    Arguments:
-        (input) cfg -> Configuration settings module for the program.
-        (input) q_name -> Queue name in RabbitMQ.
-        (input) r_key -> Routing key in RabbitMQ.
-        (output) RabbitMQ instance.
-
-    """
-
-    heartbeat = cfg.heartbeat if hasattr(cfg, "heartbeat") else 60
-    host_list = cfg.host_list if hasattr(cfg, "host_list") else list()
-
-    return rabbitmq_class.RabbitMQPub(
-        cfg.user, cfg.japd, cfg.host, cfg.port,
-        exchange_name=cfg.exchange_name, exchange_type=cfg.exchange_type,
-        queue_name=q_name, routing_key=r_key, x_durable=cfg.x_durable,
-        q_durable=cfg.q_durable, auto_delete=cfg.auto_delete,
-        heartbeat=heartbeat, host_list=host_list)
-
-
 def parse_email():
 
     """Function:  parse_email
@@ -286,7 +261,7 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
             archive_email(rmq, log, cfg, msg)
 
     else:
-        log.log_err("Failed to connnect to RabbitMQ Node...")
+        log.log_err("Failed to connect to RabbitMQ Node...")
         log.log_err("Message:  %s" % (err_msg))
         archive_email(rmq, log, cfg, msg)
 
