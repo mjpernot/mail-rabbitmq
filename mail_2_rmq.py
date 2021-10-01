@@ -386,7 +386,7 @@ def get_email_addr(data):
 
 def process_subj(cfg, log, subj, msg):
 
-    """Function:  process_message
+    """Function:  process_subj
 
     Description:  Process email using its subject line.
 
@@ -402,6 +402,36 @@ def process_subj(cfg, log, subj, msg):
     rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
     connect_process(rmq, log, cfg, msg)
     rmq.close()
+
+
+def process_from(cfg, log, msg, from_addr):
+
+    """Function:  process_from
+
+    Description:  Process email using its From line.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program.
+        (input) log -> Log class instance.
+        (input) msg -> Email message body.
+        (input) from_addr -> Email From line.
+
+    """
+
+    fname = process_attach(msg, log, cfg)
+
+    if fname:
+        log.log_info("Valid From address: %s with file attachment: %s"
+                     % (from_addr, fname))
+        rmq = rabbitmq_class.create_rmqpub(
+            cfg, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr])
+        connect_process(rmq, log, cfg, msg, fname=fname)
+        rmq.close()
+        err_flag, err_msg = gen_libs.rm_file(fname)
+
+        if err_flag:
+            log.log_warn("process_message: Message: %s" % (err_msg))
+
 
 
 def process_message(cfg, log):

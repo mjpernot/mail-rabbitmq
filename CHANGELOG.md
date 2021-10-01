@@ -10,6 +10,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Added ability to handle connecting to multiple node cluster
 
 ### Added
+- process_from:  Process email using its From line.
 - process_subj:  Process email using its subject line.
 - get_email_addr:  Finds all email addresses in the data string.
 
