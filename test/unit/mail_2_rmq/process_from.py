@@ -112,6 +112,7 @@ class CfgTest(object):
         self.log_file = "LOG_FILE"
         self.email_dir = "EMAIL_DIRECTORY"
         self.queue_dict = {"From Line": "QueueName"}
+        self.err_addr_queue = "ERROR_ADDR_QUEUE"
 
 
 class UnitTest(unittest.TestCase):
@@ -145,8 +146,10 @@ class UnitTest(unittest.TestCase):
         self.from_addr = "From Line"
 
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value=None))
+    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_no_file(self, mock_log):
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
+    def test_no_file(self, mock_rmq, mock_log):
 
         """Function:  test_no_file
 
@@ -156,6 +159,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_rmq.return_value = self.rmq
         mock_log.return_value = True
 
         self.assertFalse(
