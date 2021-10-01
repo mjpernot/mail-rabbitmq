@@ -179,7 +179,7 @@ class UnitTest(unittest.TestCase):
 
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
-        mock_rm.return_value = (False, None)
+        mock_rm.return_value = (True, "Error Message")
 
         self.assertFalse(
             mail_2_rmq.process_from(
