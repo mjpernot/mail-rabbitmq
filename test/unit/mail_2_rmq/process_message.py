@@ -73,6 +73,8 @@ class CfgTest(object):
         self.err_file_queue = "ERROR_FILE_QUEUE"
         self.log_file = "LOG_FILE"
         self.email_dir = "EMAIL_DIRECTORY"
+        self.queue_dict = {"goodname@domain": "AddrQueue",
+                           "goodname2@domain": "AddrQueue2"}
 
 
 class UnitTest(unittest.TestCase):
@@ -83,8 +85,9 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
+        test_missing_from
+        test_from_addr
         test_fname_valid_subj
-        test_fname_error
         test_fname_invalid_subj
         test_fname_miss
         test_invalid_subj
@@ -103,20 +106,50 @@ class UnitTest(unittest.TestCase):
         """
 
         self.cfg = CfgTest()
-        self.email_msg = {"subject": "Queue1"}
+        self.email_msg = {"subject": "Queue1", "from": "From: name@domain"}
+        self.email_msg2 = {"subject": "invalid", "from": "From: name2@domain"}
+        self.email_msg3 = {"subject": "FileQueue1",
+                           "from": "From: name3@domain"}
+        self.email_msg4 = {"subject": "invalid",
+                           "from": "From: goodname@domain"}
+        self.email_list = ["name@domain"]
+        self.email_list2 = ["goodname@domain"]
 
-    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
-    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.get_email_addr")
     @mock.patch("mail_2_rmq.camelize")
-    @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_fname_error2(self, mock_log, mock_parse, mock_filter,
-                          mock_rm, mock_camel):
+    def test_missing_from(self, mock_log, mock_parse, mock_filter, mock_camel,
+                          mock_email):
 
-        """Function:  test_fname_error2
+        """Function:  test_missing_from
+
+        Description:  Test with missing from line from email.
+
+        Arguments:
+
+        """
+
+        mock_email.return_value = list()
+        mock_log.return_value = True
+        mock_parse.return_value = self.email_msg4
+        mock_filter.return_value = "InvalidQueue"
+        mock_camel.return_value = "InvalidQueue"
+
+        self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
+
+    @mock.patch("mail_2_rmq.process_from", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.get_email_addr")
+    @mock.patch("mail_2_rmq.camelize")
+    @mock.patch("mail_2_rmq.filter_subject")
+    @mock.patch("mail_2_rmq.parse_email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_from_addr(self, mock_log, mock_parse, mock_filter, mock_camel,
+                       mock_email):
+
+        """Function:  test_from_addr
 
         Description:  Test with file attachment found and valid subject.
 
@@ -124,24 +157,22 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_email.return_value = self.email_list2
         mock_log.return_value = True
-        mock_parse.return_value = {"subject": "FileQueue1"}
-        mock_filter.return_value = "FileQueue1"
-        mock_camel.return_value = "FileQueue1"
-        mock_rm.return_value = (True, "Error Message")
+        mock_parse.return_value = self.email_msg4
+        mock_filter.return_value = "InvalidQueue"
+        mock_camel.return_value = "InvalidQueue"
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
-    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
-    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.get_email_addr")
     @mock.patch("mail_2_rmq.camelize")
-    @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_fname_valid_subj(self, mock_log, mock_parse, mock_filter,
-                              mock_rm, mock_camel):
+                              mock_camel, mock_email):
 
         """Function:  test_fname_valid_subj
 
@@ -151,51 +182,22 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_email.return_value = self.email_list
         mock_log.return_value = True
-        mock_parse.return_value = {"subject": "FileQueue1"}
+        mock_parse.return_value = self.email_msg3
         mock_filter.return_value = "FileQueue1"
         mock_camel.return_value = "FileQueue1"
-        mock_rm.return_value = (False, None)
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
-    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
-    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.get_email_addr")
     @mock.patch("mail_2_rmq.camelize")
-    @mock.patch("mail_2_rmq.gen_libs.rm_file")
-    @mock.patch("mail_2_rmq.filter_subject")
-    @mock.patch("mail_2_rmq.parse_email")
-    @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_fname_error(self, mock_log, mock_parse, mock_filter, mock_rm,
-                         mock_camel):
-
-        """Function:  test_fname_error
-
-        Description:  Test with error removing file with invalid subject.
-
-        Arguments:
-
-        """
-
-        mock_log.return_value = True
-        mock_parse.return_value = {"subject": "invalid"}
-        mock_filter.return_value = "invalid"
-        mock_camel.return_value = "Invalid"
-        mock_rm.return_value = (True, "Error Message")
-
-        self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
-
-    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
-    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.camelize")
-    @mock.patch("mail_2_rmq.gen_libs.rm_file")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_fname_invalid_subj(self, mock_log, mock_parse, mock_filter,
-                                mock_rm, mock_camel):
+                                mock_camel, mock_email):
 
         """Function:  test_fname_invalid_subj
 
@@ -205,22 +207,22 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_email.return_value = self.email_list
         mock_log.return_value = True
-        mock_parse.return_value = {"subject": "invalid"}
+        mock_parse.return_value = self.email_msg2
         mock_filter.return_value = "invalid"
         mock_camel.return_value = "Invalid"
-        mock_rm.return_value = (False, None)
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
-    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value=None))
-    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.get_email_addr")
     @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_fname_miss(self, mock_log, mock_parse, mock_filter, mock_camel):
+    def test_fname_miss(self, mock_log, mock_parse, mock_filter, mock_camel,
+                        mock_email):
 
         """Function:  test_fname_miss
 
@@ -230,21 +232,22 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_email.return_value = self.email_list
         mock_log.return_value = True
-        mock_parse.return_value = {"subject": "invalid"}
+        mock_parse.return_value = self.email_msg2
         mock_camel.return_value = "Invalid"
         mock_filter.return_value = "invalid"
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
-    @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value=None))
-    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.get_email_addr")
     @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_invalid_subj(self, mock_log, mock_parse, mock_filter, mock_camel):
+    def test_invalid_subj(self, mock_log, mock_parse, mock_filter, mock_camel,
+                          mock_email):
 
         """Function:  test_invalid_subj
 
@@ -254,20 +257,22 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_email.return_value = self.email_list
         mock_log.return_value = True
-        mock_parse.return_value = {"subject": "invalid"}
+        mock_parse.return_value = self.email_msg2
         mock_camel.return_value = "Invalid"
         mock_filter.return_value = "invalid"
 
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
-    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.create_rq", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.process_subj", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.get_email_addr")
     @mock.patch("mail_2_rmq.camelize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_valid_subj(self, mock_log, mock_parse, mock_filter, mock_camel):
+    def test_valid_subj(self, mock_log, mock_parse, mock_filter, mock_camel,
+                        mock_email):
 
         """Function:  test_valid_subj
 
@@ -277,6 +282,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_email.return_value = self.email_list
         mock_log.return_value = True
         mock_parse.return_value = self.email_msg
         mock_filter.return_value = self.email_msg["subject"]

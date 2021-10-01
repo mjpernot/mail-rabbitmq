@@ -3,11 +3,11 @@
 # Unclassified until filled.
 user = "USER"
 japd = "PASSWORD"
-host = "HOSTNAME"
+host = "IP_ADDRESS"
 # RabbitMQ Exchange name for each instance run.
 exchange_name = "EXCHANGE_NAME"
 # List of queues in RabbitMQ.
-# Note:  Queues names must be PascalCase style.
+# Note:  Queues names must be CamelCase style.
 valid_queues = ["QueueName1", "QueueName2", ...]
 # List of queues for file attachment queues.
 file_queues = ["FileQueueName1", "FileQueueName2", ...]
@@ -21,12 +21,23 @@ email_dir = "DIRECTORY_PATH/email_dir"
 log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 # Directory path to temporary staging directory.
 tmp_dir = "DIRECTORY_PATH/tmp"
+# Types of attachments to extract from email.
+attach_types = ["application/pdf"]
+# Dictionary of valid email addresses and their associated queue names.
+# Format of email should be: "name@domain"
+queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}
+# Name of error queue to handle incorrect email address or missing attachment.
+err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
+# List of hosts along with their ports to a multiple node RabbitMQ cluster.
+# Format of each entry is: "IP:PORT".
+# Example: host_list = ["hostname:5672", "hostname2:5672", "hostname:5673"]
+# Note:  If host_list is set, it will take precedence over the host entry.
+host_list = []
+#
 # Do not modify settings below unless you know what you are doing.
 # Filter out strings within the subject line.
 # Do not modify unless you understand regular expressions.
 subj_filter = ["\[.*\]"]
-# Types of attachments to extract from email.
-attach_types = ["application/pdf"]
 # RabbitMQ listening port, default is 5672.
 port = 5672
 # Type of exchange:  direct, topic, fanout, headers
@@ -37,3 +48,6 @@ x_durable = True
 q_durable = True
 # Do queues automatically delete once message is processed:  True|False
 auto_delete = False
+# Time in seconds for ensuring connections stays active.
+# If set to 0, will turn the heartbeat off.
+heartbeat = 60
