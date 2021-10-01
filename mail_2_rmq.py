@@ -430,7 +430,7 @@ def process_from(cfg, log, msg, from_addr):
         err_flag, err_msg = gen_libs.rm_file(fname)
 
         if err_flag:
-            log.log_warn("process_message: Message: %s" % (err_msg))
+            log.log_warn("process_from: Message: %s" % (err_msg))
 
     else:
         log.log_warn("Missing attachment for email address: %s"
@@ -466,7 +466,7 @@ def process_file(cfg, log, subj, msg):
         err_flag, err_msg = gen_libs.rm_file(fname)
 
         if err_flag:
-            log.log_warn("process_message: Message: %s" % (err_msg))
+            log.log_warn("process_file: Message: %s" % (err_msg))
 
     elif fname:
         log.log_info("Invalid subject with file attached: %s" % (fname))
@@ -477,7 +477,7 @@ def process_file(cfg, log, subj, msg):
         err_flag, err_msg = gen_libs.rm_file(fname)
 
         if err_flag:
-            log.log_warn("process_message: Message: %s" % (err_msg))
+            log.log_warn("process_file 2: Message: %s" % (err_msg))
 
     else:
         log.log_warn("Invalid email subject: %s" % (subj))
