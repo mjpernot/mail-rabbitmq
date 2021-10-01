@@ -509,7 +509,6 @@ def process_message(cfg, log):
     from_addr = email_list[0] if email_list else None
     log.log_info("Instance creation")
 
-    # Is email subject a valid queue.
     if subj in cfg.valid_queues:
         process_subj(cfg, log, subj, msg)
 
