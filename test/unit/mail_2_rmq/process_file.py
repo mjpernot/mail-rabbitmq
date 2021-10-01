@@ -188,7 +188,7 @@ class UnitTest(unittest.TestCase):
         mock_rm.return_value = (True, "Error Message")
 
         self.assertFalse(
-            mail_2_rmq.process_file(self.cfg, mock_log, self.subj, self.msg))
+            mail_2_rmq.process_file(self.cfg, mock_log, self.subj2, self.msg))
 
     @mock.patch("mail_2_rmq.process_attach", mock.Mock(return_value="Fname"))
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
