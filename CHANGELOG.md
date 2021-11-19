@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [1.3.1] - 2021-11-19
+
+
 ## [1.3.0] - 2021-09-28
 - Update to work with Pika 1.2.0
 - Update to work with RabbitMQ 3.8.2
