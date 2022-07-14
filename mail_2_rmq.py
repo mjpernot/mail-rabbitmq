@@ -485,8 +485,7 @@ def process_message(cfg, log):
 
     log.log_info("Parsing email...")
     msg = parse_email()
-    subj = filter_subject(msg["subject"], cfg)
-    subj = camelize(subj)
+    subj = gen_libs.pascalize(filter_subject(msg["subject"], cfg))
     email_list = get_email_addr(msg["from"])
     from_addr = email_list[0] if email_list else None
     log.log_info("Instance creation")

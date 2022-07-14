@@ -117,7 +117,7 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.get_email_addr")
-    @mock.patch("mail_2_rmq.camelize")
+    @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
@@ -142,7 +142,7 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_from", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.get_email_addr")
-    @mock.patch("mail_2_rmq.camelize")
+    @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
@@ -167,7 +167,7 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.get_email_addr")
-    @mock.patch("mail_2_rmq.camelize")
+    @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
@@ -192,7 +192,7 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.get_email_addr")
-    @mock.patch("mail_2_rmq.camelize")
+    @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
@@ -217,7 +217,7 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.get_email_addr")
-    @mock.patch("mail_2_rmq.camelize")
+    @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
@@ -242,7 +242,7 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.get_email_addr")
-    @mock.patch("mail_2_rmq.camelize")
+    @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
@@ -267,7 +267,7 @@ class UnitTest(unittest.TestCase):
 
     @mock.patch("mail_2_rmq.process_subj", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.get_email_addr")
-    @mock.patch("mail_2_rmq.camelize")
+    @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
