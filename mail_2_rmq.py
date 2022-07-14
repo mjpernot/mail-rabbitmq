@@ -247,7 +247,7 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
             log.log_info("Processing error message...")
             t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
                     + " Subject: " + msg["subject"] + " Body: " \
-                    + get_text(msg)
+                    + (get_text(msg) or "")
 
         else:
             log.log_info("Processing email body...")

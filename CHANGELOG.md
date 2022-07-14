@@ -8,6 +8,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Upgrade python-lib to v2.9.2
 - Upgrade rabbitmq-lib to v2.2.0
 
+### Fixed
+- connect_process: Email body returns text or an empty string.
+
 
 ## [1.3.0] - 2021-09-28
 - Update to work with Pika 1.2.0
