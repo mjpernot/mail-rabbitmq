@@ -11,6 +11,12 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ### Fixed
 - connect_process: Email body returns text or an empty string.
 
+### Changed
+- process_message: Replaced camelize with gen_libs.pascalize call.
+
+### Removed
+- camelize:  Replaced with pascalize call.
+
 
 ## [1.3.0] - 2021-09-28
 - Update to work with Pika 1.2.0

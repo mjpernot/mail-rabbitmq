@@ -285,23 +285,6 @@ def filter_subject(subj, cfg):
     return subj
 
 
-def camelize(data_str):
-
-    """Function:  camelize
-
-    Description:  Camel cases a string.
-
-    Arguments:
-        (input) data_str -> String to be camelcased.
-        (output) CamelCased string.
-
-    """
-
-    return "".join(item.capitalize() for item in re.split("([^a-zA-Z0-9])",
-                                                          data_str)
-                   if item.isalnum())
-
-
 def process_attach(msg, log, cfg):
 
     """Function:  process_attach
