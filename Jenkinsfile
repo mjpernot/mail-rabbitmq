@@ -20,7 +20,6 @@ pipeline {
                 pip2 install mock==2.0.0 --user
                 pip2 install pika==1.2.0 --user
                 ./test/unit/mail_2_rmq/archive_email.py
-                ./test/unit/mail_2_rmq/camelize.py
                 ./test/unit/mail_2_rmq/check_nonprocess.py
                 ./test/unit/mail_2_rmq/connect_process.py
                 ./test/unit/mail_2_rmq/filter_subject.py
