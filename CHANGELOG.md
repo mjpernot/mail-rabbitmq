@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [1.3.1] - 2021-11-19
 - Upgrade python-lib to v2.9.2
+- Upgrade rabbitmq-lib to v2.2.0
 
 
 ## [1.3.0] - 2021-09-28
