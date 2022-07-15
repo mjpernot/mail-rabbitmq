@@ -116,7 +116,7 @@ class UnitTest(unittest.TestCase):
         self.email_list2 = ["goodname@domain"]
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.get_email_addr")
+    @mock.patch("mail_2_rmq.gen_libs.find_email_addr")
     @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
@@ -141,7 +141,7 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
     @mock.patch("mail_2_rmq.process_from", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.get_email_addr")
+    @mock.patch("mail_2_rmq.gen_libs.find_email_addr")
     @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
@@ -166,7 +166,7 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.get_email_addr")
+    @mock.patch("mail_2_rmq.gen_libs.find_email_addr")
     @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
@@ -191,7 +191,7 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.get_email_addr")
+    @mock.patch("mail_2_rmq.gen_libs.find_email_addr")
     @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
@@ -216,7 +216,7 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.get_email_addr")
+    @mock.patch("mail_2_rmq.gen_libs.find_email_addr")
     @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
@@ -241,7 +241,7 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.get_email_addr")
+    @mock.patch("mail_2_rmq.gen_libs.find_email_addr")
     @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
@@ -266,7 +266,7 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
     @mock.patch("mail_2_rmq.process_subj", mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.get_email_addr")
+    @mock.patch("mail_2_rmq.gen_libs.find_email_addr")
     @mock.patch("mail_2_rmq.gen_libs.pascalize")
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")

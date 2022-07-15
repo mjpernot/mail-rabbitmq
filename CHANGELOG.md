@@ -12,7 +12,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - connect_process: Email body returns text or an empty string.
 
 ### Changed
-- process_message: Replaced camelize with gen_libs.pascalize call.
+- process_message: Replaced camelize with gen_libs.pascalize call and replaced get_email_addr with gen_libs.find_email_addr call.
 
 ### Removed
 - camelize:  Replaced with pascalize call.
