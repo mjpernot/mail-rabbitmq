@@ -15,7 +15,8 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - process_message: Replaced camelize with gen_libs.pascalize call and replaced get_email_addr with gen_libs.find_email_addr call.
 
 ### Removed
-- camelize:  Replaced with pascalize call.
+- get_email_addr:  Replaced with gen_libs.find_email_addr call.
+- camelize:  Replaced with gen_libs.pascalize call.
 
 
 ## [1.3.0] - 2021-09-28
