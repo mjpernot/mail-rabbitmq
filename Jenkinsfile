@@ -9,10 +9,10 @@ pipeline {
         stage('Test') {
             steps {
                 dir ('lib') {
-                    git branch: "master", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/python-lib.git"
+                    git branch: "mod/292", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/python-lib.git"
                 }
                 dir ('rabbit_lib') {
-                    git branch: "master", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/rabbitmq-lib.git"
+                    git branch: "mod/211", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/rabbitmq-lib.git"
                 }
                 sh """
                 virtualenv test_env
@@ -20,11 +20,9 @@ pipeline {
                 pip2 install mock==2.0.0 --user
                 pip2 install pika==1.2.0 --user
                 ./test/unit/mail_2_rmq/archive_email.py
-                ./test/unit/mail_2_rmq/camelize.py
                 ./test/unit/mail_2_rmq/check_nonprocess.py
                 ./test/unit/mail_2_rmq/connect_process.py
                 ./test/unit/mail_2_rmq/filter_subject.py
-                ./test/unit/mail_2_rmq/get_email_addr.py
                 ./test/unit/mail_2_rmq/get_text.py
                 ./test/unit/mail_2_rmq/help_message.py
                 ./test/unit/mail_2_rmq/load_cfg.py

@@ -5,6 +5,18 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [1.3.1] - 2021-11-19
+- Upgrade python-lib to v2.9.2
+- Upgrade rabbitmq-lib to v2.2.0
+
+### Fixed
+- connect_process: Email body returns text or an empty string.
+
+### Changed
+- process_message: Replaced camelize with gen_libs.pascalize call and replaced get_email_addr with gen_libs.find_email_addr call.
+
+### Removed
+- get_email_addr:  Replaced with gen_libs.find_email_addr call.
+- camelize:  Replaced with gen_libs.pascalize call.
 
 
 ## [1.3.0] - 2021-09-28
@@ -20,7 +32,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ### Changed
 - process_attach:  Add ability to capture multiple attachments in an email.
-- process_message:  Refactored function and added ability to process emails based on the email's From address.
+- process_message:  Refactored function and added ability to process emails based on the emails From address.
 - config/rabbitmq.py.TEMPLATE:  Added heartbeat, host_list, err_addr_queue and queue_dict entries.
 - Documentation updates.
 

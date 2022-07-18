@@ -247,7 +247,7 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
             log.log_info("Processing error message...")
             t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
                     + " Subject: " + msg["subject"] + " Body: " \
-                    + get_text(msg)
+                    + (get_text(msg) or "")
 
         else:
             log.log_info("Processing email body...")
@@ -283,23 +283,6 @@ def filter_subject(subj, cfg):
         subj = re.sub(f_str, "", subj).strip()
 
     return subj
-
-
-def camelize(data_str):
-
-    """Function:  camelize
-
-    Description:  Camel cases a string.
-
-    Arguments:
-        (input) data_str -> String to be camelcased.
-        (output) CamelCased string.
-
-    """
-
-    return "".join(item.capitalize() for item in re.split("([^a-zA-Z0-9])",
-                                                          data_str)
-                   if item.isalnum())
 
 
 def process_attach(msg, log, cfg):
@@ -485,9 +468,8 @@ def process_message(cfg, log):
 
     log.log_info("Parsing email...")
     msg = parse_email()
-    subj = filter_subject(msg["subject"], cfg)
-    subj = camelize(subj)
-    email_list = get_email_addr(msg["from"])
+    subj = gen_libs.pascalize(filter_subject(msg["subject"], cfg))
+    email_list = gen_libs.find_email_addr(msg["from"])
     from_addr = email_list[0] if email_list else None
     log.log_info("Instance creation")
 
