@@ -37,6 +37,7 @@
             user = "USER"
             japd = "PSWORD"
             host = "IP_ADDRESS"
+            host_list = []
             exchange_name = "EXCHANGE_NAME"
             valid_queues = ["QueueName1", "QueueName2", ...]
             file_queues = ["FileQueueName1", "FileQueueName2", ...]
@@ -46,7 +47,6 @@
             log_file = "DIRECTORY_PATH/mail_2_rmq.log"
             tmp_dir = "DIRECTORY_PATH/tmp"
             attach_types = ["application/pdf"]
-            host_list = []
 
             # Only change these entries if neccessary.
             subj_filter = ["\[.*\]"]
