@@ -21,6 +21,7 @@ err_file_queue = "ERROR_FILE_QUEUE_NAME"
 # Archive directory path for non-processed email files.
 email_dir = "DIRECTORY_PATH/email_dir"
 # Directory path and file name to the program log.
+# Note: A date format of %Y%m%d will be appended to the end of the log file.
 log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 # Directory path to temporary staging directory.
 tmp_dir = "DIRECTORY_PATH/tmp"
