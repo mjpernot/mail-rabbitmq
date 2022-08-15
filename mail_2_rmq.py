@@ -43,7 +43,7 @@
             err_queue = "ERROR_QUEUE_NAME"
             err_file_queues = "ERROR_FILE_QUEUE_NAME"
             email_dir = "DIRECTORY_PATH/email_dir"
-            log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
+            log_file = "DIRECTORY_PATH/mail_2_rmq.log"
             tmp_dir = "DIRECTORY_PATH/tmp"
             attach_types = ["application/pdf"]
             host_list = []
