@@ -9,10 +9,12 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Upgrade rabbitmq-lib to v2.2.0
 
 ### Fixed
+- run_program: Appended the date to the end of the log files for daily log rotation.
 - connect_process: Email body returns text or an empty string.
 
 ### Changed
 - process_message: Replaced camelize with gen_libs.pascalize call and replaced get_email_addr with gen_libs.find_email_addr call.
+- Documentation update.
 
 ### Removed
 - get_email_addr:  Replaced with gen_libs.find_email_addr call.

@@ -37,16 +37,16 @@
             user = "USER"
             japd = "PSWORD"
             host = "IP_ADDRESS"
+            host_list = []
             exchange_name = "EXCHANGE_NAME"
             valid_queues = ["QueueName1", "QueueName2", ...]
             file_queues = ["FileQueueName1", "FileQueueName2", ...]
             err_queue = "ERROR_QUEUE_NAME"
             err_file_queues = "ERROR_FILE_QUEUE_NAME"
             email_dir = "DIRECTORY_PATH/email_dir"
-            log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
+            log_file = "DIRECTORY_PATH/mail_2_rmq.log"
             tmp_dir = "DIRECTORY_PATH/tmp"
             attach_types = ["application/pdf"]
-            host_list = []
 
             # Only change these entries if neccessary.
             subj_filter = ["\[.*\]"]
@@ -516,10 +516,11 @@ def run_program(args_array, func_dict, **kwargs):
     args_array = dict(args_array)
     func_dict = dict(func_dict)
     cfg, status_flag, err_msgs = load_cfg(args_array["-c"], args_array["-d"])
+    date = "." + datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d")
 
     if status_flag:
         log = gen_class.Logger(
-            cfg.log_file, cfg.log_file, "INFO",
+            cfg.log_file, cfg.log_file + date, "INFO",
             "%(asctime)s %(levelname)s %(message)s", "%Y-%m-%dT%H:%M:%SZ")
         str_val = "=" * 80
         log.log_info("%s:%s Initialized" % (cfg.host, cfg.exchange_name))

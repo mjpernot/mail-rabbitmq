@@ -72,6 +72,9 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - japd = "PSWORD"
     - host = "IP_ADDRESS"
 
+  * List of hosts along with their ports to a multiple node RabbitMQ cluster.
+    - host_list = []
+
   * Name of the exchange in the RabbitMQ node.
     - exchange_name = "EXCHANGE_NAME"
 
@@ -96,9 +99,6 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
 
   * Name of error queue to handle incorrect email address or missing attachment.
     - err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
-
-  * List of hosts along with their ports to a multiple node RabbitMQ cluster.
-    - host_list = []
 
 ```
 cd config
