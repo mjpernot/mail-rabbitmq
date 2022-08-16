@@ -2,14 +2,22 @@
 # Classification (U)
 # Unclassified until filled.
 user = "USER"
-japd = "PASSWORD"
+japd = "PSWORD"
 host = "IP_ADDRESS"
-# RabbitMQ Exchange name for each instance run.
+# List of hosts along with their ports to a multiple node RabbitMQ cluster.
+# Format of each entry is: "IP:PORT".
+# Example: host_list = ["hostname:5672", "hostname2:5672", "hostname:5673"]
+# Note:  If host_list is set, it will take precedence over the host entry.
+host_list = []
+# Name of the exchange in the RabbitMQ node.
 exchange_name = "EXCHANGE_NAME"
 # List of queues in RabbitMQ.
-# Note:  Queues names must be CamelCase style.
+# Queue names are direct correlation to the subject names in the emails.
+# Queues names must be PascalCase style.
 valid_queues = ["QueueName1", "QueueName2", ...]
 # List of queues for file attachment queues.
+# Queue names are direct correlation to the subject names in the emails.
+# Queues names must be PascalCase style.
 file_queues = ["FileQueueName1", "FileQueueName2", ...]
 # Name of error queue to handle incorrectly routed emails.
 err_queue = "ERROR_QUEUE_NAME"
@@ -18,6 +26,7 @@ err_file_queue = "ERROR_FILE_QUEUE_NAME"
 # Archive directory path for non-processed email files.
 email_dir = "DIRECTORY_PATH/email_dir"
 # Directory path and file name to the program log.
+# Note: A date format of %Y%m%d will be appended to the end of the log file.
 log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 # Directory path to temporary staging directory.
 tmp_dir = "DIRECTORY_PATH/tmp"
@@ -28,11 +37,6 @@ attach_types = ["application/pdf"]
 queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}
 # Name of error queue to handle incorrect email address or missing attachment.
 err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
-# List of hosts along with their ports to a multiple node RabbitMQ cluster.
-# Format of each entry is: "IP:PORT".
-# Example: host_list = ["hostname:5672", "hostname2:5672", "hostname:5673"]
-# Note:  If host_list is set, it will take precedence over the host entry.
-host_list = []
 #
 # Do not modify settings below unless you know what you are doing.
 # Filter out strings within the subject line.

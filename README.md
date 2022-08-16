@@ -67,24 +67,38 @@ pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host 
 
 Setup configuration file.
 Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file.
-  * "user", "passwd", and "host" is connection information to a RabbitMQ node.
-  * "exchange_name" is name of the exchange in the RabbitMQ node.
-  * "valid_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.  Note:  Queues names must be PascalCase style.
-  * "file_queues" is a list of queue names in the RabbitMQ node, the queue names are direct correlation to the subject names in the emails.  Note:  Queues names must be PascalCase style.
-  * "err_queue" is the name of RabbitMQ queue that will contain any messages that do not fit in the other queues (i.e. invalid subject lines).
-  * "err_file_queue" is the name of RabbitMQ queue that will contain any file attachments that do not fit in the other queues (i.e. invalid subject lines).
-  * "email_dir" is the location where non-processed emails will be saved to (e.g. when RabbitMQ is down).
-  * "log_file" is the location of the mail_2_rmq.py log file.
+  * Connection information to a RabbitMQ node.
     - user = "USER"
-    - passwd = "PASSWORD"
-    - host = "HOSTNAME"
+    - japd = "PSWORD"
+    - host = "IP_ADDRESS"
+
+  * List of hosts along with their ports to a multiple node RabbitMQ cluster.
+    - host_list = []
+
+  * Name of the exchange in the RabbitMQ node.
     - exchange_name = "EXCHANGE_NAME"
-    - valid_queues = ["QUEUE_NAME1", "QUEUE_NAME2"]
+
+  * List of queue names in the RabbitMQ node.
+    - valid_queues = ["QueueName1", "QueueName2"]
     - file_queues = ["FileQueueName1", "FileQueueName2"]
+
+  * Name of RabbitMQ queue that will contain any messages/files that do not fit in the other queues (i.e. invalid subject lines).
     - err_queue = "ERROR_QUEUE_NAME"
     - err_file_queue = "ERROR_FILE_QUEUE_NAME"
+
+  * Directory for non-processed emails/log files/temporary storage.
     - email_dir = "DIRECTORY_PATH/email_dir"
     - log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
+    - tmp_dir = "DIRECTORY_PATH/tmp"
+
+  * Types of attachments to extract from email.
+    - attach_types = ["application/pdf"]
+
+  * Dictionary of valid email addresses and their associated queue names.
+    - queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}
+
+  * Name of error queue to handle incorrect email address or missing attachment.
+    - err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
 
 ```
 cd config
