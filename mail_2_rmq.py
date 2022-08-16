@@ -37,16 +37,16 @@
             user = "USER"
             japd = "PSWORD"
             host = "IP_ADDRESS"
+            host_list = []
             exchange_name = "EXCHANGE_NAME"
             valid_queues = ["QueueName1", "QueueName2", ...]
             file_queues = ["FileQueueName1", "FileQueueName2", ...]
             err_queue = "ERROR_QUEUE_NAME"
             err_file_queues = "ERROR_FILE_QUEUE_NAME"
             email_dir = "DIRECTORY_PATH/email_dir"
-            log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
+            log_file = "DIRECTORY_PATH/mail_2_rmq.log"
             tmp_dir = "DIRECTORY_PATH/tmp"
             attach_types = ["application/pdf"]
-            host_list = []
 
             # Only change these entries if neccessary.
             subj_filter = ["\[.*\]"]
@@ -247,7 +247,7 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
             log.log_info("Processing error message...")
             t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
                     + " Subject: " + msg["subject"] + " Body: " \
-                    + get_text(msg)
+                    + (get_text(msg) or "")
 
         else:
             log.log_info("Processing email body...")
@@ -283,23 +283,6 @@ def filter_subject(subj, cfg):
         subj = re.sub(f_str, "", subj).strip()
 
     return subj
-
-
-def camelize(data_str):
-
-    """Function:  camelize
-
-    Description:  Camel cases a string.
-
-    Arguments:
-        (input) data_str -> String to be camelcased.
-        (output) CamelCased string.
-
-    """
-
-    return "".join(item.capitalize() for item in re.split("([^a-zA-Z0-9])",
-                                                          data_str)
-                   if item.isalnum())
 
 
 def process_attach(msg, log, cfg):
@@ -485,9 +468,8 @@ def process_message(cfg, log):
 
     log.log_info("Parsing email...")
     msg = parse_email()
-    subj = filter_subject(msg["subject"], cfg)
-    subj = camelize(subj)
-    email_list = get_email_addr(msg["from"])
+    subj = gen_libs.pascalize(filter_subject(msg["subject"], cfg))
+    email_list = gen_libs.find_email_addr(msg["from"])
     from_addr = email_list[0] if email_list else None
     log.log_info("Instance creation")
 
@@ -534,10 +516,11 @@ def run_program(args_array, func_dict, **kwargs):
     args_array = dict(args_array)
     func_dict = dict(func_dict)
     cfg, status_flag, err_msgs = load_cfg(args_array["-c"], args_array["-d"])
+    date = "." + datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d")
 
     if status_flag:
         log = gen_class.Logger(
-            cfg.log_file, cfg.log_file, "INFO",
+            cfg.log_file, cfg.log_file + date, "INFO",
             "%(asctime)s %(levelname)s %(message)s", "%Y-%m-%dT%H:%M:%SZ")
         str_val = "=" * 80
         log.log_info("%s:%s Initialized" % (cfg.host, cfg.exchange_name))

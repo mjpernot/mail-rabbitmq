@@ -281,12 +281,12 @@ class UnitTest(unittest.TestCase):
         self.app_zip = "application/zip"
         self.cfg = CfgTest()
         self.results = [os.path.join(self.cfg.tmp_dir, self.fname_encode)]
-        self.results2 = \
-                      [os.path.join(self.cfg.tmp_dir, self.fname_encode),
-                       os.path.join(self.cfg.tmp_dir, "Filename2.pdf.encoded")]
-        self.results3 = \
-                      [os.path.join(self.cfg.tmp_dir, self.fname_encode),
-                       os.path.join(self.cfg.tmp_dir, "Filename.zip.encoded")]
+        self.results2 = [
+            os.path.join(self.cfg.tmp_dir, self.fname_encode),
+            os.path.join(self.cfg.tmp_dir, "Filename2.pdf.encoded")]
+        self.results3 = [
+            os.path.join(self.cfg.tmp_dir, self.fname_encode),
+            os.path.join(self.cfg.tmp_dir, "Filename.zip.encoded")]
         self.fname = "Filename.pdf"
         self.fname2 = "Filename2.pdf"
         self.fname3 = "Filename.zip"
@@ -305,13 +305,12 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
 
-        self.msg = Email2(content_type=self.app_pdf,
-                          filename=self.fname,
-                          content_type2=self.app_zip,
-                          filename2=self.fname3)
+        msg = Email2(
+            content_type=self.app_pdf, filename=self.fname,
+            content_type2=self.app_zip, filename2=self.fname3)
         self.cfg.attach_types = [self.app_pdf, self.app_zip]
 
-        fname = mail_2_rmq.process_attach(self.msg, mock_log, self.cfg)
+        fname = mail_2_rmq.process_attach(msg, mock_log, self.cfg)
 
         self.assertEqual(fname, self.results3)
 
@@ -329,12 +328,11 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
 
-        self.msg = Email2(content_type=self.app_zip,
-                          filename=self.fname3,
-                          content_type2=self.app_zip,
-                          filename2=self.fname4)
+        msg = Email2(
+            content_type=self.app_zip, filename=self.fname3,
+            content_type2=self.app_zip, filename2=self.fname4)
 
-        fname = mail_2_rmq.process_attach(self.msg, mock_log, self.cfg)
+        fname = mail_2_rmq.process_attach(msg, mock_log, self.cfg)
 
         self.assertEqual(fname, list())
 
@@ -351,12 +349,11 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
 
-        self.msg = Email2(content_type=self.app_pdf,
-                          filename=self.fname,
-                          content_type2=self.app_zip,
-                          filename2=self.fname3)
+        msg = Email2(
+            content_type=self.app_pdf, filename=self.fname,
+            content_type2=self.app_zip, filename2=self.fname3)
 
-        fname = mail_2_rmq.process_attach(self.msg, mock_log, self.cfg)
+        fname = mail_2_rmq.process_attach(msg, mock_log, self.cfg)
 
         self.assertEqual(fname, self.results)
 
@@ -373,12 +370,11 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
 
-        self.msg = Email2(content_type=self.app_pdf,
-                          filename=self.fname,
-                          content_type2=self.app_pdf,
-                          filename2=self.fname2)
+        msg = Email2(
+            content_type=self.app_pdf, filename=self.fname,
+            content_type2=self.app_pdf, filename2=self.fname2)
 
-        fname = mail_2_rmq.process_attach(self.msg, mock_log, self.cfg)
+        fname = mail_2_rmq.process_attach(msg, mock_log, self.cfg)
 
         self.assertEqual(fname, self.results2)
 
@@ -397,10 +393,9 @@ class UnitTest(unittest.TestCase):
         mock_log.return_value = True
         mock_rm.return_value = (True, "Error Message")
 
-        self.msg = Email(content_type=self.app_pdf,
-                         filename=self.fname)
+        msg = Email(content_type=self.app_pdf, filename=self.fname)
 
-        fname = mail_2_rmq.process_attach(self.msg, mock_log, self.cfg)
+        fname = mail_2_rmq.process_attach(msg, mock_log, self.cfg)
 
         self.assertEqual(fname, self.results)
 
@@ -417,10 +412,9 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
 
-        self.msg = Email(content_type=self.app_pdf,
-                         filename=self.fname)
+        msg = Email(content_type=self.app_pdf, filename=self.fname)
 
-        fname = mail_2_rmq.process_attach(self.msg, mock_log, self.cfg)
+        fname = mail_2_rmq.process_attach(msg, mock_log, self.cfg)
 
         self.assertEqual(fname, self.results)
 
