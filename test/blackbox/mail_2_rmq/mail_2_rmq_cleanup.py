@@ -17,8 +17,6 @@
 # Standard
 import os
 import sys
-
-# Third-party
 import pika
 
 # Local
