@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # Classification (U)
 
 """Program:  main.py
@@ -17,13 +16,7 @@
 # Standard
 import sys
 import os
-
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
-
-# Third-party
+import unittest
 import mock
 
 # Local
@@ -64,8 +57,6 @@ class UnitTest(unittest.TestCase):
         """
 
         self.args = {"-c": "config_file", "-d": "config_dir", "-M": True}
-        self.func_dict = {"-M": mail_2_rmq.process_message,
-                          "-C": mail_2_rmq.check_nonprocess}
 
     @mock.patch("mail_2_rmq.run_program")
     @mock.patch("mail_2_rmq.gen_libs.help_func")
