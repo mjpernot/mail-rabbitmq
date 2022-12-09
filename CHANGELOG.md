@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [1.3.2] - 2022-12-09
+- Updated to work in Python 3 too
+- Upgraded python-lib to v2.9.4
+- Upgraded rabbitmq-lib to v2.2.1
+
+### Changed
+- Converted imports to use Python 2.7 or Python 3.
+
+
 ## [1.3.1] - 2021-11-19
 - Upgrade python-lib to v2.9.2
 - Upgrade rabbitmq-lib to v2.2.0
