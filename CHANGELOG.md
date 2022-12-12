@@ -13,6 +13,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Converted imports to use Python 2.7 or Python 3.
 - process_message: Changed output of dictionary keys call to a list.
 - process_attach: Replaced open() call with io.open() call.
+- parse_email: Using different email parsers depending on Python version.
 
 
 ## [1.3.1] - 2021-11-19

@@ -76,10 +76,14 @@ from __future__ import print_function
 import sys
 import os
 import datetime
-import email.Parser
 import re
 import base64
 import io
+if sys.version_info < (3, 0):
+    import email.Parser
+
+else:
+    from email.parser import Parser
 
 # Local
 try:
@@ -168,7 +172,12 @@ def parse_email():
     """
 
     cmdline = gen_libs.get_inst(sys)
-    parser = email.Parser.Parser()
+
+    if sys.version_info < (3, 0):
+        parser = email.Parser.Parser()
+
+    else:
+        parser = Parser()
 
     return parser.parsestr("".join(cmdline.stdin.readlines()))
 
@@ -319,7 +328,17 @@ def process_attach(msg, log, cfg):
             if item.get_content_type() in cfg.attach_types:
                 tname = os.path.join(cfg.tmp_dir, item.get_filename())
                 log.log_info("Attachment detected: %s" % (item.get_filename()))
-                io.open(tname, "wb").write(item.get_payload(decode=True))
+
+                # New function
+                ##############################
+                if sys.version_info < (3, 0):
+                    data =item.get_payload(decode=True)
+
+                else:
+                    data = item.get_payload(decode=True).encode()
+                ##############################
+
+                io.open(tname, "wb").write(data)
                 fname = tname + ".encoded"
                 fname_list.append(fname)
                 base64.encode(io.open(tname, 'rb'), io.open(fname, 'wb'))

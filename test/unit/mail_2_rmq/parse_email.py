@@ -90,22 +90,41 @@ class UnitTest(unittest.TestCase):
         self.part = ParserTest()
         self.processed_msg = "RawEmailMessage"
 
-    @mock.patch("mail_2_rmq.email.Parser")
-    @mock.patch("mail_2_rmq.sys.stdin")
-    def test_parse_email(self, mock_stdin, mock_parse):
+    if sys.version_info < (3, 0):
+        @mock.patch("mail_2_rmq.email.Parser")
+        @mock.patch("mail_2_rmq.sys.stdin")
+        def test_parse_email(self, mock_stdin, mock_parse):
 
-        """Function:  test_parse_email
+            """Function:  test_parse_email
 
-        Description:  Test parsing an email.
+            Description:  Test parsing an email.
 
-        Arguments:
+            Arguments:
 
-        """
+            """
 
-        mock_parse.Parser.return_value = self.part
-        mock_stdin.readlines.return_value = self.raw_msg
+            mock_parse.Parser.return_value = self.part
+            mock_stdin.readlines.return_value = self.raw_msg
 
-        self.assertEqual(mail_2_rmq.parse_email(), self.processed_msg)
+            self.assertEqual(mail_2_rmq.parse_email(), self.processed_msg)
+
+    else:
+        @mock.patch("mail_2_rmq.Parser")
+        @mock.patch("mail_2_rmq.sys.stdin")
+        def test_parse_email(self, mock_stdin, mock_parse):
+
+            """Function:  test_parse_email
+
+            Description:  Test parsing an email.
+
+            Arguments:
+
+            """
+
+            mock_parse.return_value = self.part
+            mock_stdin.readlines.return_value = self.raw_msg
+
+            self.assertEqual(mail_2_rmq.parse_email(), self.processed_msg)
 
 
 if __name__ == "__main__":
