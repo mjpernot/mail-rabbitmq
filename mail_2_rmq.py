@@ -303,9 +303,19 @@ def filter_subject(subj, cfg):
     return subj
 
 
-def convert_payload(item):
-    return item.get_payload(decode=True) if sys.version_info < (3, 0) else \
-           item.get_payload(decode=True).encode()
+def convert_bytes(data):
+
+    """Function:  convert_bytes
+
+    Description:  Converts a string to bytes if in a Python 3 environment.
+
+    Arguments:
+        (input) data -> Data string.
+        (output) -> Data string or Bytes string.
+
+    """
+
+    return  data if sys.version_info < (3, 0) else data.encode()
 
 
 def process_attach(msg, log, cfg):
@@ -316,10 +326,10 @@ def process_attach(msg, log, cfg):
         specified attachment types.
 
     Arguments:
-        (input) msg -> Email message instance.
-        (input) log -> Log class instance.
-        (input) cfg -> Configuration settings module for the program.
-        (output) fname -> Name of encoded attachment file.
+        (input) msg -> Email message instance
+        (input) log -> Log class instance
+        (input) cfg -> Configuration settings module for the program
+        (output) fname -> Name of encoded attachment file
 
     """
 
@@ -333,18 +343,8 @@ def process_attach(msg, log, cfg):
             if item.get_content_type() in cfg.attach_types:
                 tname = os.path.join(cfg.tmp_dir, item.get_filename())
                 log.log_info("Attachment detected: %s" % (item.get_filename()))
-
-                # New function - convert_payload
-                ##############################
-                if sys.version_info < (3, 0):
-                    data = item.get_payload(decode=True)
-
-                else:
-                    data = item.get_payload(decode=True).encode()
-                ##############################
-                # io.open(tname, "wb").write(convert_payload(item))
-
-                io.open(tname, "wb").write(data)
+                io.open(tname, "wb").write(
+                    convert_bytes(item.get_payload(decode=True)))
                 fname = tname + ".encoded"
                 fname_list.append(fname)
                 base64.encode(io.open(tname, 'rb'), io.open(fname, 'wb'))
