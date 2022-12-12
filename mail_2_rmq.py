@@ -303,6 +303,11 @@ def filter_subject(subj, cfg):
     return subj
 
 
+def convert_payload(item):
+    return item.get_payload(decode=True) if sys.version_info < (3, 0) else \
+           item.get_payload(decode=True).encode()
+
+
 def process_attach(msg, log, cfg):
 
     """Function:  process_attach
@@ -329,14 +334,15 @@ def process_attach(msg, log, cfg):
                 tname = os.path.join(cfg.tmp_dir, item.get_filename())
                 log.log_info("Attachment detected: %s" % (item.get_filename()))
 
-                # New function
+                # New function - convert_payload
                 ##############################
                 if sys.version_info < (3, 0):
-                    data =item.get_payload(decode=True)
+                    data = item.get_payload(decode=True)
 
                 else:
                     data = item.get_payload(decode=True).encode()
                 ##############################
+                # io.open(tname, "wb").write(convert_payload(item))
 
                 io.open(tname, "wb").write(data)
                 fname = tname + ".encoded"
