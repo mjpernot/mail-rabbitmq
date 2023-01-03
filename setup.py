@@ -12,8 +12,6 @@
 import os
 import setuptools
 
-# Third-party
-
 # Local
 import version
 

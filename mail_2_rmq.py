@@ -72,7 +72,6 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 # Standard
-from __future__ import print_function
 import sys
 import os
 import datetime
@@ -315,7 +314,7 @@ def convert_bytes(data):
 
     """
 
-    return  data if sys.version_info < (3, 0) else data.encode()
+    return data if sys.version_info < (3, 0) else data.encode()
 
 
 def process_attach(msg, log, cfg):
