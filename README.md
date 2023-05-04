@@ -23,14 +23,6 @@
 
 # Prerequisites:
 
-  * List of Linux packages that need to be installed on the server.
-    - git
-    - python-pip
-
-  * Local dependencies within the program structure.
-    - python-lib
-    - rabbitmq-lib
-
   * Setup a local account and group: rabbitmq:rabbitmq
 
 

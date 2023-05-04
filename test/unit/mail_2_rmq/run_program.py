@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # Classification (U)
 
 """Program:  run_program.py
@@ -17,13 +16,7 @@
 # Standard
 import sys
 import os
-
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
-
-# Third-party
+import unittest
 import mock
 
 # Local
@@ -241,7 +234,7 @@ class UnitTest(unittest.TestCase):
         self.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
         self.args_array2 = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY",
                             "-y": "flavorid"}
-        self.func_dict = {"-M": process_message, "-C": check_nonprocess}
+        self.func_names = {"-M": process_message, "-C": check_nonprocess}
         self.err_msgs = ["Error Msg1", "Error Msg3"]
 
     @mock.patch("mail_2_rmq.gen_class")
@@ -260,7 +253,7 @@ class UnitTest(unittest.TestCase):
         mock_class.Logger.return_value = self.log
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array2,
-                                                self.func_dict))
+                                                self.func_names))
 
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.gen_class.ProgramLock")
@@ -280,7 +273,7 @@ class UnitTest(unittest.TestCase):
         mock_lock.side_effect = mail_2_rmq.gen_class.SingleInstanceException
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
-                                                self.func_dict))
+                                                self.func_names))
 
     @mock.patch("mail_2_rmq.gen_class")
     @mock.patch("mail_2_rmq.load_cfg")
@@ -301,7 +294,7 @@ class UnitTest(unittest.TestCase):
         self.args_array["-M"] = True
         self.args_array["-C"] = True
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
-                                                self.func_dict))
+                                                self.func_names))
 
     @mock.patch("mail_2_rmq.gen_class")
     @mock.patch("mail_2_rmq.load_cfg")
@@ -321,7 +314,7 @@ class UnitTest(unittest.TestCase):
 
         self.args_array["-M"] = True
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
-                                                self.func_dict))
+                                                self.func_names))
 
     @mock.patch("mail_2_rmq.gen_class")
     @mock.patch("mail_2_rmq.load_cfg")
@@ -339,7 +332,7 @@ class UnitTest(unittest.TestCase):
         mock_class.Logger.return_value = self.log
 
         self.assertFalse(mail_2_rmq.run_program(self.args_array,
-                                                self.func_dict))
+                                                self.func_names))
 
     @mock.patch("mail_2_rmq.load_cfg")
     def test_false_status(self, mock_cfg):
@@ -356,7 +349,7 @@ class UnitTest(unittest.TestCase):
 
         with gen_libs.no_std_out():
             self.assertFalse(mail_2_rmq.run_program(self.args_array,
-                                                    self.func_dict))
+                                                    self.func_names))
 
 
 if __name__ == "__main__":
