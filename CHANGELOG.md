@@ -5,6 +5,12 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [1.4.0] - 2023-10-10
+- Replaced the arg_parser code with gen_class.ArgParser code.
+
+### Changed
+- Multiple functions: Replaced the arg_parser code with gen_class.ArgParser code.
+- main, run_program, parse_email: Removed gen_libs.get_inst call.
+- Documentation updates.
 
 
 ## [1.3.2] - 2022-12-09

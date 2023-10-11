@@ -68,6 +68,57 @@ def check_nonprocess(cfg, log):
     return status
 
 
+class ArgParser(object):
+
+    """Class:  ArgParser
+
+    Description:  Class stub holder for gen_class.ArgParser class.
+
+    Methods:
+        __init__
+        get_args_keys
+        get_val
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+
+        """
+
+        self.cmdline = None
+        self.args = dict()
+
+    def get_args_keys(self):
+
+        """Method:  get_args_keys
+
+        Description:  Method stub holder for gen_class.ArgParser.get_args_keys.
+
+        Arguments:
+
+        """
+
+        return list(self.args.keys())
+
+    def get_val(self, skey, def_val=None):
+
+        """Method:  get_val
+
+        Description:  Method stub holder for gen_class.ArgParser.get_val.
+
+        Arguments:
+
+        """
+
+        return self.args.get(skey, def_val)
+
+
 class LoggerTest(object):
 
     """Class:  LoggerTest
@@ -231,9 +282,11 @@ class UnitTest(unittest.TestCase):
         self.cfg = CfgTest()
         self.log = LoggerTest()
         self.proglock = ProgramLock(["cmdline"], "FlavorID")
-        self.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
-        self.args_array2 = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY",
-                            "-y": "flavorid"}
+        self.args = ArgParser()
+        self.args2 = ArgParser()
+        self.args.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
+        self.args2.args_array = {
+            "-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY", "-y": "flavorid"}
         self.func_names = {"-M": process_message, "-C": check_nonprocess}
         self.err_msgs = ["Error Msg1", "Error Msg3"]
 
@@ -252,8 +305,7 @@ class UnitTest(unittest.TestCase):
         mock_cfg.return_value = (self.cfg, True, [])
         mock_class.Logger.return_value = self.log
 
-        self.assertFalse(mail_2_rmq.run_program(self.args_array2,
-                                                self.func_names))
+        self.assertFalse(mail_2_rmq.run_program(self.args2, self.func_names))
 
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.gen_class.ProgramLock")
@@ -272,8 +324,7 @@ class UnitTest(unittest.TestCase):
         mock_log.return_value = self.log
         mock_lock.side_effect = mail_2_rmq.gen_class.SingleInstanceException
 
-        self.assertFalse(mail_2_rmq.run_program(self.args_array,
-                                                self.func_names))
+        self.assertFalse(mail_2_rmq.run_program(self.args, self.func_names))
 
     @mock.patch("mail_2_rmq.gen_class")
     @mock.patch("mail_2_rmq.load_cfg")
@@ -291,10 +342,9 @@ class UnitTest(unittest.TestCase):
         mock_class.Logger.return_value = self.log
         mock_class.ProgramLock.return_value = self.proglock
 
-        self.args_array["-M"] = True
-        self.args_array["-C"] = True
-        self.assertFalse(mail_2_rmq.run_program(self.args_array,
-                                                self.func_names))
+        self.args.args_array["-M"] = True
+        self.args.args_array["-C"] = True
+        self.assertFalse(mail_2_rmq.run_program(self.args, self.func_names))
 
     @mock.patch("mail_2_rmq.gen_class")
     @mock.patch("mail_2_rmq.load_cfg")
@@ -312,9 +362,8 @@ class UnitTest(unittest.TestCase):
         mock_class.Logger.return_value = self.log
         mock_class.ProgramLock.return_value = self.proglock
 
-        self.args_array["-M"] = True
-        self.assertFalse(mail_2_rmq.run_program(self.args_array,
-                                                self.func_names))
+        self.args.args_array["-M"] = True
+        self.assertFalse(mail_2_rmq.run_program(self.args, self.func_names))
 
     @mock.patch("mail_2_rmq.gen_class")
     @mock.patch("mail_2_rmq.load_cfg")
@@ -331,8 +380,7 @@ class UnitTest(unittest.TestCase):
         mock_cfg.return_value = (self.cfg, True, [])
         mock_class.Logger.return_value = self.log
 
-        self.assertFalse(mail_2_rmq.run_program(self.args_array,
-                                                self.func_names))
+        self.assertFalse(mail_2_rmq.run_program(self.args, self.func_names))
 
     @mock.patch("mail_2_rmq.load_cfg")
     def test_false_status(self, mock_cfg):
@@ -348,8 +396,8 @@ class UnitTest(unittest.TestCase):
         mock_cfg.return_value = (self.cfg, False, self.err_msgs)
 
         with gen_libs.no_std_out():
-            self.assertFalse(mail_2_rmq.run_program(self.args_array,
-                                                    self.func_names))
+            self.assertFalse(
+                mail_2_rmq.run_program(self.args, self.func_names))
 
 
 if __name__ == "__main__":
