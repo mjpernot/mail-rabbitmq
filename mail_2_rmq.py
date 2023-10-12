@@ -564,7 +564,7 @@ def run_program(args, func_dict, **kwargs):
             flavor_id = args.get_val("-y", def_val=cfg.exchange_name)
             prog_lock = gen_class.ProgramLock(sys.argv, flavor_id)
 
-            # Intersect args_array & func_dict to find which functions to call.
+            # Intersect args_array & func_dict to find which functions to call
             for opt in set(args.get_args_keys()) & set(func_dict.keys()):
                 func_dict[opt](cfg, log, **kwargs)
 

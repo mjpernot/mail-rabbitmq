@@ -104,7 +104,7 @@ class ArgParser(object):
 
         """
 
-        return list(self.args.keys())
+        return list(self.args_array.keys())
 
     def get_val(self, skey, def_val=None):
 
