@@ -86,14 +86,12 @@ else:
 
 # Local
 try:
-    from .lib import arg_parser
     from .lib import gen_libs
     from .lib import gen_class
     from .rabbit_lib import rabbitmq_class
     from . import version
 
 except (ValueError, ImportError) as err:
-    import lib.arg_parser as arg_parser
     import lib.gen_libs as gen_libs
     import lib.gen_class as gen_class
     import rabbit_lib.rabbitmq_class as rabbitmq_class
@@ -124,11 +122,11 @@ def load_cfg(cfg_name, cfg_dir):
         contents of the file.
 
     Arguments:
-        (input) cfg_name -> Configuration file name.
-        (input) cfg_dir -> Directory path to the configuration file.
-        (output) cfg -> Configuration module handler.
-        (output) status_flag -> True|False - successfully validate config file.
-        (output) combined_msg -> List of error messages detected.
+        (input) cfg_name -> Configuration file name
+        (input) cfg_dir -> Directory path to the configuration file
+        (output) cfg -> Configuration module handler
+        (output) status_flag -> True|False - successfully validate config file
+        (output) combined_msg -> List of error messages detected
 
     """
 
@@ -166,11 +164,9 @@ def parse_email():
         for RabbitMQ.
 
     Arguments:
-        (output) Email instance.
+        (output) Email instance
 
     """
-
-    cmdline = gen_libs.get_inst(sys)
 
     if sys.version_info < (3, 0):
         parser = email.Parser.Parser()
@@ -178,7 +174,7 @@ def parse_email():
     else:
         parser = Parser()
 
-    return parser.parsestr("".join(cmdline.stdin.readlines()))
+    return parser.parsestr("".join(sys.stdin.readlines()))
 
 
 def archive_email(rmq, log, cfg, msg):
@@ -188,10 +184,10 @@ def archive_email(rmq, log, cfg, msg):
     Description:  Save an email to file in an archive directory.
 
     Arguments:
-        (input) rmq -> RabbitMQ class instance.
-        (input) log -> Log class instance.
-        (input) cfg -> Configuration settings module for the program.
-        (input) msg -> Email message instance.
+        (input) rmq -> RabbitMQ class instance
+        (input) log -> Log class instance
+        (input) cfg -> Configuration settings module for the program
+        (input) msg -> Email message instance
 
     """
 
@@ -211,8 +207,8 @@ def get_text(msg):
     Description:  Walks the tree of a email and returns the text of the email.
 
     Arguments:
-        (input) msg -> Email message instance.
-        (output) All texts in email joined together in a single string.
+        (input) msg -> Email message instance
+        (output) All texts in email joined together in a single string
 
     """
 
@@ -237,12 +233,12 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
     Description:  Connect to RabbitMQ and injest email message.
 
     Arguments:
-        (input) rmq -> RabbitMQ class instance.
-        (input) log -> Log class instance.
-        (input) cfg -> Configuration settings module for the program.
-        (input) msg -> Email message instance.
+        (input) rmq -> RabbitMQ class instance
+        (input) log -> Log class instance
+        (input) cfg -> Configuration settings module for the program
+        (input) msg -> Email message instance
         (input) kwargs:
-            fname -> File name of email/attachment.
+            fname -> File name of email/attachment
 
     """
 
@@ -290,9 +286,9 @@ def filter_subject(subj, cfg):
     Description:  Filter out strings from the message subject line.
 
     Arguments:
-        (input) subj -> Message subject line.
-        (input) cfg -> Configuration settings module for the program.
-        (output) subj -> Filtered message subject line.
+        (input) subj -> Message subject line
+        (input) cfg -> Configuration settings module for the program
+        (output) subj -> Filtered message subject line
 
     """
 
@@ -309,8 +305,8 @@ def convert_bytes(data):
     Description:  Converts a string to bytes if in a Python 3 environment.
 
     Arguments:
-        (input) data -> Data string.
-        (output) -> Data string or Bytes string.
+        (input) data -> Data string
+        (output) -> Data string or Bytes string
 
     """
 
@@ -371,8 +367,8 @@ def get_email_addr(data):
         email address.
 
     Arguments:
-        (input) data -> Data string with email addresses.
-        (output) email_list -> List of email addresses.
+        (input) data -> Data string with email addresses
+        (output) email_list -> List of email addresses
 
     """
 
@@ -386,10 +382,10 @@ def process_subj(cfg, log, subj, msg):
     Description:  Process email using its subject line.
 
     Arguments:
-        (input) cfg -> Configuration settings module for the program.
-        (input) log -> Log class instance.
-        (input) subj -> Email subject line.
-        (input) msg -> Email message body.
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) subj -> Email subject line
+        (input) msg -> Email message body
 
     """
 
@@ -406,10 +402,10 @@ def process_from(cfg, log, msg, from_addr):
     Description:  Process email using its From line.
 
     Arguments:
-        (input) cfg -> Configuration settings module for the program.
-        (input) log -> Log class instance.
-        (input) msg -> Email message body.
-        (input) from_addr -> Email From line.
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) msg -> Email message body
+        (input) from_addr -> Email From line
 
     """
 
@@ -445,10 +441,10 @@ def process_file(cfg, log, subj, msg):
         message.
 
     Arguments:
-        (input) cfg -> Configuration settings module for the program.
-        (input) log -> Log class instance.
-        (input) subj -> Email subject line.
-        (input) msg -> Email message body.
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) subj -> Email subject line
+        (input) msg -> Email message body
 
     """
 
@@ -494,8 +490,8 @@ def process_message(cfg, log):
         queue in RabbitMQ.
 
     Arguments:
-        (input) cfg -> Configuration settings module for the program.
-        (input) log -> Log class instance.
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
 
     """
 
@@ -524,15 +520,15 @@ def check_nonprocess(cfg, log):
         provided.
 
     Arguments:
-        (input) cfg -> Configuration settings module for the program.
-        (input) log -> Log class instance.
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
 
     """
 
     print("check_nonprocess:  Stub holder.  Yet to be developed")
 
 
-def run_program(args_array, func_dict, **kwargs):
+def run_program(args, func_dict, **kwargs):
 
     """Function:  run_program
 
@@ -540,15 +536,14 @@ def run_program(args_array, func_dict, **kwargs):
         Create a program lock to prevent other instantiations from running.
 
     Arguments:
-        (input) args_array -> Dict of command line options and values.
-        (input) func_dict -> Dictionary list of functions and options.
+        (input) args -> ArgParser class instance
+        (input) func_dict -> Dictionary list of functions and options
 
     """
 
-    cmdline = gen_libs.get_inst(sys)
-    args_array = dict(args_array)
     func_dict = dict(func_dict)
-    cfg, status_flag, err_msgs = load_cfg(args_array["-c"], args_array["-d"])
+    cfg, status_flag, err_msgs = load_cfg(
+        args.get_val("-c"), args.get_val("-d"))
     date = "." + datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d")
 
     if status_flag:
@@ -566,11 +561,11 @@ def run_program(args_array, func_dict, **kwargs):
         log.log_info("%s" % (str_val))
 
         try:
-            flavor_id = args_array.get("-y", cfg.exchange_name)
-            prog_lock = gen_class.ProgramLock(cmdline.argv, flavor_id)
+            flavor_id = args.get_val("-y", def_val=cfg.exchange_name)
+            prog_lock = gen_class.ProgramLock(sys.argv, flavor_id)
 
-            # Intersect args_array & func_dict to find which functions to call.
-            for opt in set(args_array.keys()) & set(func_dict.keys()):
+            # Intersect args_array & func_dict to find which functions to call
+            for opt in set(args.get_args_keys()) & set(func_dict.keys()):
                 func_dict[opt](cfg, log, **kwargs)
 
             del prog_lock
@@ -595,32 +590,31 @@ def main():
         line arguments and values.
 
     Variables:
-        dir_chk_list -> contains options which will be directories.
-        func_dict -> dictionary list for the function calls or other options.
-        opt_req_list -> contains options that are required for the program.
-        opt_val_list -> contains options which require values.
-        opt_xor_dict -> contains dict with key that is xor with it's values.
+        dir_perms_chk -> contains directories and their octal permissions
+        func_dict -> dictionary list for the function calls or other options
+        opt_req_list -> contains options that are required for the program
+        opt_val_list -> contains options which require values
+        opt_xor_dict -> contains dict with key that is xor with it's values
 
     Arguments:
-        (input) argv -> Arguments from the command line.
+        (input) argv -> Arguments from the command line
 
     """
 
-    cmdline = gen_libs.get_inst(sys)
-    dir_chk_list = ["-d"]
+    dir_perms_chk = {"-d": 5}
     func_dict = {"-M": process_message, "-C": check_nonprocess}
     opt_req_list = ["-c", "-d"]
     opt_val_list = ["-c", "-d", "-y"]
     opt_xor_dict = {"-M": ["-C"], "-C": ["-M"]}
 
-    # Process argument list from command line.
-    args_array = arg_parser.arg_parse2(cmdline.argv, opt_val_list)
+    # Process argument list from command line
+    args = gen_class.ArgParser(sys.argv, opt_val=opt_val_list, do_parse=True)
 
-    if not gen_libs.help_func(args_array, __version__, help_message) \
-       and not arg_parser.arg_require(args_array, opt_req_list) \
-       and arg_parser.arg_xor_dict(args_array, opt_xor_dict) \
-       and not arg_parser.arg_dir_chk_crt(args_array, dir_chk_list):
-        run_program(args_array, func_dict)
+    if not gen_libs.help_func(args, __version__, help_message)  \
+       and args.arg_require(opt_req=opt_req_list)               \
+       and args.arg_xor_dict(opt_xor_val=opt_xor_dict)          \
+       and args.arg_dir_chk(dir_perms_chk=dir_perms_chk):
+        run_program(args, func_dict)
 
 
 if __name__ == "__main__":
