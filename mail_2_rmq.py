@@ -609,19 +609,12 @@ def main():
 
     # Process argument list from command line
     args = gen_class.ArgParser(sys.argv, opt_val=opt_val_list, do_parse=True)
-#    args_array = arg_parser.arg_parse2(sys.argv, opt_val_list)
 
     if not gen_libs.help_func(args, __version__, help_message)  \
        and args.arg_require(opt_req=opt_req_list)               \
        and args.arg_xor_dict(opt_xor_val=opt_xor_dict)          \
        and args.arg_dir_chk(dir_perms_chk=dir_perms_chk):
         run_program(args, func_dict)
-
-#    if not gen_libs.help_func(args_array, __version__, help_message) \
-#       and not arg_parser.arg_require(args_array, opt_req_list) \
-#       and arg_parser.arg_xor_dict(args_array, opt_xor_dict) \
-#       and not arg_parser.arg_dir_chk_crt(args_array, dir_chk_list):
-#        run_program(args_array, func_dict)
 
 
 if __name__ == "__main__":
