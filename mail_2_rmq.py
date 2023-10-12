@@ -543,7 +543,7 @@ def run_program(args, func_dict, **kwargs):
 
     func_dict = dict(func_dict)
     cfg, status_flag, err_msgs = load_cfg(
-        args.get_val("-c"), cfg_path=args.get_val("-d"))
+        args.get_val("-c"), args.get_val("-d"))
     date = "." + datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d")
 
     if status_flag:
