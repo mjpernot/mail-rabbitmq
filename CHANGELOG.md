@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [1.4.1] - 2024-03-06
+- Updated to work in Red Hat 8
+- Updated rabbitmq-lib to v2.2.3
+- Updated python-lib to v3.0.3
+
+### Changed
+- Set simplejson to 3.12.0 for Python 3.
+- Set chardet to 3.0.4 for Python 2.
+- Documentation updates.
+
+
 ## [1.4.0] - 2023-10-10
 - Replaced the arg_parser code with gen_class.ArgParser code.
 
