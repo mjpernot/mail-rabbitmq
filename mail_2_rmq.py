@@ -338,6 +338,7 @@ def process_attach(msg, log, cfg):
             if item.get_content_type() in cfg.attach_types:
                 tname = os.path.join(cfg.tmp_dir, item.get_filename())
                 log.log_info("Attachment detected: %s" % (item.get_filename()))
+                log.log_info("Attacment type: %s" % (item.get_content_type()))
                 io.open(tname, "wb").write(
                     convert_bytes(item.get_payload(decode=True)))
                 fname = tname + ".encoded"
@@ -551,14 +552,8 @@ def run_program(args, func_dict, **kwargs):
             cfg.log_file, cfg.log_file + date, "INFO",
             "%(asctime)s %(levelname)s %(message)s", "%Y-%m-%dT%H:%M:%SZ")
         str_val = "=" * 80
+        log.log_info("%s" % (str_val))
         log.log_info("%s:%s Initialized" % (cfg.host, cfg.exchange_name))
-        log.log_info("%s" % (str_val))
-        log.log_info("Exchange Name:  %s" % (cfg.exchange_name))
-        log.log_info("Exchange Type:  %s" % (cfg.exchange_type))
-        log.log_info("Message Queues:  %s" % (cfg.valid_queues))
-        log.log_info("File Queues:  %s" % (cfg.file_queues))
-        log.log_info("Email Archive:  %s" % (cfg.email_dir))
-        log.log_info("%s" % (str_val))
 
         try:
             flavor_id = args.get_val("-y", def_val=cfg.exchange_name)
