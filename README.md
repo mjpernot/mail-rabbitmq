@@ -100,7 +100,7 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - tmp_dir = "DIRECTORY_PATH/tmp"
 
   * Types of attachments to extract from email.
-    - attach_types = ["application/pdf"]
+    - attach_types = ["application/pdf", "application/octet-stream"]
 
   * Dictionary of valid email addresses and their associated queue names.
     - queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}

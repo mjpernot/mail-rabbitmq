@@ -10,6 +10,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Updated python-lib to v3.0.3
 
 ### Changed
+- run_program:  Removing some of the lines from the log preamble.
+- config/rabbitmq.py.TEMPLATE:  Added application/octet-stream to attach_types.
+- process_attach: Printing to log the content_type of the attachment.
 - Set simplejson to 3.12.0 for Python 3.
 - Set chardet to 3.0.4 for Python 2.
 - Documentation updates.
