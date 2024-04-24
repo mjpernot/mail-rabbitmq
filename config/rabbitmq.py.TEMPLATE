@@ -31,8 +31,8 @@ log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 # Directory path to temporary staging directory.
 tmp_dir = "DIRECTORY_PATH/tmp"
 # Types of attachments to extract from email.
-# Note:  application/octet-stream is for .csv files.
-attach_types = ["application/pdf", "application/octet-stream"]
+# Note:  application/octet-stream and text/csv is for .csv files.
+attach_types = ["application/pdf", "application/octet-stream", "text/csv"]
 # Dictionary of valid email addresses and their associated queue names.
 # Format of email should be: "name@domain"
 queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}
