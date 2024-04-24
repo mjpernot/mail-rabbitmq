@@ -338,7 +338,7 @@ def process_attach(msg, log, cfg):
             if item.get_content_type() in cfg.attach_types:
                 tname = os.path.join(cfg.tmp_dir, item.get_filename())
                 log.log_info("Attachment detected: %s" % (item.get_filename()))
-                log.log_info("Attacment type: %s" % (item.get_content_type()))
+                log.log_info("Attachment type: %s" % (item.get_content_type()))
                 io.open(tname, "wb").write(
                     convert_bytes(item.get_payload(decode=True)))
                 fname = tname + ".encoded"
@@ -353,6 +353,8 @@ def process_attach(msg, log, cfg):
                 if item.get_filename():
                     log.log_warn("Invalid attachment detected: %s"
                                  % (item.get_filename()))
+                    log.log_warn("Attachment type: %s"
+                                 % (item.get_content_type()))
 
     return fname_list
 

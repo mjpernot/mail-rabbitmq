@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [1.4.2] - 2024-24-24
+### Fixed
+- process_attach: Added log entry to display attachment type if attachment is detected as invalid.
+
+### Changed
+- config/rabbitmq.py.TEMPLATE: Added "text/csv" to allowable attachments in attach_types.
+
+
 ## [1.4.1] - 2024-03-06
 - Updated to work in Red Hat 8
 - Updated rabbitmq-lib to v2.2.3
