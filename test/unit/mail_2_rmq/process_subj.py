@@ -17,6 +17,7 @@
 import sys
 import os
 import unittest
+import collections
 import mock
 
 # Local
@@ -36,7 +37,9 @@ class Rmq(object):
 
     Methods:
         __init__
+        create_connection
         close
+        change_channel
 
     """
 
@@ -50,7 +53,22 @@ class Rmq(object):
 
         """
 
-        pass
+        self.status = collections.namedtuple("RQ", "is_open")
+        self.channel = self.status(True)
+        self.conn_status = True
+        self.err_msg = ""
+
+    def create_connection(self):
+
+        """Method:  create_connection
+
+        Description:  Stub holder for create_connection method.
+
+        Arguments:
+
+        """
+
+        return self.conn_status, self.err_msg
 
     def close(self):
 
@@ -63,6 +81,18 @@ class Rmq(object):
         """
 
         pass
+
+    def change_channel(self, stat):
+
+        """Method:  change_channel
+
+        Description:  Change channel status.
+
+        Arguments:
+
+        """
+
+        self.channel = self.status(stat)
 
 
 class CfgTest(object):
@@ -115,6 +145,10 @@ class UnitTest(unittest.TestCase):
     Methods:
         setUp
         test_valid_subj
+        test_true_true_connect
+        test_false_false_connect
+        test_false_true_connect
+        test_true_false_connect
 
     """
 
@@ -148,6 +182,92 @@ class UnitTest(unittest.TestCase):
 
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
+
+        self.assertFalse(
+            mail_2_rmq.process_subj(self.cfg, mock_log, self.subj, self.msg))
+
+    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
+    def test_true_true_connect(self, mock_rmq, mock_log):
+
+        """Function:  test_true_true_connect
+
+        Description:  Test connecting to RabbitMQ with true/true status.
+
+        Arguments:
+
+        """
+
+        mock_rmq.return_value = self.rmq
+        mock_log.return_value = True
+
+        self.assertFalse(
+            mail_2_rmq.process_subj(self.cfg, mock_log, self.subj, self.msg))
+
+    @mock.patch("mail_2_rmq.archive_email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
+    def test_false_false_connect(self, mock_rmq, mock_log, mock_archive):
+
+        """Function:  test_false_false_connect
+
+        Description:  Test connecting to RabbitMQ with false/false status.
+
+        Arguments:
+
+        """
+
+        self.rmq.conn_status = False
+        self.rmq.change_channel(False)
+
+        mock_rmq.return_value = self.rmq
+        mock_log.return_value = True
+        mock_archive.return_value = True
+
+        self.assertFalse(
+            mail_2_rmq.process_subj(self.cfg, mock_log, self.subj, self.msg))
+
+    @mock.patch("mail_2_rmq.archive_email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
+    def test_false_true_connect(self, mock_rmq, mock_log, mock_archive):
+
+        """Function:  test_false_true_connect
+
+        Description:  Test connecting to RabbitMQ with false/true status.
+
+        Arguments:
+
+        """
+
+        self.rmq.conn_status = False
+
+        mock_rmq.return_value = self.rmq
+        mock_log.return_value = True
+        mock_archive.return_value = True
+
+        self.assertFalse(
+            mail_2_rmq.process_subj(self.cfg, mock_log, self.subj, self.msg))
+
+    @mock.patch("mail_2_rmq.archive_email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
+    def test_true_false_connect(self, mock_rmq, mock_log, mock_archive):
+
+        """Function:  test_true_false_connect
+
+        Description:  Test connecting to RabbitMQ with true/false status.
+
+        Arguments:
+
+        """
+
+        self.rmq.change_channel(False)
+
+        mock_rmq.return_value = self.rmq
+        mock_log.return_value = True
+        mock_archive.return_value = True
 
         self.assertFalse(
             mail_2_rmq.process_subj(self.cfg, mock_log, self.subj, self.msg))
