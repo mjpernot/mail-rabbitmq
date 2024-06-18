@@ -402,23 +402,18 @@ def process_subj(cfg, log, subj, msg):
 
     log.log_info("Valid email subject: %s" % (subj))
     rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
-
-#########################################
     log.log_info("process_subj: Connection info: %s->%s" % (
         cfg.host, cfg.exchange_name))
     connect_status, err_msg = rmq.create_connection()
 
-#    print(connect_status, rmq.channel.is_open)
     if connect_status and rmq.channel.is_open:
         log.log_info("process_subj: Connected to RabbitMQ mode")
         connect_process(rmq, log, cfg, msg)
 
     else:
-#        print('Here')
         log.log_err("process_subj: Failed to connect to RabbitMQ")
         log.log_err("process_subj: Message:  %s" % (err_msg))
         archive_email(rmq, log, cfg, msg)
-#########################################
 
     rmq.close()
 
@@ -445,24 +440,18 @@ def process_from(cfg, log, msg, from_addr):
                          % (from_addr, fname))
             rmq = rabbitmq_class.create_rmqpub(
                 cfg, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr])
-
-            #########################################
             log.log_info("process_from: Connection info: %s->%s" % (
                 cfg.host, cfg.exchange_name))
             connect_status, err_msg = rmq.create_connection()
 
-#            print(connect_status, rmq.channel.is_open)
             if connect_status and rmq.channel.is_open:
                 log.log_info("process_from: Connected to RabbitMQ mode")
                 connect_process(rmq, log, cfg, msg, fname=fname)
 
             else:
-#                print('Here')
                 log.log_err("process_from: Failed to connect to RabbitMQ")
                 log.log_err("process_from: Message:  %s" % (err_msg))
                 archive_email(rmq, log, cfg, msg)
-            #########################################
-#            connect_process(rmq, log, cfg, msg, fname=fname)
 
             rmq.close()
             err_flag, err_msg = gen_libs.rm_file(fname)
@@ -475,24 +464,18 @@ def process_from(cfg, log, msg, from_addr):
                      % (from_addr))
         rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_addr_queue,
                                            cfg.err_addr_queue)
-
-        #########################################
         log.log_info("process_from2: Connection info: %s->%s" % (
             cfg.host, cfg.exchange_name))
         connect_status, err_msg = rmq.create_connection()
 
-#        print('2', connect_status, rmq.channel.is_open)
         if connect_status and rmq.channel.is_open:
             log.log_info("process_from2: Connected to RabbitMQ mode")
             connect_process(rmq, log, cfg, msg)
 
         else:
-#            print('2 Here')
             log.log_err("process_from2: Failed to connect to RabbitMQ")
             log.log_err("process_from2: Message:  %s" % (err_msg))
             archive_email(rmq, log, cfg, msg)
-        #########################################
-#        connect_process(rmq, log, cfg, msg)
 
         rmq.close()
 
@@ -518,24 +501,18 @@ def process_file(cfg, log, subj, msg):
         for fname in fname_list:
             log.log_info("Valid subject with file attachment: %s" % (fname))
             rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
-
-            #########################################
             log.log_info("process_file: Connection info: %s->%s" % (
                 cfg.host, cfg.exchange_name))
             connect_status, err_msg = rmq.create_connection()
 
-            print(connect_status, rmq.channel.is_open)
             if connect_status and rmq.channel.is_open:
                 log.log_info("process_file: Connected to RabbitMQ mode")
                 connect_process(rmq, log, cfg, msg, fname=fname)
 
             else:
-                print('Here')
                 log.log_err("process_file: Failed to connect to RabbitMQ")
                 log.log_err("process_file: Message:  %s" % (err_msg))
                 archive_email(rmq, log, cfg, msg)
-            #########################################
-#            connect_process(rmq, log, cfg, msg, fname=fname)
 
             rmq.close()
             err_flag, err_msg = gen_libs.rm_file(fname)
@@ -548,7 +525,18 @@ def process_file(cfg, log, subj, msg):
             log.log_info("Invalid subject with file attached: %s" % (fname))
             rmq = rabbitmq_class.create_rmqpub(
                 cfg, cfg.err_file_queue, cfg.err_file_queue)
-            connect_process(rmq, log, cfg, msg, fname=fname)
+            log.log_info("process_file2: Connection info: %s->%s" % (
+                cfg.host, cfg.exchange_name))
+            connect_status, err_msg = rmq.create_connection()
+
+            if connect_status and rmq.channel.is_open:
+                log.log_info("process_file2: Connected to RabbitMQ mode")
+                connect_process(rmq, log, cfg, msg, fname=fname)
+
+            else:
+                log.log_err("process_file2: Failed to connect to RabbitMQ")
+                log.log_err("process_file2: Message:  %s" % (err_msg))
+                archive_email(rmq, log, cfg, msg)
             rmq.close()
             err_flag, err_msg = gen_libs.rm_file(fname)
 
@@ -557,9 +545,20 @@ def process_file(cfg, log, subj, msg):
 
     else:
         log.log_warn("Invalid email subject: %s" % (subj))
-        rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_queue,
-                                           cfg.err_queue)
-        connect_process(rmq, log, cfg, msg)
+        rmq = rabbitmq_class.create_rmqpub(
+            cfg, cfg.err_queue, cfg.err_queue)
+        log.log_info("process_file2: Connection info: %s->%s" % (
+            cfg.host, cfg.exchange_name))
+        connect_status, err_msg = rmq.create_connection()
+
+        if connect_status and rmq.channel.is_open:
+            log.log_info("process_file2: Connected to RabbitMQ mode")
+            connect_process(rmq, log, cfg, msg)
+
+        else:
+            log.log_err("process_file2: Failed to connect to RabbitMQ")
+            log.log_err("process_file2: Message:  %s" % (err_msg))
+            archive_email(rmq, log, cfg, msg)
         rmq.close()
 
 
