@@ -230,7 +230,7 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
 
     """Function:  connect_process
 
-    Description:  Connect to RabbitMQ and injest email message.
+    Description:  Publish email message to RabbitMQ.
 
     Arguments:
         (input) rmq -> RabbitMQ class instance
@@ -244,46 +244,29 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
 
     fname = kwargs.get("fname", None)
 
-#### This goes out to calling function
-#########################################
-    log.log_info("Connection info: %s->%s" % (cfg.host, cfg.exchange_name))
-    connect_status, err_msg = rmq.create_connection()
+    # Process email or file/attachment.
+    if fname:
+        log.log_info("Processing file/attachment...")
 
-    if connect_status and rmq.channel.is_open:
-        log.log_info("Connected to RabbitMQ mode")
-#########################################
+        with open(fname, "r") as f_hldr:
+            t_msg = f_hldr.read()
 
-        # Process email or file/attachment.
-        if fname:
-            log.log_info("Processing file/attachment...")
+    elif rmq.queue_name == cfg.err_queue:
+        log.log_info("Processing error message...")
+        t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
+                + " Subject: " + msg["subject"] + " Body: " \
+                + (get_text(msg) or "")
 
-            with open(fname, "r") as f_hldr:
-                t_msg = f_hldr.read()
-
-        elif rmq.queue_name == cfg.err_queue:
-            log.log_info("Processing error message...")
-            t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
-                    + " Subject: " + msg["subject"] + " Body: " \
-                    + (get_text(msg) or "")
-
-        else:
-            log.log_info("Processing email body...")
-            t_msg = get_text(msg)
-
-        if t_msg and rmq.publish_msg(t_msg):
-            log.log_info("Message ingested into RabbitMQ")
-
-        else:
-            log.log_err("Failed to injest message into RabbitMQ")
-            archive_email(rmq, log, cfg, msg)
-
-#### This goes out to calling function
-#########################################
     else:
-        log.log_err("Failed to connect to RabbitMQ Node...")
-        log.log_err("Message:  %s" % (err_msg))
+        log.log_info("Processing email body...")
+        t_msg = get_text(msg)
+
+    if t_msg and rmq.publish_msg(t_msg):
+        log.log_info("Message ingested into RabbitMQ")
+
+    else:
+        log.log_err("Failed to injest message into RabbitMQ")
         archive_email(rmq, log, cfg, msg)
-#########################################
 
 
 def filter_subject(subj, cfg):
