@@ -500,6 +500,11 @@ def process_file(cfg, log, subj, msg):
     if fname_list and subj in cfg.file_queues:
         for fname in fname_list:
             log.log_info("Valid subject with file attachment: %s" % (fname))
+            ### New Function for connecting and publishing to RMQ.
+            ### Only differences are:
+            ###     Line 1: subj, subj -> Pass q_name and rkey
+            ###     Line 8: , fname=fname -> Send in as a pointer
+            ######################################################
             rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
             log.log_info("process_file: Connection info: %s->%s" % (
                 cfg.host, cfg.exchange_name))
@@ -515,6 +520,7 @@ def process_file(cfg, log, subj, msg):
                 archive_email(rmq, log, cfg, msg)
 
             rmq.close()
+            ######################################################
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
@@ -547,17 +553,17 @@ def process_file(cfg, log, subj, msg):
         log.log_warn("Invalid email subject: %s" % (subj))
         rmq = rabbitmq_class.create_rmqpub(
             cfg, cfg.err_queue, cfg.err_queue)
-        log.log_info("process_file2: Connection info: %s->%s" % (
+        log.log_info("process_file3: Connection info: %s->%s" % (
             cfg.host, cfg.exchange_name))
         connect_status, err_msg = rmq.create_connection()
 
         if connect_status and rmq.channel.is_open:
-            log.log_info("process_file2: Connected to RabbitMQ mode")
+            log.log_info("process_file3: Connected to RabbitMQ mode")
             connect_process(rmq, log, cfg, msg)
 
         else:
-            log.log_err("process_file2: Failed to connect to RabbitMQ")
-            log.log_err("process_file2: Message:  %s" % (err_msg))
+            log.log_err("process_file3: Failed to connect to RabbitMQ")
+            log.log_err("process_file3: Message:  %s" % (err_msg))
             archive_email(rmq, log, cfg, msg)
         rmq.close()
 
