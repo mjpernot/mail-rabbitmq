@@ -251,6 +251,9 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
         with open(fname, "r") as f_hldr:
             t_msg = f_hldr.read()
 
+        bname = os.path.splitext(os.path.basename(fname))[0]
+        t_msg = str({"Filename": bname, "File": t_msg})
+
     elif rmq.queue_name == cfg.err_queue:
         log.log_info("Processing error message...")
         t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
