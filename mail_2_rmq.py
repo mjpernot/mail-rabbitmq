@@ -466,6 +466,41 @@ def process_from(cfg, log, msg, from_addr):
         rmq.close()
 
 
+def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
+
+    """Function:  connect_rmq
+
+    Description:  Set up and connect to RabbitMQ, check for connection
+        problems.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) subj -> Email subject line
+        (input) msg -> Email message body
+
+    """
+
+    config = {"fname": kwargs.get("fname")} if kwargs.get("fname", False) \
+        else dict()
+
+    rmq = rabbitmq_class.create_rmqpub(cfg, qname, rkey)
+    log.log_info("connect_rmq: Connection info: %s->%s" % (
+        cfg.host, cfg.exchange_name))
+    connect_status, err_msg = rmq.create_connection()
+
+    if connect_status and rmq.channel.is_open:
+        log.log_info("connect_rmq: Connected to RabbitMQ mode")
+        connect_process(rmq, log, cfg, msg, **config)
+
+    else:
+        log.log_err("connect_rmq: Failed to connect to RabbitMQ")
+        log.log_err("connect_rmq: Message:  %s" % (err_msg))
+        archive_email(rmq, log, cfg, msg)
+
+    rmq.close()
+
+
 def process_file(cfg, log, subj, msg):
 
     """Function:  process_file

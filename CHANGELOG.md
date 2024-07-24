@@ -7,6 +7,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ## [1.5.0] - 2024-06-17
 - Pass filename along with attachment to RabbitMQ.
 
+### Added
+- connect_rmq: Set up and connect to RabbitMQ, check for connection problems.
+
 ### Changed
 - connect_process: Inserted a file into a dictionary along with its filename.
 - connect_process: Removed the connection call, this moved to the calling functions - see below.
