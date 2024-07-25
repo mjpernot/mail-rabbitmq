@@ -11,6 +11,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - connect_rmq: Set up and connect to RabbitMQ, check for connection problems.
 
 ### Changed
+- process_file, process_subj, process_from: Removed code to replace with call to connect_rmq function.
 - connect_process: Inserted a file into a dictionary along with its filename.
 - connect_process: Removed the connection call, this moved to the calling functions - see below.
 - process_subj, process_from, process_file:  Added connection call and check to function.

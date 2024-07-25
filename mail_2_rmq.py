@@ -387,6 +387,9 @@ def process_subj(cfg, log, subj, msg):
     """
 
     log.log_info("Valid email subject: %s" % (subj))
+    connect_rmq(cfg, log, subj, subj, msg)
+    ### Remove after testing
+    """
     rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
     log.log_info("process_subj: Connection info: %s->%s" % (
         cfg.host, cfg.exchange_name))
@@ -402,6 +405,7 @@ def process_subj(cfg, log, subj, msg):
         archive_email(rmq, log, cfg, msg)
 
     rmq.close()
+    """
 
 
 def process_from(cfg, log, msg, from_addr):
@@ -424,6 +428,11 @@ def process_from(cfg, log, msg, from_addr):
         for fname in fname_list:
             log.log_info("Valid From address: %s with file attachment: %s"
                          % (from_addr, fname))
+            connect_rmq(
+                cfg, log, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr],
+                msg, fname=fname)
+            ### Remove after testing
+            """
             rmq = rabbitmq_class.create_rmqpub(
                 cfg, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr])
             log.log_info("process_from: Connection info: %s->%s" % (
@@ -440,6 +449,7 @@ def process_from(cfg, log, msg, from_addr):
                 archive_email(rmq, log, cfg, msg)
 
             rmq.close()
+            """
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
@@ -448,6 +458,9 @@ def process_from(cfg, log, msg, from_addr):
     else:
         log.log_warn("Missing attachment for email address: %s"
                      % (from_addr))
+        connect_rmq(cfg, log, cfg.err_addr_queue, cfg.err_addr_queue, msg)
+        ### Remove after testing
+        """
         rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_addr_queue,
                                            cfg.err_addr_queue)
         log.log_info("process_from2: Connection info: %s->%s" % (
@@ -464,6 +477,7 @@ def process_from(cfg, log, msg, from_addr):
             archive_email(rmq, log, cfg, msg)
 
         rmq.close()
+        """
 
 
 def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
@@ -529,6 +543,9 @@ def process_file(cfg, log, subj, msg):
             ###     Line 1: subj, subj -> Pass q_name and rkey
             ###     Line 8: , fname=fname -> Send in as a pointer
             ######################################################
+            connect_rmq(cfg, log, subj, subj, msg, fname=fname)
+            ### Remove after testing
+            """
             rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
             log.log_info("process_file: Connection info: %s->%s" % (
                 cfg.host, cfg.exchange_name))
@@ -544,6 +561,7 @@ def process_file(cfg, log, subj, msg):
                 archive_email(rmq, log, cfg, msg)
 
             rmq.close()
+            """
             ######################################################
             err_flag, err_msg = gen_libs.rm_file(fname)
 
@@ -553,6 +571,11 @@ def process_file(cfg, log, subj, msg):
     elif fname_list:
         for fname in fname_list:
             log.log_info("Invalid subject with file attached: %s" % (fname))
+            connect_rmq(
+                cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg,
+                fname=fname)
+            ### Remove after testing
+            """
             rmq = rabbitmq_class.create_rmqpub(
                 cfg, cfg.err_file_queue, cfg.err_file_queue)
             log.log_info("process_file2: Connection info: %s->%s" % (
@@ -568,6 +591,7 @@ def process_file(cfg, log, subj, msg):
                 log.log_err("process_file2: Message:  %s" % (err_msg))
                 archive_email(rmq, log, cfg, msg)
             rmq.close()
+            """
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
@@ -575,6 +599,9 @@ def process_file(cfg, log, subj, msg):
 
     else:
         log.log_warn("Invalid email subject: %s" % (subj))
+        connect_rmq(cfg, log, cfg.err_queue, cfg.err_queue, msg)
+        ### Remove after testing
+        """
         rmq = rabbitmq_class.create_rmqpub(
             cfg, cfg.err_queue, cfg.err_queue)
         log.log_info("process_file3: Connection info: %s->%s" % (
@@ -590,6 +617,7 @@ def process_file(cfg, log, subj, msg):
             log.log_err("process_file3: Message:  %s" % (err_msg))
             archive_email(rmq, log, cfg, msg)
         rmq.close()
+        """
 
 
 def process_message(cfg, log):
