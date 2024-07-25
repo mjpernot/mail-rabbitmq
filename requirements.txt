@@ -1,7 +1,6 @@
 chardet==3.0.4
 enum34==1.1.10
 pika==1.2.0
-pika==1.2.0
 requests==2.22.0
 psutil==5.4.3
 simplejson==2.0.9

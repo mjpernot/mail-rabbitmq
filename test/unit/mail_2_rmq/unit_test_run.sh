@@ -7,6 +7,7 @@
 /usr/bin/python test/unit/mail_2_rmq/archive_email.py
 /usr/bin/python test/unit/mail_2_rmq/check_nonprocess.py
 /usr/bin/python test/unit/mail_2_rmq/connect_process.py
+/usr/bin/python test/unit/mail_2_rmq/connect_rmq.py
 /usr/bin/python test/unit/mail_2_rmq/convert_bytes.py
 /usr/bin/python test/unit/mail_2_rmq/filter_subject.py
 /usr/bin/python test/unit/mail_2_rmq/get_email_addr.py

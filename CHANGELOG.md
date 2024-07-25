@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [1.5.0] - 2024-06-17
+- Pass filename along with attachment to RabbitMQ.
+- Cleaned up the connection and publishing process.
+
+### Added
+- connect_rmq: Set up and connect to RabbitMQ, check for connection problems.
+
+### Changed
+- main: Removed parsing from gen_class.ArgParser call and called arg_parse2 as part of "if" statement.
+- process_file, process_subj, process_from: Removed code to replace with call to connect_rmq function.
+- connect_process: Inserted a file into a dictionary along with its filename.
+- connect_process: Removed the connection call, this moved to the calling functions - see below.
+- process_subj, process_from, process_file:  Added connection call and check to function.
+
+
 ## [1.4.2] - 2024-24-24
 ### Fixed
 - process_attach: Added log entry to display attachment type if attachment is detected as invalid.
