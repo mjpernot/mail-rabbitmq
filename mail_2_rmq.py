@@ -476,8 +476,11 @@ def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
     Arguments:
         (input) cfg -> Configuration settings module for the program
         (input) log -> Log class instance
-        (input) subj -> Email subject line
-        (input) msg -> Email message body
+        (input) qname -> Queue name for RabbitMQ
+        (input) rkey -> Rkey value for RabbitMQ
+        (input) msg -> Message body
+        (input) kwargs:
+            fname -> Name of attachment file
 
     """
 

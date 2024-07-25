@@ -144,6 +144,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
+        test_filname
+        test_no_filname
         test_true_true_connect
         test_false_false_connect
         test_false_true_connect
@@ -166,6 +168,48 @@ class UnitTest(unittest.TestCase):
         self.qname = "QueueName"
         self.rkey = "RKey"
         self.msg = "Message Body"
+        self.fname = "AttachementFilename"
+
+    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
+    def test_filname(self, mock_rmq, mock_log):
+
+        """Function:  test_filname
+
+        Description:  Test with filename passed.
+
+        Arguments:
+
+        """
+
+        mock_rmq.return_value = self.rmq
+        mock_log.return_value = True
+
+        self.assertFalse(
+            mail_2_rmq.connect_rmq(
+                self.cfg, mock_log, self.qname, self.rkey, self.msg,
+                fname=self.fname))
+
+    @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
+    def test_no_filname(self, mock_rmq, mock_log):
+
+        """Function:  test_no_filname
+
+        Description:  Test with no filename passed.
+
+        Arguments:
+
+        """
+
+        mock_rmq.return_value = self.rmq
+        mock_log.return_value = True
+
+        self.assertFalse(
+            mail_2_rmq.connect_rmq(
+                self.cfg, mock_log, self.qname, self.rkey, self.msg))
 
     @mock.patch("mail_2_rmq.connect_process", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.gen_class.Logger")
