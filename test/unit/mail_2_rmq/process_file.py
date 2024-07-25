@@ -644,7 +644,7 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
     def test_true_false_connect2(self, mock_rmq, mock_log, mock_archive,
-                                mock_rm, mock_attch):
+                                 mock_rm, mock_attch):
 
         """Function:  test_true_false_connect2
 

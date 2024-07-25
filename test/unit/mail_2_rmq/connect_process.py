@@ -17,7 +17,6 @@
 import sys
 import os
 import unittest
-import collections
 import mock
 
 # Local

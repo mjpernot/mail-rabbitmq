@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [1.5.0] - 2024-06-17
 - Pass filename along with attachment to RabbitMQ.
+- Cleaned up the connection and publishing process.
 
 ### Added
 - connect_rmq: Set up and connect to RabbitMQ, check for connection problems.
