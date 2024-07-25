@@ -38,6 +38,7 @@ class ArgParser(object):
         arg_dir_chk
         arg_require
         arg_xor_dict
+        arg_parse2
 
     """
 
@@ -59,6 +60,7 @@ class ArgParser(object):
         self.dir_perms_chk2 = True
         self.opt_xor_val = None
         self.opt_xor_val2 = True
+        self.argparse2 = True
 
     def arg_dir_chk(self, dir_perms_chk):
 
@@ -102,6 +104,18 @@ class ArgParser(object):
 
         return self.opt_xor_val2
 
+    def arg_parse2(self):
+
+        """Method:  arg_parse2
+
+        Description:  Method stub holder for gen_class.ArgParser.arg_parse2.
+
+        Arguments:
+
+        """
+
+        return self.argparse2
+
 
 class UnitTest(unittest.TestCase):
 
@@ -111,6 +125,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
+        test_arg_parse2_false
+        test_arg_parse2_true
         test_help_true
         test_help_false
         test_require_false
@@ -135,6 +151,25 @@ class UnitTest(unittest.TestCase):
         self.args = ArgParser()
         self.args.args_array = {
             "-c": "config_file", "-d": "config_dir", "-M": True}
+
+    @mock.patch("mail_2_rmq.gen_libs.help_func")
+    @mock.patch("mail_2_rmq.gen_class.ArgParser")
+    def test_arg_parse2_false(self, mock_arg, mock_help):
+
+        """Function:  test_arg_parse2_false
+
+        Description:  Test arg_parse2 returns false.
+
+        Arguments:
+
+        """
+
+        self.args.argparse2 = False
+
+        mock_arg.return_value = self.args
+        mock_help.return_value = True
+
+        self.assertFalse(mail_2_rmq.main())
 
     @mock.patch("mail_2_rmq.gen_libs.help_func")
     @mock.patch("mail_2_rmq.gen_class.ArgParser")

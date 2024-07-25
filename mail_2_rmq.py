@@ -230,7 +230,7 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
 
     """Function:  connect_process
 
-    Description:  Connect to RabbitMQ and injest email message.
+    Description:  Publish email message to RabbitMQ.
 
     Arguments:
         (input) rmq -> RabbitMQ class instance
@@ -243,39 +243,32 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
     """
 
     fname = kwargs.get("fname", None)
-    log.log_info("Connection info: %s->%s" % (cfg.host, cfg.exchange_name))
-    connect_status, err_msg = rmq.create_connection()
 
-    if connect_status and rmq.channel.is_open:
-        log.log_info("Connected to RabbitMQ mode")
+    # Process email or file/attachment.
+    if fname:
+        log.log_info("Processing file/attachment...")
 
-        # Process email or file/attachment.
-        if fname:
-            log.log_info("Processing file/attachment...")
+        with open(fname, "r") as f_hldr:
+            t_msg = f_hldr.read()
 
-            with open(fname, "r") as f_hldr:
-                t_msg = f_hldr.read()
+        bname = os.path.splitext(os.path.basename(fname))[0]
+        t_msg = str({"AFilename": bname, "File": t_msg})
 
-        elif rmq.queue_name == cfg.err_queue:
-            log.log_info("Processing error message...")
-            t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
-                    + " Subject: " + msg["subject"] + " Body: " \
-                    + (get_text(msg) or "")
-
-        else:
-            log.log_info("Processing email body...")
-            t_msg = get_text(msg)
-
-        if t_msg and rmq.publish_msg(t_msg):
-            log.log_info("Message ingested into RabbitMQ")
-
-        else:
-            log.log_err("Failed to injest message into RabbitMQ")
-            archive_email(rmq, log, cfg, msg)
+    elif rmq.queue_name == cfg.err_queue:
+        log.log_info("Processing error message...")
+        t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
+                + " Subject: " + msg["subject"] + " Body: " \
+                + (get_text(msg) or "")
 
     else:
-        log.log_err("Failed to connect to RabbitMQ Node...")
-        log.log_err("Message:  %s" % (err_msg))
+        log.log_info("Processing email body...")
+        t_msg = get_text(msg)
+
+    if t_msg and rmq.publish_msg(t_msg):
+        log.log_info("Message ingested into RabbitMQ")
+
+    else:
+        log.log_err("Failed to injest message into RabbitMQ")
         archive_email(rmq, log, cfg, msg)
 
 
@@ -382,7 +375,8 @@ def process_subj(cfg, log, subj, msg):
 
     """Function:  process_subj
 
-    Description:  Process email using its subject line.
+    Description:  Process email using its subject line and open connection and
+        validate connection to RabbitMQ.
 
     Arguments:
         (input) cfg -> Configuration settings module for the program
@@ -393,9 +387,7 @@ def process_subj(cfg, log, subj, msg):
     """
 
     log.log_info("Valid email subject: %s" % (subj))
-    rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
-    connect_process(rmq, log, cfg, msg)
-    rmq.close()
+    connect_rmq(cfg, log, subj, subj, msg)
 
 
 def process_from(cfg, log, msg, from_addr):
@@ -418,10 +410,9 @@ def process_from(cfg, log, msg, from_addr):
         for fname in fname_list:
             log.log_info("Valid From address: %s with file attachment: %s"
                          % (from_addr, fname))
-            rmq = rabbitmq_class.create_rmqpub(
-                cfg, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr])
-            connect_process(rmq, log, cfg, msg, fname=fname)
-            rmq.close()
+            connect_rmq(
+                cfg, log, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr],
+                msg, fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
@@ -430,10 +421,45 @@ def process_from(cfg, log, msg, from_addr):
     else:
         log.log_warn("Missing attachment for email address: %s"
                      % (from_addr))
-        rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_addr_queue,
-                                           cfg.err_addr_queue)
-        connect_process(rmq, log, cfg, msg)
-        rmq.close()
+        connect_rmq(cfg, log, cfg.err_addr_queue, cfg.err_addr_queue, msg)
+
+
+def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
+
+    """Function:  connect_rmq
+
+    Description:  Set up and connect to RabbitMQ, check for connection
+        problems.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) qname -> Queue name for RabbitMQ
+        (input) rkey -> Rkey value for RabbitMQ
+        (input) msg -> Message body
+        (input) kwargs:
+            fname -> Name of attachment file
+
+    """
+
+    config = {"fname": kwargs.get("fname")} if kwargs.get("fname", False) \
+        else dict()
+
+    rmq = rabbitmq_class.create_rmqpub(cfg, qname, rkey)
+    log.log_info("connect_rmq: Connection info: %s->%s" % (
+        cfg.host, cfg.exchange_name))
+    connect_status, err_msg = rmq.create_connection()
+
+    if connect_status and rmq.channel.is_open:
+        log.log_info("connect_rmq: Connected to RabbitMQ mode")
+        connect_process(rmq, log, cfg, msg, **config)
+
+    else:
+        log.log_err("connect_rmq: Failed to connect to RabbitMQ")
+        log.log_err("connect_rmq: Message:  %s" % (err_msg))
+        archive_email(rmq, log, cfg, msg)
+
+    rmq.close()
 
 
 def process_file(cfg, log, subj, msg):
@@ -456,9 +482,6 @@ def process_file(cfg, log, subj, msg):
     if fname_list and subj in cfg.file_queues:
         for fname in fname_list:
             log.log_info("Valid subject with file attachment: %s" % (fname))
-            rmq = rabbitmq_class.create_rmqpub(cfg, subj, subj)
-            connect_process(rmq, log, cfg, msg, fname=fname)
-            rmq.close()
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
@@ -467,10 +490,9 @@ def process_file(cfg, log, subj, msg):
     elif fname_list:
         for fname in fname_list:
             log.log_info("Invalid subject with file attached: %s" % (fname))
-            rmq = rabbitmq_class.create_rmqpub(
-                cfg, cfg.err_file_queue, cfg.err_file_queue)
-            connect_process(rmq, log, cfg, msg, fname=fname)
-            rmq.close()
+            connect_rmq(
+                cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg,
+                fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
@@ -478,10 +500,7 @@ def process_file(cfg, log, subj, msg):
 
     else:
         log.log_warn("Invalid email subject: %s" % (subj))
-        rmq = rabbitmq_class.create_rmqpub(cfg, cfg.err_queue,
-                                           cfg.err_queue)
-        connect_process(rmq, log, cfg, msg)
-        rmq.close()
+        connect_rmq(cfg, log, cfg.err_queue, cfg.err_queue, msg)
 
 
 def process_message(cfg, log):
@@ -605,11 +624,12 @@ def main():
     opt_xor_dict = {"-M": ["-C"], "-C": ["-M"]}
 
     # Process argument list from command line
-    args = gen_class.ArgParser(sys.argv, opt_val=opt_val_list, do_parse=True)
+    args = gen_class.ArgParser(sys.argv, opt_val=opt_val_list)
 
-    if not gen_libs.help_func(args, __version__, help_message)  \
-       and args.arg_require(opt_req=opt_req_list)               \
-       and args.arg_xor_dict(opt_xor_val=opt_xor_dict)          \
+    if args.arg_parse2()                                            \
+       and not gen_libs.help_func(args, __version__, help_message)  \
+       and args.arg_require(opt_req=opt_req_list)                   \
+       and args.arg_xor_dict(opt_xor_val=opt_xor_dict)              \
        and args.arg_dir_chk(dir_perms_chk=dir_perms_chk):
         run_program(args, func_dict)
 
