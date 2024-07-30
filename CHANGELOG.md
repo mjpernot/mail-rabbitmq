@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [1.5.1] - 2024-07-30
+- Set urllib3 to 1.26.19 for Python 2 for security reasons.
+- Updated rabbitmq-lib to v2.2.4
+
+
 ## [1.5.0] - 2024-06-17
 - Pass filename along with attachment to RabbitMQ.
 - Cleaned up the connection and publishing process.
