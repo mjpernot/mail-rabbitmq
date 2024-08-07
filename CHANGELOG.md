@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [1.5.2] - 2024-08-07
+- Updated simplejson==3.13.2
+- Updated requests==2.25.0
+- Added certifi==2019.11.28
+- Added idna==2.10
+- Removed email==4.0.3
+
+### Changed
+- Updates to requirements.txt.
+
+
 ## [1.5.1] - 2024-07-30
 - Set urllib3 to 1.26.19 for Python 2 for security reasons.
 - Updated rabbitmq-lib to v2.2.4
