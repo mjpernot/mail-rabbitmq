@@ -482,6 +482,7 @@ def process_file(cfg, log, subj, msg):
     if fname_list and subj in cfg.file_queues:
         for fname in fname_list:
             log.log_info("Valid subject with file attachment: %s" % (fname))
+            connect_rmq(cfg, log, subj, subj, msg, fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
