@@ -280,7 +280,7 @@ Install the project using the procedures in the Installation section.
 
 ```
 cd {Python_Project}/mail-rabbitmq
-test/unit/mail_2_rmq/unit_test_run.sh
+test/unit/mail_2_rmq/unit_test_run3.sh
 ```
 
 ### Code coverage:
