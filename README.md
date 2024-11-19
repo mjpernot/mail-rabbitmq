@@ -29,6 +29,7 @@
       -> python-pip
     - Redhat 8 (Running Python 3.6):
       -> python3-pip
+      -> gcc
 
 
 # Installation:
