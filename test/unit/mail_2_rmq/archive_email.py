@@ -21,10 +21,58 @@ import mock
 
 # Local
 sys.path.append(os.getcwd())
-import mail_2_rmq
-import version
+import mail_2_rmq                               # pylint:disable=E0401,C0413
+import version                                  # pylint:disable=C0413,E0401
 
 __version__ = version.__version__
+
+
+class RQTest():                                         # pylint:disable=R0903
+
+    """Class:  RQTest
+
+    Description:  Class which is a representation of a RQ class.
+
+    Methods:
+        __init__
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Initialization instance of the RQTest class.
+
+        Arguments:
+
+        """
+
+        self.exchange = "Test_Exchange"
+        self.queue_name = "Test_Queue"
+
+class CfgTest():                                        # pylint:disable=R0903
+
+    """Class:  CfgTest
+
+    Description:  Class which is a representation of a cfg module.
+
+    Methods:
+        __init__
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Initialization instance of the CfgTest class.
+
+        Arguments:
+
+        """
+
+        self.email_dir = "/dir/path"
 
 
 class UnitTest(unittest.TestCase):
@@ -36,7 +84,6 @@ class UnitTest(unittest.TestCase):
     Methods:
         setUp
         test_archive_email
-        tearDown
 
     """
 
@@ -49,53 +96,6 @@ class UnitTest(unittest.TestCase):
         Arguments:
 
         """
-
-        class RQTest(object):
-
-            """Class:  RQTest
-
-            Description:  Class which is a representation of a RQ class.
-
-            Methods:
-                __init__
-
-            """
-
-            def __init__(self):
-
-                """Method:  __init__
-
-                Description:  Initialization instance of the RQTest class.
-
-                Arguments:
-
-                """
-
-                self.exchange = "Test_Exchange"
-                self.queue_name = "Test_Queue"
-
-        class CfgTest(object):
-
-            """Class:  CfgTest
-
-            Description:  Class which is a representation of a cfg module.
-
-            Methods:
-                __init__
-
-            """
-
-            def __init__(self):
-
-                """Method:  __init__
-
-                Description:  Initialization instance of the CfgTest class.
-
-                Arguments:
-
-                """
-
-                self.email_dir = "/dir/path"
 
         self.cfg = CfgTest()
         self.rmq = RQTest()
@@ -120,8 +120,8 @@ class UnitTest(unittest.TestCase):
         mock_date.strftime.return_value = self.dtg
         mock_file.return_value = True
 
-        self.assertFalse(mail_2_rmq.archive_email(self.rmq, mock_log, self.cfg,
-                                                  self.msg))
+        self.assertFalse(
+            mail_2_rmq.archive_email(self.rmq, mock_log, self.cfg, self.msg))
 
 
 if __name__ == "__main__":

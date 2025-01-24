@@ -20,8 +20,8 @@ import unittest
 
 # Local
 sys.path.append(os.getcwd())
-import mail_2_rmq
-import version
+import mail_2_rmq                               # pylint:disable=E0401,C0413
+import version                                  # pylint:disable=C0413,E0401
 
 __version__ = version.__version__
 
@@ -49,7 +49,6 @@ class UnitTest(unittest.TestCase):
         """
 
         self.data = "Data String"
-        self.results2 = "Data String"
         self.results3 = b"Data String"
 
     def test_conversion(self):
@@ -62,9 +61,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        results = self.results2 if sys.version_info < (3, 0) else self.results3
-
-        self.assertEqual(mail_2_rmq.convert_bytes(self.data), results)
+        self.assertEqual(mail_2_rmq.convert_bytes(self.data), self.results3)
 
 
 if __name__ == "__main__":

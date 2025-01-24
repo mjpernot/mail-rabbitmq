@@ -49,7 +49,7 @@
             attach_types = ["application/pdf"]
 
             # Only change these entries if neccessary.
-            subj_filter = ["\[.*\]"]
+            subj_filter = ["\[.*\]"  
             port = 5672
             exchange_type = "direct"
             x_durable = True
@@ -68,8 +68,6 @@
 """
 
 # Libraries and Global Variables
-from __future__ import print_function
-from __future__ import absolute_import
 
 # Standard
 import sys
@@ -78,11 +76,7 @@ import datetime
 import re
 import base64
 import io
-if sys.version_info < (3, 0):
-    import email.Parser
-
-else:
-    from email.parser import Parser
+from email.parser import Parser
 
 # Local
 try:
@@ -92,9 +86,9 @@ try:
     from . import version
 
 except (ValueError, ImportError) as err:
-    import lib.gen_libs as gen_libs
-    import lib.gen_class as gen_class
-    import rabbit_lib.rabbitmq_class as rabbitmq_class
+    import lib.gen_libs as gen_libs                     # pylint:disable=R0402
+    import lib.gen_class as gen_class                   # pylint:disable=R0402
+    import rabbit_lib.rabbitmq_class as rabbitmq_class  # pylint:disable=R0402
     import version
 
 __version__ = version.__version__
@@ -133,15 +127,15 @@ def load_cfg(cfg_name, cfg_dir):
     status_flag = True
     combined_msg = []
     cfg = gen_libs.load_module(cfg_name, cfg_dir)
-    status, err_msg = gen_libs.chk_crt_dir(cfg.email_dir, write=True,
-                                           read=True)
+    status, err_msg = gen_libs.chk_crt_dir(
+        cfg.email_dir, write=True, read=True)
 
     if not status:
         status_flag = status
         combined_msg.append(err_msg)
 
-    status, err_msg = gen_libs.chk_crt_dir(os.path.dirname(cfg.log_file),
-                                           write=True, read=True)
+    status, err_msg = gen_libs.chk_crt_dir(
+        os.path.dirname(cfg.log_file), write=True, read=True)
 
     if not status:
         status_flag = status
@@ -168,11 +162,7 @@ def parse_email():
 
     """
 
-    if sys.version_info < (3, 0):
-        parser = email.Parser.Parser()
-
-    else:
-        parser = Parser()
+    parser = Parser()
 
     return parser.parsestr("".join(sys.stdin.readlines()))
 
@@ -192,12 +182,11 @@ def archive_email(rmq, log, cfg, msg):
     """
 
     e_file = rmq.exchange + "-" + rmq.queue_name + "-" \
-        + datetime.datetime.strftime(datetime.datetime.now(),
-                                     "%Y%m%d-%H%M%S") + ".email.txt"
-    log.log_info("Saving email to: %s" %
-                 (cfg.email_dir + os.path.sep + e_file))
+        + datetime.datetime.strftime(
+            datetime.datetime.now(), "%Y%m%d-%H%M%S") + ".email.txt"
+    log.log_info(f"Saving email to: {cfg.email_dir + os.path.sep + e_file}")
     gen_libs.write_file(cfg.email_dir + os.path.sep + e_file, "w", msg)
-    log.log_info("Email saved to:  %s" % (e_file))
+    log.log_info(f"Email saved to: {e_file}")
 
 
 def get_text(msg):
@@ -221,7 +210,12 @@ def get_text(msg):
 
             continue
 
-        msg_list.append(part.get_payload(decode=True))
+        data = part.get_payload(decode=True)
+
+        if not isinstance(data, str):
+            data = data.decode("UTF-8")
+
+        msg_list.append(data)
 
     return "".join(msg_list)
 
@@ -248,7 +242,7 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
     if fname:
         log.log_info("Processing file/attachment...")
 
-        with open(fname, "r") as f_hldr:
+        with open(fname, mode="r", encoding="UTF-8") as f_hldr:
             t_msg = f_hldr.read()
 
         bname = os.path.splitext(os.path.basename(fname))[0]
@@ -295,15 +289,15 @@ def convert_bytes(data):
 
     """Function:  convert_bytes
 
-    Description:  Converts a string to bytes if in a Python 3 environment.
+    Description:  Converts a string to bytes.
 
     Arguments:
         (input) data -> Data string
-        (output) -> Data string or Bytes string
+        (output) -> Bytes string
 
     """
 
-    return data if sys.version_info < (3, 0) else data.encode()
+    return data.encode()
 
 
 def process_attach(msg, log, cfg):
@@ -321,7 +315,7 @@ def process_attach(msg, log, cfg):
 
     """
 
-    fname_list = list()
+    fname_list = []
     log.log_info("Locating attachments...")
 
     if msg.is_multipart():
@@ -330,24 +324,27 @@ def process_attach(msg, log, cfg):
 
             if item.get_content_type() in cfg.attach_types:
                 tname = os.path.join(cfg.tmp_dir, item.get_filename())
-                log.log_info("Attachment detected: %s" % (item.get_filename()))
-                log.log_info("Attachment type: %s" % (item.get_content_type()))
-                io.open(tname, "wb").write(
-                    convert_bytes(item.get_payload(decode=True)))
+                log.log_info(f"Attachment detected: {item.get_filename()}")
+                log.log_info(f"Attachment type: {item.get_content_type()}")
+                with io.open(tname, mode="wb") as fhdr:
+                    fhdr.write(convert_bytes(item.get_payload(decode=True)))
                 fname = tname + ".encoded"
                 fname_list.append(fname)
-                base64.encode(io.open(tname, 'rb'), io.open(fname, 'wb'))
+                base64.encode(
+                    io.open(                            # pylint:disable=R1732
+                        tname, mode="rb"),
+                    io.open(                            # pylint:disable=R1732
+                        fname, mode="wb"))
                 err_flag, err_msg = gen_libs.rm_file(tname)
 
                 if err_flag:
-                    log.log_warn("process_attach:  Message: %s" % (err_msg))
+                    log.log_warn(f"process_attach:  Message: {err_msg}")
 
             else:
                 if item.get_filename():
-                    log.log_warn("Invalid attachment detected: %s"
-                                 % (item.get_filename()))
-                    log.log_warn("Attachment type: %s"
-                                 % (item.get_content_type()))
+                    log.log_warn(
+                        f"Invalid attachment detected: {item.get_filename()}")
+                    log.log_warn(f"Attachment type: {item.get_content_type()}")
 
     return fname_list
 
@@ -386,7 +383,7 @@ def process_subj(cfg, log, subj, msg):
 
     """
 
-    log.log_info("Valid email subject: %s" % (subj))
+    log.log_info(f"Valid email subject: {subj}")
     connect_rmq(cfg, log, subj, subj, msg)
 
 
@@ -408,19 +405,19 @@ def process_from(cfg, log, msg, from_addr):
 
     if fname_list:
         for fname in fname_list:
-            log.log_info("Valid From address: %s with file attachment: %s"
-                         % (from_addr, fname))
+            log.log_info(
+                f"Valid From address: {from_addr} with file attachment:"
+                f" {fname}")
             connect_rmq(
                 cfg, log, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr],
                 msg, fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
-                log.log_warn("process_from: Message: %s" % (err_msg))
+                log.log_warn(f"process_from: Message: {err_msg}")
 
     else:
-        log.log_warn("Missing attachment for email address: %s"
-                     % (from_addr))
+        log.log_warn(f"Missing attachment for email address: {from_addr}")
         connect_rmq(cfg, log, cfg.err_addr_queue, cfg.err_addr_queue, msg)
 
 
@@ -443,11 +440,11 @@ def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
     """
 
     config = {"fname": kwargs.get("fname")} if kwargs.get("fname", False) \
-        else dict()
+        else {}
 
     rmq = rabbitmq_class.create_rmqpub(cfg, qname, rkey)
-    log.log_info("connect_rmq: Connection info: %s->%s" % (
-        cfg.host, cfg.exchange_name))
+    log.log_info(
+        f"connect_rmq: Connection info: {cfg.host}->{cfg.exchange_name}")
     connect_status, err_msg = rmq.create_connection()
 
     if connect_status and rmq.channel.is_open:
@@ -456,7 +453,7 @@ def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
 
     else:
         log.log_err("connect_rmq: Failed to connect to RabbitMQ")
-        log.log_err("connect_rmq: Message:  %s" % (err_msg))
+        log.log_err(f"connect_rmq: Message:  {err_msg}")
         archive_email(rmq, log, cfg, msg)
 
     rmq.close()
@@ -481,26 +478,26 @@ def process_file(cfg, log, subj, msg):
 
     if fname_list and subj in cfg.file_queues:
         for fname in fname_list:
-            log.log_info("Valid subject with file attachment: %s" % (fname))
+            log.log_info(f"Valid subject with file attachment: {fname}")
             connect_rmq(cfg, log, subj, subj, msg, fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
-                log.log_warn("process_file: Message: %s" % (err_msg))
+                log.log_warn(f"process_file: Message: {err_msg}")
 
     elif fname_list:
         for fname in fname_list:
-            log.log_info("Invalid subject with file attached: %s" % (fname))
+            log.log_info(f"Invalid subject with file attached: {fname}")
             connect_rmq(
                 cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg,
                 fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
-                log.log_warn("process_file 2: Message: %s" % (err_msg))
+                log.log_warn(f"process_file 2: Message: {err_msg}")
 
     else:
-        log.log_warn("Invalid email subject: %s" % (subj))
+        log.log_warn(f"Invalid email subject: {subj}")
         connect_rmq(cfg, log, cfg.err_queue, cfg.err_queue, msg)
 
 
@@ -535,7 +532,7 @@ def process_message(cfg, log):
         process_file(cfg, log, subj, msg)
 
 
-def check_nonprocess(cfg, log):
+def check_nonprocess(cfg, log):                         # pylint:disable=W0613
 
     """Function:  check_nonprocess
 
@@ -574,8 +571,8 @@ def run_program(args, func_dict, **kwargs):
             cfg.log_file, cfg.log_file + date, "INFO",
             "%(asctime)s %(levelname)s %(message)s", "%Y-%m-%dT%H:%M:%SZ")
         str_val = "=" * 80
-        log.log_info("%s" % (str_val))
-        log.log_info("%s:%s Initialized" % (cfg.host, cfg.exchange_name))
+        log.log_info(f"{str_val}")
+        log.log_info(f"{cfg.host}:{cfg.exchange_name} Initialized")
 
         try:
             flavor_id = args.get_val("-y", def_val=cfg.exchange_name)
@@ -588,7 +585,7 @@ def run_program(args, func_dict, **kwargs):
             del prog_lock
 
         except gen_class.SingleInstanceException:
-            log.log_warn("mail_2_rmq lock in place for: %s" % (flavor_id))
+            log.log_warn(f"mail_2_rmq lock in place for: {flavor_id}")
 
         log.log_close()
 

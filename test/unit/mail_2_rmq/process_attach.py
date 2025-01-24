@@ -21,13 +21,13 @@ import mock
 
 # Local
 sys.path.append(os.getcwd())
-import mail_2_rmq
-import version
+import mail_2_rmq                               # pylint:disable=E0401,C0413
+import version                                  # pylint:disable=C0413,E0401
 
 __version__ = version.__version__
 
 
-class MultiPart(object):
+class MultiPart():
 
     """Class:  MultiPart
 
@@ -97,7 +97,7 @@ class MultiPart(object):
         return self.payload
 
 
-class Email(object):
+class Email():
 
     """Class:  Email
 
@@ -150,7 +150,7 @@ class Email(object):
         return self.parts
 
 
-class Email2(object):
+class Email2():
 
     """Class:  Email2
 
@@ -204,7 +204,7 @@ class Email2(object):
         return self.parts
 
 
-class CfgTest(object):
+class CfgTest():                                        # pylint:disable=R0903
 
     """Class:  CfgTest
 
@@ -327,7 +327,7 @@ class UnitTest(unittest.TestCase):
 
         fname = mail_2_rmq.process_attach(msg, mock_log, self.cfg)
 
-        self.assertEqual(fname, list())
+        self.assertEqual(fname, [])
 
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_multiple_attach_one_invalid(self, mock_log):
