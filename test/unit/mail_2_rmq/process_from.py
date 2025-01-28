@@ -22,13 +22,13 @@ import mock
 
 # Local
 sys.path.append(os.getcwd())
-import mail_2_rmq
-import version
+import mail_2_rmq                               # pylint:disable=E0401,C0413
+import version                                  # pylint:disable=C0413,E0401
 
 __version__ = version.__version__
 
 
-class Rmq(object):
+class Rmq():
 
     """Class:  Rmq
 
@@ -80,8 +80,6 @@ class Rmq(object):
 
         """
 
-        pass
-
     def change_channel(self, stat):
 
         """Method:  change_channel
@@ -95,7 +93,7 @@ class Rmq(object):
         self.channel = self.status(stat)
 
 
-class CfgTest(object):
+class CfgTest():                                        # pylint:disable=R0903
 
     """Class:  CfgTest
 
@@ -216,7 +214,7 @@ class UnitTest(unittest.TestCase):
 
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
-        mock_attch.return_value = list()
+        mock_attch.return_value = []
 
         self.assertFalse(
             mail_2_rmq.process_from(
@@ -286,7 +284,7 @@ class UnitTest(unittest.TestCase):
 
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
-        mock_attch.return_value = list()
+        mock_attch.return_value = []
 
         self.assertFalse(
             mail_2_rmq.process_from(
@@ -337,7 +335,7 @@ class UnitTest(unittest.TestCase):
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
         mock_archive.return_value = True
-        mock_attch.return_value = list()
+        mock_attch.return_value = []
 
         self.assertFalse(
             mail_2_rmq.process_from(
@@ -348,8 +346,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_false_false_connect(self, mock_rmq, mock_log, mock_archive,
-                                 mock_rm, mock_attch):
+    def test_false_false_connect(                       # pylint:disable=R0913
+            self, mock_rmq, mock_log, mock_archive, mock_rm, mock_attch):
 
         """Function:  test_false_false_connect
 
@@ -392,7 +390,7 @@ class UnitTest(unittest.TestCase):
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
         mock_archive.return_value = True
-        mock_attch.return_value = list()
+        mock_attch.return_value = []
 
         self.assertFalse(
             mail_2_rmq.process_from(
@@ -403,8 +401,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_false_true_connect(self, mock_rmq, mock_log, mock_archive,
-                                mock_rm, mock_attch):
+    def test_false_true_connect(                        # pylint:disable=R0913
+            self, mock_rmq, mock_log, mock_archive, mock_rm, mock_attch):
 
         """Function:  test_false_true_connect
 
@@ -446,7 +444,7 @@ class UnitTest(unittest.TestCase):
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
         mock_archive.return_value = True
-        mock_attch.return_value = list()
+        mock_attch.return_value = []
 
         self.assertFalse(
             mail_2_rmq.process_from(
@@ -457,8 +455,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_true_false_connect(self, mock_rmq, mock_log, mock_archive,
-                                mock_rm, mock_attch):
+    def test_true_false_connect(                        # pylint:disable=R0913
+            self, mock_rmq, mock_log, mock_archive, mock_rm, mock_attch):
 
         """Function:  test_true_false_connect
 

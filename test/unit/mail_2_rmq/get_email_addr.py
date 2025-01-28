@@ -20,8 +20,8 @@ import unittest
 
 # Local
 sys.path.append(os.getcwd())
-import mail_2_rmq
-import version
+import mail_2_rmq                               # pylint:disable=E0401,C0413
+import version                                  # pylint:disable=C0413,E0401
 
 __version__ = version.__version__
 

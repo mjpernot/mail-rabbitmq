@@ -1,1 +1,1 @@
-git+ssh://git@sc.appdev.proj.coe.ic.gov/JAC-DSXD/python-lib.git@3.0.8#egg=python-lib
+git+ssh://git@sc.appdev.proj.coe.ic.gov/JAC-DSXD/python-lib.git@4.0.0#egg=python-lib

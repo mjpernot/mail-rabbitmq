@@ -20,10 +20,34 @@ import unittest
 
 # Local
 sys.path.append(os.getcwd())
-import mail_2_rmq
-import version
+import mail_2_rmq                               # pylint:disable=E0401,C0413
+import version                                  # pylint:disable=C0413,E0401
 
 __version__ = version.__version__
+
+
+class CfgTest():                                        # pylint:disable=R0903
+
+    """Class:  CfgTest
+
+    Description:  Class which is a representation of a cfg module.
+
+    Methods:
+        __init__
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Initialization instance of the CfgTest class.
+
+        Arguments:
+
+        """
+
+        self.subj_filter = [r"\[.*\]"]
 
 
 class UnitTest(unittest.TestCase):
@@ -49,29 +73,6 @@ class UnitTest(unittest.TestCase):
         Arguments:
 
         """
-
-        class CfgTest(object):
-
-            """Class:  CfgTest
-
-            Description:  Class which is a representation of a cfg module.
-
-            Methods:
-                __init__
-
-            """
-
-            def __init__(self):
-
-                """Method:  __init__
-
-                Description:  Initialization instance of the CfgTest class.
-
-                Arguments:
-
-                """
-
-                self.subj_filter = [r"\[.*\]"]
 
         self.cfg = CfgTest()
         self.subj_base = "package-admin"
