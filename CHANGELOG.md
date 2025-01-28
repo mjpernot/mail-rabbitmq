@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [2.0.0] - 2025-01-24
+Breaking Changes
+
+- Removed support for Python 2.7.
+- Updated urllib3==1.26.20
+- Added certifi==2024.12.14
+- Updated python-lib v4.0.0
+- Updated rabbitmw-lib v2.3.0
+
+### Fixed
+- get_text: Converted byte string to character string if detected.
+
+### Changes
+- process_attach: Refactored io.open call.
+- connect_rmq: Replaced dict() with {}.
+- process_attach: Replaced list() with [].
+- Converted strings to f-strings.
+- convert_bytes, parse_email: Removed Python 2.7 code.
+- Documentation changes.
+
+
 ## [1.5.6] - 2024-11-19
 - Updated python-lib to v3.0.8
 - Updated rabbitmq-lib to v2.2.8

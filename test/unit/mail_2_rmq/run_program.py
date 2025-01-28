@@ -21,9 +21,9 @@ import mock
 
 # Local
 sys.path.append(os.getcwd())
-import mail_2_rmq
-import lib.gen_libs as gen_libs
-import version
+import mail_2_rmq                               # pylint:disable=E0401,C0413
+import lib.gen_libs as gen_libs             # pylint:disable=E0401,C0413,R0402
+import version                                  # pylint:disable=C0413,E0401
 
 __version__ = version.__version__
 
@@ -35,8 +35,6 @@ def process_message(cfg, log):
     Description:  This is a function stub for mail_2_rmq.process_message.
 
     Arguments:
-        (input) cfg
-        (input) log
 
     """
 
@@ -55,8 +53,6 @@ def check_nonprocess(cfg, log):
     Description:  This is a function stub for mail_2_rmq.check_nonprocess.
 
     Arguments:
-        (input) cfg
-        (input) log
 
     """
 
@@ -68,7 +64,7 @@ def check_nonprocess(cfg, log):
     return status
 
 
-class ArgParser(object):
+class ArgParser():
 
     """Class:  ArgParser
 
@@ -92,7 +88,7 @@ class ArgParser(object):
         """
 
         self.cmdline = None
-        self.args = dict()
+        self.args = {}
 
     def get_args_keys(self):
 
@@ -119,7 +115,7 @@ class ArgParser(object):
         return self.args.get(skey, def_val)
 
 
-class LoggerTest(object):
+class LoggerTest():
 
     """Class:  LoggerTest
 
@@ -152,7 +148,6 @@ class LoggerTest(object):
         Description:  Stub holder for Logger.log_info method.
 
         Arguments:
-            (input) data
 
         """
 
@@ -165,7 +160,6 @@ class LoggerTest(object):
         Description:  Stub holder for Logger.log_warn method.
 
         Arguments:
-            (input) data
 
         """
 
@@ -181,10 +175,8 @@ class LoggerTest(object):
 
         """
 
-        pass
 
-
-class ProgramLock(object):
+class ProgramLock():                                    # pylint:disable=R0903
 
     """Class:  ProgramLock
 
@@ -202,8 +194,6 @@ class ProgramLock(object):
         Description:  Class initialization.
 
         Arguments:
-            (input) cmdline
-            (input) flavor
 
         """
 
@@ -211,7 +201,7 @@ class ProgramLock(object):
         self.flavor = flavor
 
 
-class CfgTest(object):
+class CfgTest():                                        # pylint:disable=R0903
 
     """Class:  CfgTest
 

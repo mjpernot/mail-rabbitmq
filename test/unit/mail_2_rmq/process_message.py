@@ -21,13 +21,13 @@ import mock
 
 # Local
 sys.path.append(os.getcwd())
-import mail_2_rmq
-import version
+import mail_2_rmq                               # pylint:disable=E0401,C0413
+import version                                  # pylint:disable=C0413,E0401
 
 __version__ = version.__version__
 
 
-class CfgTest(object):
+class CfgTest():                                        # pylint:disable=R0903
 
     """Class:  CfgTest
 
@@ -114,8 +114,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_missing_from(self, mock_log, mock_parse, mock_filter, mock_camel,
-                          mock_email):
+    def test_missing_from(                              # pylint:disable=R0913
+            self, mock_log, mock_parse, mock_filter, mock_camel, mock_email):
 
         """Function:  test_missing_from
 
@@ -125,7 +125,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_email.return_value = list()
+        mock_email.return_value = []
         mock_log.return_value = True
         mock_parse.return_value = self.email_msg4
         mock_filter.return_value = "InvalidQueue"
@@ -139,8 +139,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_from_addr(self, mock_log, mock_parse, mock_filter, mock_camel,
-                       mock_email):
+    def test_from_addr(                                 # pylint:disable=R0913
+            self, mock_log, mock_parse, mock_filter, mock_camel, mock_email):
 
         """Function:  test_from_addr
 
@@ -164,8 +164,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_fname_valid_subj(self, mock_log, mock_parse, mock_filter,
-                              mock_camel, mock_email):
+    def test_fname_valid_subj(                          # pylint:disable=R0913
+            self, mock_log, mock_parse, mock_filter, mock_camel, mock_email):
 
         """Function:  test_fname_valid_subj
 
@@ -189,8 +189,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_fname_invalid_subj(self, mock_log, mock_parse, mock_filter,
-                                mock_camel, mock_email):
+    def test_fname_invalid_subj(                        # pylint:disable=R0913
+            self, mock_log, mock_parse, mock_filter, mock_camel, mock_email):
 
         """Function:  test_fname_invalid_subj
 
@@ -214,8 +214,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_fname_miss(self, mock_log, mock_parse, mock_filter, mock_camel,
-                        mock_email):
+    def test_fname_miss(                                # pylint:disable=R0913
+            self, mock_log, mock_parse, mock_filter, mock_camel, mock_email):
 
         """Function:  test_fname_miss
 
@@ -239,8 +239,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_invalid_subj(self, mock_log, mock_parse, mock_filter, mock_camel,
-                          mock_email):
+    def test_invalid_subj(                              # pylint:disable=R0913
+            self, mock_log, mock_parse, mock_filter, mock_camel, mock_email):
 
         """Function:  test_invalid_subj
 
@@ -264,8 +264,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.parse_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
-    def test_valid_subj(self, mock_log, mock_parse, mock_filter, mock_camel,
-                        mock_email):
+    def test_valid_subj(                                # pylint:disable=R0913
+            self, mock_log, mock_parse, mock_filter, mock_camel, mock_email):
 
         """Function:  test_valid_subj
 

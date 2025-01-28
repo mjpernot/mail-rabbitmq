@@ -25,31 +25,20 @@
 
   * Setup a local account and group: rabbitmq:rabbitmq
   * List of Linux packages that need to be installed on the server.
-    - Centos 7 (Running Python 2.7):
-      -> python-pip
-    - Redhat 8 (Running Python 3.6):
-      -> python3-pip
-      -> gcc
+    - python3-pip
+    - gcc
 
 
 # Installation:
 
 Install the program using git 
-  * From here on out, any reference to **{Python_Project}** or **PYTHON_PROJECT** replace with the baseline path of the python program.
 
 ```
 git clone git@sc.appdev.proj.coe.ic.gov:JAC-DSXD/mail-rabbitmq.git
-cd mail-rabbitmq
 ```
 
 Install/upgrade system modules.
 
-Centos 7 (Running Python 2.7):
-```
-sudo pip install -r requirements.txt --upgrade --trusted-host pypi.appdev.proj.coe.ic.gov
-```
-
-Redhat 8 (Running Python 3.6):
 NOTE: Install as the user that will run the program.
 
 ```
@@ -59,13 +48,6 @@ python -m pip install --user -r requirements3.txt --upgrade --trusted-host pypi.
 
 Install supporting classes and libraries.
 
-Centos 7 (Running Python 2.7):
-```
-pip install -r requirements-python-lib.txt --target lib --trusted-host pypi.appdev.proj.coe.ic.gov
-pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host pypi.appdev.proj.coe.ic.gov
-```
-
-Redhat 8 (Running Python 3.6):
 ```
 python -m pip install -r requirements-python-lib.txt --target lib --trusted-host pypi.appdev.proj.coe.ic.gov
 python -m pip install -r requirements-rabbitmq-lib.txt --target rabbit_lib --trusted-host pypi.appdev.proj.coe.ic.gov
@@ -110,10 +92,10 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
 
 ```
-cd config
-cp rabbitmq.py.TEMPLATE rabbitmq.py
-vim rabbitmq.py
-chmod 600 rabbitmq.py
+cp config/rabbitmq.py.TEMPLATE config/rabbitmq.py
+vim config/rabbitmq.py
+chmod 600 config/rabbitmq.py
+sudo chown rabbitmq:rabbitmq mail-rabbitmq/config/rabbitmq.py
 ```
 
 
@@ -123,115 +105,43 @@ chmod 600 rabbitmq.py
 ### Postfix system
 
 Setup local aliases for rabbitmq account:
-  * Add to the file:
-    - `rabbitmq: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/config -M"`
+  * Run as the rabbitmq user.
+  * Add to the .aliases file:
+    - `rabbitmq: "|{DIR_PATH}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {DIR_PATH}/mail-rabbitmq/config -M"`
 
 ```
 vim /home/rabbitmq/.aliases
 ```
 
-Change ownership of configuration file.
-
-```
-sudo chown rabbitmq:rabbitmq {Python_Project}/mail-rabbitmq/config/rabbitmq.py
-```
-
-In a second term window:
-  * Monitor the system messages file for an SELinux policy exceptions.
-
-```
-sudo tail -f /var/log/messages
-```
-
 Create aliases database in first term window (run as rabbitmq).
-
-```
-postalias .aliases
-```
-
-Monitor the messages file for SELinux exceptions, look for "run sealert".  NOTE:  Most audit logs rotate every 10 minutes, so if the sealert command fails, re-run the email message in again.
-  * HexiDecimal_Key will be displayed in the tail command in the second term window.
-
-```
-sudo sealert -l {HexiDecimal_Key}
-```
-
-Run the grep and sedmodule commands from sealert command.  Example below.
-
-```
-sudo bash
-cd /root
-grep mail_2_rmq.py /var/log/audit/audit.log | audit2allow -M mypol
-semodule -i mypol.pp
-exit
-```
-
-Re-create the aliases database, if SELinux policy exception was detected and removed (run as rabbitmq).
+  * Monitor the system messages file for an SELinux policy exceptions, add the exceptions and re-run until no exceptions detected.
 
 ```
 postalias .aliases
 ```
 
 Setup aliases in main.cf file.
-  * Replace **{HOME}** with the baseline path to the rabbitmq's home directory.
-  * Add the following lines to the file:
-    -  `alias_maps = hash:/{HOME}/rabbitmq/.aliases`
-    -  `alias_database = hash:/{HOME}/rabbitmq/.aliases`
+  * Add "hash:/home/rabbitmq/.aliases" to the alias_maps and alias_database entries in the main.cf file.  See examples below:
+    -  `alias_maps = hash:/home/rabbitmq/.aliases`
+    -  `alias_database = hash:/home/rabbitmq/.aliases`
 
 ```
 sudo vim /etc/postfix/main.cf
 ```
 
 Reload postfix.
+  * Monitor the system messages file for an SELinux policy exceptions, add the exceptions and re-run until no exceptions detected.
 
 ```
-sudo service postfix restart
-```
-
-Allow the access to .aliases and .aliases.db files.
-  * Replace **{HOME}** with the baseline path to the rabbitmq's home directory.
-
-```
-sudo bash
-semanage fcontext -a -t etc_aliases_t "/{HOME}/rabbitmq/\.aliases"
-restorecon -R /{HOME}/rabbitmq/.aliases
-semanage fcontext -a -t etc_aliases_t "/{HOME}/rabbitmq/\.aliases.db"
-restorecon -R /{HOME}/rabbitmq/.aliases.db
-exit
-```
-
-In second term window:
-  * Continue monitoring the system messages file for an SELinux policy exceptions.
-
-```
-sudo tail -f /var/log/messages
+sudo systemctl restart postfix
 ```
 
 Send test email to rabbitmq.
+  * Monitor the system messages file for an SELinux policy exceptions, add the exceptions and re-run until no exceptions detected.
 
 ```
 echo "sipr-isse" | mailx -s sipr-isse rabbitmq@mail.domain.name
 ```
-
-Monitor the messages file for SELinux exceptions, look for "run sealert".
-  * NOTE:  Most audit logs rotate every 10 minutes, so if the sealert command fails, re-run the email message in again.
-  * HexiDecimal_Key will be displayed in the tail command in the second term window.
-
-```
-sudo sealert -l {HexiDecimal_Key}
-```
-
-Run the grep and sedmodule commands from sealert command.  Example below.
-
-```
-sudo bash
-cd /root
-grep mail_2_rmq.py /var/log/audit/audit.log | audit2allow -M mypol
-semodule -i mypol.pp
-exit
-```
-
-Repeat the previous three steps (from "Send test email to rabbitmq" onward) until all exceptions have been found and excluded in the policy.
 
 
 ### Alias system
@@ -239,24 +149,19 @@ Repeat the previous three steps (from "Send test email to rabbitmq" onward) unti
 
 Add an email alias to allow mail piping.
   * Add the following entry:
-    - `mailrabbit: "|{Python_Project}/mail_rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail_rabbitmq/config -M"`
+    - `mailrabbit: "|{DIR_PATH}/mail_rabbitmq/mail_2_rmq.py -c rabbitmq -d {DIR_PATH}/mail_rabbitmq/config -M"`
 
 ```
 sudo vim /etc/aliases
 sudo newaliases
 ```
 
-Add links to the program in the /etc/smrsh directory.
+Add links to the program in the /etc/smrsh directory and set ownership.
 
 ```
 cd /etc/smrsh
-sudo ln -s {Python_Project}/mail_rabbitmq/mail_2_rmq.py mail_2_rmq.py
-```
-
-Change ownership of configuration file.
-
-```
-sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
+sudo ln -s {DIR_PATH}/mail_rabbitmq/mail_2_rmq.py mail_2_rmq.py
+sudo chown mail:mail {DIR_PATH}/mail_rabbitmq/config/rabbitmq.py
 ```
 
 
@@ -265,7 +170,7 @@ sudo chown mail:mail {Python_Project}/mail_rabbitmq/config/rabbitmq.py
   All of the programs, except the command and class files, will have an -h (Help option) that will show display a help message for that particular program.  The help message will usually consist of a description, usage, arugments to the program, example, notes about the program, and any known bugs not yet fixed.  To run the help command:
 
 ```
-{Python_Project}/rmq-sysmon/mail_2_rmq.py -h
+rmq-sysmon/mail_2_rmq.py -h
 ```
 
 
@@ -280,14 +185,7 @@ Install the project using the procedures in the Installation section.
 ### Testing:
 
 ```
-cd {Python_Project}/mail-rabbitmq
 test/unit/mail_2_rmq/unit_test_run3.sh
-```
-
-### Code coverage:
-
-```
-cd {Python_Project}/mail-rabbitmq
 test/unit/mail_2_rmq/code_coverage.sh
 ```
 
@@ -321,25 +219,24 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 
 ```
-cd test/blackbox/mail_2_rmq/config
-cp ../../../../config/rabbitmq.py.TEMPLATE rabbitmq.py
-vim rabbitmq.py
-chmod 644 rabbitmq.py
+cp config/rabbitmq.py.TEMPLATE test/blackbox/mail_2_rmq/config/rabbitmq.py
+vim test/blackbox/mail_2_rmq/config/rabbitmq.py
+chmod 644 test/blackbox/mail_2_rmq/config/rabbitmq.py
 ```
 
 Setup a second configuration file to test non-connection logic paths.
   * Change the same variables as listed except change the passwd variable to an incorrect password.
 
 ```
-cp rabbitmq.py rabbitmq_2.py
-vim rabbitmq_2.py
-chmod 644 rabbitmq_2.py
+cp test/blackbox/mail_2_rmq/config/rabbitmq.py test/blackbox/mail_2_rmq/config/rabbitmq_2.py
+vim test/blackbox/mail_2_rmq/config/rabbitmq_2.py
+chmod 644 test/blackbox/mail_2_rmq/config/rabbitmq_2.py
 ```
 
 Add two email aliases to allow functional testing.
   * Add the following lines to the aliases file:
-    - `mailrabbit: "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {Python_Project}/mail-rabbitmq/test/blackbox/mail_2_rmq/config -M"`
-    - `mailrabbit_2:   "|{Python_Project}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq_2 -d {Python_Project}/mail-rabbitmq/test/blackbox/mail_2_rmq/config -M"`
+    - `mailrabbit: "|{DIR_PATH}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq -d {DIR_PATH}/mail-rabbitmq/test/blackbox/mail_2_rmq/config -M"`
+    - `mailrabbit_2:   "|{DIR_PATH}/mail-rabbitmq/mail_2_rmq.py -c rabbitmq_2 -d {DIR_PATH}/mail-rabbitmq/test/blackbox/mail_2_rmq/config -M"`
 
 ```
 sudo vim /etc/aliases
@@ -350,20 +247,18 @@ Add links to the program in the /etc/smrsh directory.
 
 ```
 cd /etc/smrsh
-sudo ln -s {Python_Project}/mail-rabbitmq/mail_2_rmq.py mail_2_rmq.py
+sudo ln -s {DIR_PATH}/mail-rabbitmq/mail_2_rmq.py mail_2_rmq.py
 ```
 
 ### Testing:
 
 ```
-cd {Python_Project}/mail-rabbitmq/test/blackbox/mail_2_rmq
-./mail_2_rmq_functional_test.sh
+mail-rabbitmq/test/blackbox/mail_2_rmq/mail_2_rmq_functional_test.sh
 ```
 
 ### Post-Testing Cleanup:
 
 ```
-cd {Python_Project}/mail-rabbitmq
 test/blackbox/mail_2_rmq/mail_2_rmq_cleanup.py
 ```
 

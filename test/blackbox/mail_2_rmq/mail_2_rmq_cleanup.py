@@ -22,8 +22,8 @@ import pika
 
 # Local
 sys.path.append(os.getcwd())
-import rabbit_lib.rabbitmq_class as rabbitmq_class
-import version
+import rabbit_lib.rabbitmq_class as rmq_cls  # pylint:disable=R0402,E0401,C0413
+import version                                  # pylint:disable=E0401,C0413
 
 __version__ = version.__version__
 
@@ -70,28 +70,29 @@ def cleanup_queue(rmq, drop_exch, connect_status):
 
         if rmq.channel.is_closed:
 
-            if connect_status and rmq.connection._impl.connection_state > 0:
+            ste = rmq.connection._impl.connection_state  # pylint:disable=W0212
+
+            if connect_status and ste > 0:
                 rmq.close()
 
-                if rmq.connection._impl.connection_state == 0:
-                    print("\t%s dropped" % rmq.queue_name)
+                if ste == 0:
+                    print(f"\t{rmq.queue_name} dropped")
 
                 else:
                     print("\tFailed to close connection")
-                    print("\tConnection: %s" % rmq.connection)
-                    print("\tConnection State: %s" %
-                          rmq.connection._impl.connection_state)
+                    print(f"\tConnection: {rmq.connection}")
+                    print(f"\tConnection State: {ste}")
 
             else:
                 print("\tConnection not opened")
 
         else:
             print("\tFailure:  Channel did not close")
-            print("\tChannel: %s" % rmq.channel)
+            print(f"\tChannel: {rmq.channel}")
 
     except pika.exceptions.ChannelClosed as msg:
         print("\tWarning:  Unable to locate queue")
-        print("Error Msg: %s" % msg)
+        print(f"Error Msg: {msg}")
 
 
 def mail_2_rmq_cleanup(cfg, queue_name, drop_exch=False):
@@ -107,19 +108,19 @@ def mail_2_rmq_cleanup(cfg, queue_name, drop_exch=False):
 
     """
 
-    rmq = rabbitmq_class.RabbitMQPub(
+    rmq = rmq_cls.RabbitMQPub(
         cfg.user, cfg.japd, cfg.host, cfg.port,
         exchange_name=cfg.exchange_name, exchange_type=cfg.exchange_type,
         queue_name=queue_name, routing_key=queue_name, x_durable=cfg.x_durable,
         q_durable=cfg.q_durable, auto_delete=cfg.auto_delete)
 
-    if isinstance(rmq, rabbitmq_class.RabbitMQPub):
+    if isinstance(rmq, rmq_cls.RabbitMQPub):
         connect_status, err_msg = rmq.connect()
+        ste = rmq.connection._impl.connection_state  # pylint:disable=W0212
 
         if isinstance(rmq.connection,
                       pika.adapters.blocking_connection.BlockingConnection) \
-                and rmq.connection._impl.connection_state > 0 \
-                and connect_status:
+                and ste > 0 and connect_status:
 
             rmq.open_channel()
 
@@ -134,20 +135,20 @@ def mail_2_rmq_cleanup(cfg, queue_name, drop_exch=False):
 
                 except pika.exceptions.ChannelClosed as msg:
                     print("\tWarning:  Unable to find an exchange")
-                    print("Error Msg: %s" % msg)
+                    print(f"Error Msg: {msg}")
 
             else:
                 print("\tFailure:  Unable to open channel")
-                print("\tChannel: %s" % rmq.channel)
+                print(f"\tChannel: {rmq.channel}")
 
         else:
             print("\tFailure:  Unable to open connection")
-            print("\tConnection: %s" % rmq.connection)
-            print("\tError Msg: %s" % err_msg)
+            print(f"\tConnection: {rmq.connection}")
+            print(f"\tError Msg: {err_msg}")
 
     else:
         print("\tFailure:  Unable to initialize")
-        print("\tClass: %s" % rabbitmq_class.RabbitMQPub)
+        print(f"\tClass: {rmq_cls.RabbitMQPub}")
 
 
 def main():

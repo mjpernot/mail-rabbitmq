@@ -22,13 +22,13 @@ import mock
 
 # Local
 sys.path.append(os.getcwd())
-import mail_2_rmq
-import version
+import mail_2_rmq                               # pylint:disable=E0401,C0413
+import version                                  # pylint:disable=C0413,E0401
 
 __version__ = version.__version__
 
 
-class Rmq(object):
+class Rmq():
 
     """Class:  Rmq
 
@@ -80,8 +80,6 @@ class Rmq(object):
 
         """
 
-        pass
-
     def change_channel(self, stat):
 
         """Method:  change_channel
@@ -95,7 +93,7 @@ class Rmq(object):
         self.channel = self.status(stat)
 
 
-class CfgTest(object):
+class CfgTest():                                        # pylint:disable=R0903
 
     """Class:  CfgTest
 
