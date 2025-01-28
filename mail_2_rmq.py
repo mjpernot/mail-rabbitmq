@@ -49,7 +49,7 @@
             attach_types = ["application/pdf"]
 
             # Only change these entries if neccessary.
-            subj_filter = ["\[.*\]"  
+            subj_filter = ["\[.*\]"
             port = 5672
             exchange_type = "direct"
             x_durable = True

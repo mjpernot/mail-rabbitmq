@@ -62,6 +62,7 @@ class MsgTest():                                        # pylint:disable=R0903
 
         return self.walk_list
 
+
 class PartMsgTest2():
 
     """Class:  PartMsgTest2
@@ -87,7 +88,7 @@ class PartMsgTest2():
         """
 
         self.type = ""
-        self.payload = b""
+        self.payload = b"Email Message"
         self.decode = None
 
     def get_content_maintype(self):
@@ -182,13 +183,14 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
-        test_empty_msg
-        test_single_part_msg
-        test_two_part_msg
-        test_multi_part_msg
-        test_empty_payload_msg
-        test_multipart_empty_payload_msg
         test_multiple_part_msg
+        test_multipart_empty_payload_msg
+        test_empty_payload_msg
+        test_multi_part_msg
+        test_two_part_msg
+        test_single_part_msg_byte
+        test_single_part_msg
+        test_empty_msg
 
     """
 

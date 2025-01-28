@@ -51,6 +51,7 @@ class RQTest():                                         # pylint:disable=R0903
         self.exchange = "Test_Exchange"
         self.queue_name = "Test_Queue"
 
+
 class CfgTest():                                        # pylint:disable=R0903
 
     """Class:  CfgTest
