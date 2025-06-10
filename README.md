@@ -117,7 +117,7 @@ Create aliases database in first term window (run as rabbitmq).
   * Monitor the system messages file for an SELinux policy exceptions, add the exceptions and re-run until no exceptions detected.
 
 ```
-postalias .aliases
+postalias /home/rabbitmq/.aliases
 ```
 
 Setup aliases in main.cf file.

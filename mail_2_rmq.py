@@ -49,7 +49,7 @@
             attach_types = ["application/pdf"]
 
             # Only change these entries if neccessary.
-            subj_filter = ["\[.*\]"
+            subj_filter = ["\[.*\]"]
             port = 5672
             exchange_type = "direct"
             x_durable = True
@@ -330,11 +330,11 @@ def process_attach(msg, log, cfg):
                     fhdr.write(convert_bytes(item.get_payload(decode=True)))
                 fname = tname + ".encoded"
                 fname_list.append(fname)
-                base64.encode(
-                    io.open(                            # pylint:disable=R1732
-                        tname, mode="rb"),
-                    io.open(                            # pylint:disable=R1732
-                        fname, mode="wb"))
+                in_file = io.open(tname, mode="rb")
+                out_file = io.open(fname, mode="wb")
+                base64.encode(in_file, out_file)
+                in_file.close()
+                out_file.close()
                 err_flag, err_msg = gen_libs.rm_file(tname)
 
                 if err_flag:
@@ -574,18 +574,9 @@ def run_program(args, func_dict, **kwargs):
         log.log_info(f"{str_val}")
         log.log_info(f"{cfg.host}:{cfg.exchange_name} Initialized")
 
-        try:
-            flavor_id = args.get_val("-y", def_val=cfg.exchange_name)
-            prog_lock = gen_class.ProgramLock(sys.argv, flavor_id)
-
-            # Intersect args_array & func_dict to find which functions to call
-            for opt in set(args.get_args_keys()) & set(func_dict.keys()):
-                func_dict[opt](cfg, log, **kwargs)
-
-            del prog_lock
-
-        except gen_class.SingleInstanceException:
-            log.log_warn(f"mail_2_rmq lock in place for: {flavor_id}")
+        # Intersect args_array & func_dict to find which functions to call
+        for opt in set(args.get_args_keys()) & set(func_dict.keys()):
+            func_dict[opt](cfg, log, **kwargs)
 
         log.log_close()
 

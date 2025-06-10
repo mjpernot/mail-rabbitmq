@@ -176,31 +176,6 @@ class LoggerTest():
         """
 
 
-class ProgramLock():                                    # pylint:disable=R0903
-
-    """Class:  ProgramLock
-
-    Description:  Class stub holder for gen_class.ProgramLock class.
-
-    Methods:
-        __init__
-
-    """
-
-    def __init__(self, cmdline, flavor):
-
-        """Method:  __init__
-
-        Description:  Class initialization.
-
-        Arguments:
-
-        """
-
-        self.cmdline = cmdline
-        self.flavor = flavor
-
-
 class CfgTest():                                        # pylint:disable=R0903
 
     """Class:  CfgTest
@@ -271,7 +246,6 @@ class UnitTest(unittest.TestCase):
 
         self.cfg = CfgTest()
         self.log = LoggerTest()
-        self.proglock = ProgramLock(["cmdline"], "FlavorID")
         self.args = ArgParser()
         self.args2 = ArgParser()
         self.args.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
@@ -330,7 +304,6 @@ class UnitTest(unittest.TestCase):
 
         mock_cfg.return_value = (self.cfg, True, [])
         mock_class.Logger.return_value = self.log
-        mock_class.ProgramLock.return_value = self.proglock
 
         self.args.args_array["-M"] = True
         self.args.args_array["-C"] = True
@@ -350,7 +323,6 @@ class UnitTest(unittest.TestCase):
 
         mock_cfg.return_value = (self.cfg, True, [])
         mock_class.Logger.return_value = self.log
-        mock_class.ProgramLock.return_value = self.proglock
 
         self.args.args_array["-M"] = True
         self.assertFalse(mail_2_rmq.run_program(self.args, self.func_names))
