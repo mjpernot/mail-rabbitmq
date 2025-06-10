@@ -185,7 +185,7 @@ Install the project using the procedures in the Installation section.
 ### Testing:
 
 ```
-test/unit/mail_2_rmq/unit_test_run3.sh
+test/unit/mail_2_rmq/unit_test_run.sh
 test/unit/mail_2_rmq/code_coverage.sh
 ```
 
