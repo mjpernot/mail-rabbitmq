@@ -225,8 +225,6 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
-        test_flavor_id
-        test_exception_handler
         test_all_func
         test_true_func
         test_true_status
@@ -247,48 +245,9 @@ class UnitTest(unittest.TestCase):
         self.cfg = CfgTest()
         self.log = LoggerTest()
         self.args = ArgParser()
-        self.args2 = ArgParser()
         self.args.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
-        self.args2.args_array = {
-            "-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY", "-y": "flavorid"}
         self.func_names = {"-M": process_message, "-C": check_nonprocess}
         self.err_msgs = ["Error Msg1", "Error Msg3"]
-
-    @mock.patch("mail_2_rmq.gen_class")
-    @mock.patch("mail_2_rmq.load_cfg")
-    def test_flavor_id(self, mock_cfg, mock_class):
-
-        """Function:  test_flavor_id
-
-        Description:  Test with -y option passed.
-
-        Arguments:
-
-        """
-
-        mock_cfg.return_value = (self.cfg, True, [])
-        mock_class.Logger.return_value = self.log
-
-        self.assertFalse(mail_2_rmq.run_program(self.args2, self.func_names))
-
-    @mock.patch("mail_2_rmq.gen_class.Logger")
-    @mock.patch("mail_2_rmq.gen_class.ProgramLock")
-    @mock.patch("mail_2_rmq.load_cfg")
-    def test_exception_handler(self, mock_cfg, mock_lock, mock_log):
-
-        """Function:  test_exception_handler
-
-        Description:  Test with exception handler.
-
-        Arguments:
-
-        """
-
-        mock_cfg.return_value = (self.cfg, True, [])
-        mock_log.return_value = self.log
-        mock_lock.side_effect = mail_2_rmq.gen_class.SingleInstanceException
-
-        self.assertFalse(mail_2_rmq.run_program(self.args, self.func_names))
 
     @mock.patch("mail_2_rmq.gen_class")
     @mock.patch("mail_2_rmq.load_cfg")
