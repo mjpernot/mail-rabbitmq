@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [2.0.1] - 2025-06-10
+- Updated python-lib to v4.0.1
+- Updated rabbitmq-lib v2.4.0
+
+### Fixed
+- process_attach: Fixed having problem removing a file during the gen_libs.rm_file call.
+- run_program: Removed gen_class.ProgramLock due to the program possibly skipping emails when a lock is in place.
+
+### Changed
+- Documentation changes.
+
+
 ## [2.0.0] - 2025-01-24
 Breaking Changes
 
@@ -11,7 +23,7 @@ Breaking Changes
 - Updated urllib3==1.26.20
 - Added certifi==2024.12.14
 - Updated python-lib v4.0.0
-- Updated rabbitmw-lib v2.3.0
+- Updated rabbitmq-lib v2.3.0
 
 ### Fixed
 - get_text: Converted byte string to character string if detected.
