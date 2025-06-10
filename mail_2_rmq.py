@@ -8,11 +8,11 @@
 
     Usage:
         -M options:
-        email_alias: "| /path/mail_2_rmq.py -c file -d path -M [-y flavor_id]"
-        cat email_file | /path/mail_2_rmq.py -c file -d path -M [-y flavor_id]
+        email_alias: "| /path/mail_2_rmq.py -c file -d path -M"
+        cat email_file | /path/mail_2_rmq.py -c file -d path -M
 
         All other options.
-        mail_2_rmq.py -c file -d path [-C] [-y flavor_id]
+        mail_2_rmq.py -c file -d path [-C]
             [ -v | -h ]
 
     Arguments:
@@ -23,7 +23,6 @@
 
         -C => Check for non-processed messages in email archive directory.
 
-        -y value => A flavor id for the program lock.  To create unique lock.
         -v => Display version of this program.
         -h => Help and usage message.
 
@@ -609,7 +608,7 @@ def main():
     dir_perms_chk = {"-d": 5}
     func_dict = {"-M": process_message, "-C": check_nonprocess}
     opt_req_list = ["-c", "-d"]
-    opt_val_list = ["-c", "-d", "-y"]
+    opt_val_list = ["-c", "-d"]
     opt_xor_dict = {"-M": ["-C"], "-C": ["-M"]}
 
     # Process argument list from command line
