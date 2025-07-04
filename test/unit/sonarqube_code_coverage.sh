@@ -14,7 +14,6 @@ coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/connect_process.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/connect_rmq.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/convert_bytes.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/filter_subject.py
-coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/get_email_addr.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/get_text.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/help_message.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/load_cfg.py

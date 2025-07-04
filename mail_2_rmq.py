@@ -45,16 +45,16 @@
             email_dir = "DIRECTORY_PATH/email_dir"
             log_file = "DIRECTORY_PATH/mail_2_rmq.log"
             tmp_dir = "DIRECTORY_PATH/tmp"
-            attach_types = ["application/pdf"]
 
             # Only change these entries if neccessary.
-            subj_filter = ["\[.*\]"]
-            port = 5672
-            exchange_type = "direct"
-            x_durable = True
-            q_durable = True
-            auto_delete = False
-            heartbeat = 60
+            attach_types
+            subj_filter
+            port
+            exchange_type
+            x_durable
+            q_durable
+            auto_delete
+            heartbeat
 
         Note:  If connecting to a multiple node RabbitMQ cluster, use the
             host_list entry.
@@ -180,12 +180,20 @@ def archive_email(rmq, log, cfg, msg):
 
     """
 
+#    e_file = rmq.exchange + "-" + rmq.queue_name + "-" \
+#        + datetime.datetime.strftime(
+#            datetime.datetime.now(), "%Y%m%d-%H%M%S") + ".email.txt"
     e_file = rmq.exchange + "-" + rmq.queue_name + "-" \
         + datetime.datetime.strftime(
-            datetime.datetime.now(), "%Y%m%d-%H%M%S") + ".email.txt"
-    log.log_info(f"Saving email to: {cfg.email_dir + os.path.sep + e_file}")
-    gen_libs.write_file(cfg.email_dir + os.path.sep + e_file, "w", msg)
-    log.log_info(f"Email saved to: {e_file}")
+            datetime.datetime.now(), "%Y%m%d-%H%M%S") \
+            + f".{os.getpid()}.email.txt"
+    f_file = os.path.join(cfg.email_dir, e_file)
+#    log.log_info(f"Saving email to: {cfg.email_dir + os.path.sep + e_file}")
+    log.log_info(f"[{os.getpid()}] Saving email to: {f_file}")
+#    gen_libs.write_file(cfg.email_dir + os.path.sep + e_file, "w", msg)
+    gen_libs.write_file(f_file, "w", msg)
+#    log.log_info(f"Email saved to: {e_file}")
+    log.log_info(f"[{os.getpid()}] Email saved to: {e_file}")
 
 
 def get_text(msg):
@@ -200,21 +208,32 @@ def get_text(msg):
 
     """
 
+    print("DEBUG: get_text")
+
     msg_list = []
 
     for part in msg.walk():
+        print("DEBUG: msg.walk")
 
         if part.get_content_maintype() == "multipart" \
            or not part.get_payload(decode=True):
+            print("DEBUG: multipart")
 
             continue
 
-        data = part.get_payload(decode=True)
+        print("DEBUG:  CONTENT_TYPE:", part.get_content_type())
+        if part.get_content_type() == "text/plain":
+            data = part.get_payload(decode=True)
+            print("DEBUG: get_payload")
 
-        if not isinstance(data, str):
-            data = data.decode("UTF-8")
+            if not isinstance(data, str):
+                data = data.decode("UTF-8")
+                print("DEBUG: decode")
 
-        msg_list.append(data)
+            msg_list.append(data)
+            print("DEBUG: append")
+
+    print("DEBUG:", msg_list)
 
     return "".join(msg_list)
 
@@ -278,10 +297,11 @@ def filter_subject(subj, cfg):
 
     """
 
-    for f_str in cfg.subj_filter:
-        subj = re.sub(f_str, "", subj).strip()
+    #for f_str in cfg.subj_filter:
+    #    subj = re.sub(f_str, "", subj).strip()
 
-    return subj
+    #return subj
+    return re.sub(cfg.subj_filter, "", subj).strip()
 
 
 def convert_bytes(data):
@@ -321,12 +341,21 @@ def process_attach(msg, log, cfg):
 
         for item in msg.walk():
 
-            if item.get_content_type() in cfg.attach_types:
+#            if item.get_content_type() in cfg.attach_types:
+            if item.get_content_type() in cfg.attach_types and item.get_filename():
                 tname = os.path.join(cfg.tmp_dir, item.get_filename())
                 log.log_info(f"Attachment detected: {item.get_filename()}")
                 log.log_info(f"Attachment type: {item.get_content_type()}")
-                with io.open(tname, mode="wb") as fhdr:
-                    fhdr.write(convert_bytes(item.get_payload(decode=True)))
+
+                if item.get_content_type() == "text/plain":
+                    with io.open(tname, mode="wb") as fhdr:
+                        fhdr.write(convert_bytes(item.get_payload()))
+                else:
+                    with io.open(tname, mode="wb") as fhdr:
+                        fhdr.write(convert_bytes(item.get_payload(decode=True)))
+
+#                with io.open(tname, mode="wb") as fhdr:
+#                    fhdr.write(convert_bytes(item.get_payload(decode=True)))
                 fname = tname + ".encoded"
                 fname_list.append(fname)
                 in_file = io.open(tname, mode="rb")
@@ -346,25 +375,6 @@ def process_attach(msg, log, cfg):
                     log.log_warn(f"Attachment type: {item.get_content_type()}")
 
     return fname_list
-
-
-def get_email_addr(data):
-
-    """Function:  get_email_addr
-
-    Description:  Finds all email addresses in the data string.
-
-    Known Issue:  If a period (.) is at the end of the email address in the
-        data string the function will return the ending period as part of the
-        email address.
-
-    Arguments:
-        (input) data -> Data string with email addresses
-        (output) email_list -> List of email addresses
-
-    """
-
-    return re.findall(r"[\w\.-]+@[\w\.-]+", data)
 
 
 def process_subj(cfg, log, subj, msg):
@@ -455,7 +465,9 @@ def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
         log.log_err(f"connect_rmq: Message:  {err_msg}")
         archive_email(rmq, log, cfg, msg)
 
-    rmq.close()
+    if connect_status:
+        rmq.close()
+    #rmq.close()
 
 
 def process_file(cfg, log, subj, msg):
@@ -569,8 +581,7 @@ def run_program(args, func_dict, **kwargs):
         log = gen_class.Logger(
             cfg.log_file, cfg.log_file + date, "INFO",
             "%(asctime)s %(levelname)s %(message)s", "%Y-%m-%dT%H:%M:%SZ")
-        str_val = "=" * 80
-        log.log_info(f"{str_val}")
+        log.log_info(f"{'=' * 80}")
         log.log_info(f"{cfg.host}:{cfg.exchange_name} Initialized")
 
         # Intersect args_array & func_dict to find which functions to call

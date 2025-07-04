@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [2.1.0] - 2025-06-24
+- Updated python-lib to v4.0.2
+
+### Changes
+- archive_email: Minor refactor of function.
+- process_attach: Added check ensure attachment has a filename associated and if the attachment is a text file to not decode the payload.
+- get_text: Added check to see if content_type is text, otherwise ignore.
+- run_program: Minor refactor of function.
+- Documentation changes.
+
+### Fixed
+- connect_rmq: Only close a RabbitMQ connection if is active.
+- filter_subject: Removed loop as it overwriting the previous subject.
+- config/rabbitmq.py.TEMPLATE: subj_filter - Changed list to a string.
+
+### Removed
+- get_email_addr function.
+
+
 ## [2.0.1] - 2025-06-10
 - Updated python-lib to v4.0.1
 - Updated rabbitmq-lib v2.4.0
