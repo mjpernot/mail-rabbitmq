@@ -82,7 +82,7 @@ class MultiPart():
 
         return self.filename
 
-    def get_payload(self, decode):
+    def get_payload(self, decode=False):
 
         """Method:  get_payload
 
@@ -238,7 +238,7 @@ class CfgTest():                                        # pylint:disable=R0903
         self.valid_queues = ["Queue1", "Queue2"]
         self.subj_filter = [r"\[.*\]"]
         self.tmp_dir = "test/unit/mail_2_rmq/tmp"
-        self.attach_types = ["application/pdf"]
+        self.attach_types = ["application/pdf", "text/plain"]
 
 
 class UnitTest(unittest.TestCase):
@@ -270,8 +270,10 @@ class UnitTest(unittest.TestCase):
         """
 
         self.fname_encode = "Filename.pdf.encoded"
+        self.fname_encode2 = "Filename.txt.encoded"
         self.app_pdf = "application/pdf"
         self.app_zip = "application/zip"
+        self.text_plain = "text/plain"
         self.cfg = CfgTest()
         self.results = [os.path.join(self.cfg.tmp_dir, self.fname_encode)]
         self.results2 = [
@@ -280,10 +282,31 @@ class UnitTest(unittest.TestCase):
         self.results3 = [
             os.path.join(self.cfg.tmp_dir, self.fname_encode),
             os.path.join(self.cfg.tmp_dir, "Filename.zip.encoded")]
+        self.results4 = [os.path.join(self.cfg.tmp_dir, self.fname_encode2)]
         self.fname = "Filename.pdf"
         self.fname2 = "Filename2.pdf"
         self.fname3 = "Filename.zip"
         self.fname4 = "Filename.zip"
+        self.fname5 = "Filename.txt"
+
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_valid_text_attach(self, mock_log):
+
+        """Function:  test_valid_text_attach
+
+        Description:  Test with valid text attachment.
+
+        Arguments:
+
+        """
+
+        mock_log.return_value = True
+
+        msg = Email(content_type=self.text_plain, filename=self.fname5)
+
+        fname = mail_2_rmq.process_attach(msg, mock_log, self.cfg)
+
+        self.assertEqual(fname, self.results4)
 
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_multiple_attach_multiple_types(self, mock_log):
@@ -433,6 +456,10 @@ class UnitTest(unittest.TestCase):
             if os.path.isfile(item):
                 os.remove(item)
 
+        for item in self.results4:
+            if os.path.isfile(item):
+                os.remove(item)
+
         if os.path.isfile(os.path.join(self.cfg.tmp_dir, self.fname)):
             os.remove(os.path.join(self.cfg.tmp_dir, self.fname))
 
@@ -441,6 +468,9 @@ class UnitTest(unittest.TestCase):
 
         if os.path.isfile(os.path.join(self.cfg.tmp_dir, self.fname3)):
             os.remove(os.path.join(self.cfg.tmp_dir, self.fname3))
+
+        if os.path.isfile(os.path.join(self.cfg.tmp_dir, self.fname5)):
+            os.remove(os.path.join(self.cfg.tmp_dir, self.fname5))
 
 
 if __name__ == "__main__":

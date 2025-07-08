@@ -26,7 +26,7 @@ import version                                  # pylint:disable=C0413,E0401
 __version__ = version.__version__
 
 
-class MsgTest():                                        # pylint:disable=R0903
+class MsgTest():
 
     """Class:  MsgTest
 
@@ -35,6 +35,7 @@ class MsgTest():                                        # pylint:disable=R0903
     Methods:
         __init__
         walk
+        get_content_type
 
     """
 
@@ -49,6 +50,7 @@ class MsgTest():                                        # pylint:disable=R0903
         """
 
         self.walk_list = []
+        self.content_type = "text/plain"
 
     def walk(self):
 
@@ -62,6 +64,18 @@ class MsgTest():                                        # pylint:disable=R0903
 
         return self.walk_list
 
+    def get_content_type(self):
+
+        """Method:  get_content_type
+
+        Description:  What is content type of this part of message.
+
+        Arguments:
+
+        """
+
+        return self.content_type
+
 
 class PartMsgTest2():
 
@@ -74,6 +88,7 @@ class PartMsgTest2():
         __init__
         get_content_maintype
         get_payload
+        get_content_type
 
     """
 
@@ -90,6 +105,7 @@ class PartMsgTest2():
         self.type = ""
         self.payload = b"Email Message"
         self.decode = None
+        self.content_type = "text/plain"
 
     def get_content_maintype(self):
 
@@ -118,6 +134,18 @@ class PartMsgTest2():
 
         return self.payload
 
+    def get_content_type(self):
+
+        """Method:  get_content_type
+
+        Description:  What is content type of this part of message.
+
+        Arguments:
+
+        """
+
+        return self.content_type
+
 
 class PartMsgTest():
 
@@ -130,6 +158,7 @@ class PartMsgTest():
         __init__
         get_content_maintype
         get_payload
+        get_content_type
 
     """
 
@@ -146,6 +175,7 @@ class PartMsgTest():
         self.type = ""
         self.payload = ""
         self.decode = None
+        self.content_type = "text/plain"
 
     def get_content_maintype(self):
 
@@ -173,6 +203,18 @@ class PartMsgTest():
         self.decode = decode
 
         return self.payload
+
+    def get_content_type(self):
+
+        """Method:  get_content_type
+
+        Description:  What is content type of this part of message.
+
+        Arguments:
+
+        """
+
+        return self.content_type
 
 
 class UnitTest(unittest.TestCase):
