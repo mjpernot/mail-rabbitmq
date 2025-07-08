@@ -348,14 +348,13 @@ def process_attach(msg, log, cfg):
                     log.log_warn(
                         f"[{os.getpid()}] process_attach:  Message: {err_msg}")
 
-            else:
-                if item.get_filename():
-                    log.log_warn(
-                        f"[{os.getpid()}] Invalid attachment detected:"
-                        f" {item.get_filename()}")
-                    log.log_warn(
-                        f"[{os.getpid()}] Attachment type:"
-                        f" {item.get_content_type()}")
+            elif item.get_filename():
+                log.log_warn(
+                    f"[{os.getpid()}] Invalid attachment detected:"
+                    f" {item.get_filename()}")
+                log.log_warn(
+                    f"[{os.getpid()}] Attachment type:"
+                    f" {item.get_content_type()}")
 
     return fname_list
 
