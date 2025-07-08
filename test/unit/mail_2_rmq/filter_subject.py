@@ -47,7 +47,7 @@ class CfgTest():                                        # pylint:disable=R0903
 
         """
 
-        self.subj_filter = [r"\[.*\]"]
+        self.subj_filter = r"\[.*\]"
 
 
 class UnitTest(unittest.TestCase):
