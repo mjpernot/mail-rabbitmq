@@ -5,9 +5,11 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [2.1.0] - 2025-06-24
+- Added process ID to all log entries to be able to track each run of the program.
 - Updated python-lib to v4.0.2
 
 ### Changes
+- Added os.getpid to the log class entries.
 - archive_email: Minor refactor of function.
 - process_attach: Added check ensure attachment has a filename associated and if the attachment is a text file to not decode the payload.
 - get_text: Added check to see if content_type is text, otherwise ignore.

@@ -258,7 +258,8 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
 
     # Process email or file/attachment.
     if fname:
-        log.log_info("Processing file/attachment...")
+#        log.log_info("Processing file/attachment...")
+        log.log_info(f"[{os.getpid()}] Processing file/attachment...")
 
         with open(fname, mode="r", encoding="UTF-8") as f_hldr:
             t_msg = f_hldr.read()
@@ -267,20 +268,24 @@ def connect_process(rmq, log, cfg, msg, **kwargs):
         t_msg = str({"AFilename": bname, "File": t_msg})
 
     elif rmq.queue_name == cfg.err_queue:
-        log.log_info("Processing error message...")
+#        log.log_info("Processing error message...")
+        log.log_info(f"[{os.getpid()}] Processing error message...")
         t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
                 + " Subject: " + msg["subject"] + " Body: " \
                 + (get_text(msg) or "")
 
     else:
-        log.log_info("Processing email body...")
+#        log.log_info("Processing email body...")
+        log.log_info(f"[{os.getpid()}] Processing email body...")
         t_msg = get_text(msg)
 
     if t_msg and rmq.publish_msg(t_msg):
-        log.log_info("Message ingested into RabbitMQ")
+#        log.log_info("Message ingested into RabbitMQ")
+        log.log_info(f"[{os.getpid()}] Message ingested into RabbitMQ")
 
     else:
-        log.log_err("Failed to injest message into RabbitMQ")
+#        log.log_err("Failed to injest message into RabbitMQ")
+        log.log_err(f"[{os.getpid()}] Failed to injest message into RabbitMQ")
         archive_email(rmq, log, cfg, msg)
 
 
@@ -335,7 +340,8 @@ def process_attach(msg, log, cfg):
     """
 
     fname_list = []
-    log.log_info("Locating attachments...")
+#    log.log_info("Locating attachments...")
+    log.log_info(f"[{os.getpid()}] Locating attachments...")
 
     if msg.is_multipart():
 
@@ -344,8 +350,14 @@ def process_attach(msg, log, cfg):
 #            if item.get_content_type() in cfg.attach_types:
             if item.get_content_type() in cfg.attach_types and item.get_filename():
                 tname = os.path.join(cfg.tmp_dir, item.get_filename())
-                log.log_info(f"Attachment detected: {item.get_filename()}")
-                log.log_info(f"Attachment type: {item.get_content_type()}")
+#                log.log_info(f"Attachment detected: {item.get_filename()}")
+#                log.log_info(f"Attachment type: {item.get_content_type()}")
+                log.log_info(
+                    f"[{os.getpid()}] Attachment detected:"
+                    f" {item.get_filename()}")
+                log.log_info(
+                    f"[{os.getpid()}] Attachment type:"
+                    f" {item.get_content_type()}")
 
                 if item.get_content_type() == "text/plain":
                     with io.open(tname, mode="wb") as fhdr:
@@ -366,13 +378,21 @@ def process_attach(msg, log, cfg):
                 err_flag, err_msg = gen_libs.rm_file(tname)
 
                 if err_flag:
-                    log.log_warn(f"process_attach:  Message: {err_msg}")
+#                    log.log_warn(f"process_attach:  Message: {err_msg}")
+                    log.log_warn(
+                        f"[{os.getpid()}] process_attach:  Message: {err_msg}")
 
             else:
                 if item.get_filename():
+#                    log.log_warn(
+#                        f"Invalid attachment detected: {item.get_filename()}")
+#                    log.log_warn(f"Attachment type: {item.get_content_type()}")
                     log.log_warn(
-                        f"Invalid attachment detected: {item.get_filename()}")
-                    log.log_warn(f"Attachment type: {item.get_content_type()}")
+                        f"[{os.getpid()}] Invalid attachment detected:"
+                        f" {item.get_filename()}")
+                    log.log_warn(
+                        f"[{os.getpid()}] Attachment type:"
+                        f" {item.get_content_type()}")
 
     return fname_list
 
@@ -392,7 +412,8 @@ def process_subj(cfg, log, subj, msg):
 
     """
 
-    log.log_info(f"Valid email subject: {subj}")
+#    log.log_info(f"Valid email subject: {subj}")
+    log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
     connect_rmq(cfg, log, subj, subj, msg)
 
 
@@ -414,19 +435,27 @@ def process_from(cfg, log, msg, from_addr):
 
     if fname_list:
         for fname in fname_list:
+#            log.log_info(
+#                f"Valid From address: {from_addr} with file attachment:"
+#                f" {fname}")
             log.log_info(
-                f"Valid From address: {from_addr} with file attachment:"
-                f" {fname}")
+                f"[{os.getpid()}] Valid From address:"
+                f" {from_addr} with file attachment: {fname}")
             connect_rmq(
                 cfg, log, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr],
                 msg, fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
-                log.log_warn(f"process_from: Message: {err_msg}")
+#                log.log_warn(f"process_from: Message: {err_msg}")
+                log.log_warn(
+                    f"[{os.getpid()}] process_from: Message: {err_msg}")
 
     else:
-        log.log_warn(f"Missing attachment for email address: {from_addr}")
+#        log.log_warn(f"Missing attachment for email address: {from_addr}")
+        log.log_warn(
+            f"[{os.getpid()}] Missing attachment for email address:"
+            f" {from_addr}")
         connect_rmq(cfg, log, cfg.err_addr_queue, cfg.err_addr_queue, msg)
 
 
@@ -452,17 +481,25 @@ def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
         else {}
 
     rmq = rabbitmq_class.create_rmqpub(cfg, qname, rkey)
+#    log.log_info(
+#        f"connect_rmq: Connection info: {cfg.host}->{cfg.exchange_name}")
     log.log_info(
-        f"connect_rmq: Connection info: {cfg.host}->{cfg.exchange_name}")
+        f"[{os.getpid()}] connect_rmq: Connection info:"
+        f" {cfg.host}->{cfg.exchange_name}")
     connect_status, err_msg = rmq.create_connection()
 
     if connect_status and rmq.channel.is_open:
-        log.log_info("connect_rmq: Connected to RabbitMQ mode")
+#        log.log_info("connect_rmq: Connected to RabbitMQ mode")
+        log.log_info(
+            f"[{os.getpid()}] connect_rmq: Connected to RabbitMQ mode")
         connect_process(rmq, log, cfg, msg, **config)
 
     else:
-        log.log_err("connect_rmq: Failed to connect to RabbitMQ")
-        log.log_err(f"connect_rmq: Message:  {err_msg}")
+#        log.log_err("connect_rmq: Failed to connect to RabbitMQ")
+#        log.log_err(f"connect_rmq: Message:  {err_msg}")
+        log.log_err(
+            f"[{os.getpid()}] connect_rmq: Failed to connect to RabbitMQ")
+        log.log_err(f"[{os.getpid()}] connect_rmq: Message:  {err_msg}")
         archive_email(rmq, log, cfg, msg)
 
     if connect_status:
@@ -489,26 +526,35 @@ def process_file(cfg, log, subj, msg):
 
     if fname_list and subj in cfg.file_queues:
         for fname in fname_list:
-            log.log_info(f"Valid subject with file attachment: {fname}")
+#            log.log_info(f"Valid subject with file attachment: {fname}")
+            log.log_info(
+                f"[{os.getpid()}] Valid subject with file attachment: {fname}")
             connect_rmq(cfg, log, subj, subj, msg, fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
-                log.log_warn(f"process_file: Message: {err_msg}")
+#                log.log_warn(f"process_file: Message: {err_msg}")
+                log.log_warn(
+                    f"[{os.getpid()}] process_file: Message: {err_msg}")
 
     elif fname_list:
         for fname in fname_list:
-            log.log_info(f"Invalid subject with file attached: {fname}")
+#            log.log_info(f"Invalid subject with file attached: {fname}")
+            log.log_info(
+                f"[{os.getpid()}] Invalid subject with file attached: {fname}")
             connect_rmq(
                 cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg,
                 fname=fname)
             err_flag, err_msg = gen_libs.rm_file(fname)
 
             if err_flag:
-                log.log_warn(f"process_file 2: Message: {err_msg}")
+#                log.log_warn(f"process_file 2: Message: {err_msg}")
+                log.log_warn(
+                    f"[{os.getpid()}] process_file 2: Message: {err_msg}")
 
     else:
-        log.log_warn(f"Invalid email subject: {subj}")
+#        log.log_warn(f"Invalid email subject: {subj}")
+        log.log_warn(f"[{os.getpid()}] Invalid email subject: {subj}")
         connect_rmq(cfg, log, cfg.err_queue, cfg.err_queue, msg)
 
 
@@ -526,12 +572,14 @@ def process_message(cfg, log):
 
     """
 
-    log.log_info("Parsing email...")
+#    log.log_info("Parsing email...")
+    log.log_info(f"[{os.getpid()}] Parsing email...")
     msg = parse_email()
     subj = gen_libs.pascalize(filter_subject(msg["subject"], cfg))
     email_list = gen_libs.find_email_addr(msg["from"])
     from_addr = email_list[0] if email_list else None
-    log.log_info("Instance creation")
+#    log.log_info("Instance creation")
+    log.log_info(f"[{os.getpid()}] Instance creation")
 
     if subj in cfg.valid_queues:
         process_subj(cfg, log, subj, msg)
@@ -559,7 +607,7 @@ def check_nonprocess(cfg, log):                         # pylint:disable=W0613
     print("check_nonprocess:  Stub holder.  Yet to be developed")
 
 
-def run_program(args, func_dict, **kwargs):
+def run_program(args, func_dict):
 
     """Function:  run_program
 
@@ -581,12 +629,15 @@ def run_program(args, func_dict, **kwargs):
         log = gen_class.Logger(
             cfg.log_file, cfg.log_file + date, "INFO",
             "%(asctime)s %(levelname)s %(message)s", "%Y-%m-%dT%H:%M:%SZ")
-        log.log_info(f"{'=' * 80}")
-        log.log_info(f"{cfg.host}:{cfg.exchange_name} Initialized")
+#        log.log_info(f"{'=' * 80}")
+#        log.log_info(f"{cfg.host}:{cfg.exchange_name} Initialized")
+        log.log_info(f"[{os.getpid()}] {'=' * 80}")
+        log.log_info(
+            f"[{os.getpid()}] {cfg.host}:{cfg.exchange_name} Initialized")
 
         # Intersect args_array & func_dict to find which functions to call
         for opt in set(args.get_args_keys()) & set(func_dict.keys()):
-            func_dict[opt](cfg, log, **kwargs)
+            func_dict[opt](cfg, log)
 
         log.log_close()
 
