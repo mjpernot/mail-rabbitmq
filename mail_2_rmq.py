@@ -183,7 +183,7 @@ def archive_email(rmq, log, cfg, msg):
     e_file = rmq.exchange + "-" + rmq.queue_name + "-" \
         + datetime.datetime.strftime(
             datetime.datetime.now(), "%Y%m%d-%H%M%S") \
-            + f".{os.getpid()}.email.txt"
+        + f".{os.getpid()}.email.txt"
     f_file = os.path.join(cfg.email_dir, e_file)
     log.log_info(f"[{os.getpid()}] Saving email to: {f_file}")
     gen_libs.write_file(f_file, "w", msg)
@@ -319,7 +319,8 @@ def process_attach(msg, log, cfg):
 
         for item in msg.walk():
 
-            if item.get_content_type() in cfg.attach_types and item.get_filename():
+            if item.get_content_type() in cfg.attach_types \
+               and item.get_filename():
                 tname = os.path.join(cfg.tmp_dir, item.get_filename())
                 log.log_info(
                     f"[{os.getpid()}] Attachment detected:"
@@ -333,12 +334,13 @@ def process_attach(msg, log, cfg):
                         fhdr.write(convert_bytes(item.get_payload()))
                 else:
                     with io.open(tname, mode="wb") as fhdr:
-                        fhdr.write(convert_bytes(item.get_payload(decode=True)))
+                        fhdr.write(
+                            convert_bytes(item.get_payload(decode=True)))
 
                 fname = tname + ".encoded"
                 fname_list.append(fname)
-                in_file = io.open(tname, mode="rb")
-                out_file = io.open(fname, mode="wb")
+                in_file = io.open(tname, mode="rb")     # pylint:disable=R1732
+                out_file = io.open(fname, mode="wb")    # pylint:disable=R1732
                 base64.encode(in_file, out_file)
                 in_file.close()
                 out_file.close()

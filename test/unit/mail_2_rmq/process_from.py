@@ -346,7 +346,7 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_false_false_connect(                       # pylint:disable=R0913
+    def test_false_false_connect(               # pylint:disable=R0913,R0917
             self, mock_rmq, mock_log, mock_archive, mock_rm, mock_attch):
 
         """Function:  test_false_false_connect
@@ -401,7 +401,7 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_false_true_connect(                        # pylint:disable=R0913
+    def test_false_true_connect(                # pylint:disable=R0913,R0917
             self, mock_rmq, mock_log, mock_archive, mock_rm, mock_attch):
 
         """Function:  test_false_true_connect
@@ -455,7 +455,7 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.archive_email")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_true_false_connect(                        # pylint:disable=R0913
+    def test_true_false_connect(                # pylint:disable=R0913,R0917
             self, mock_rmq, mock_log, mock_archive, mock_rm, mock_attch):
 
         """Function:  test_true_false_connect
