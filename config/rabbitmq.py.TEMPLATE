@@ -30,9 +30,6 @@ email_dir = "DIRECTORY_PATH/email_dir"
 log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 # Directory path to temporary staging directory.
 tmp_dir = "DIRECTORY_PATH/tmp"
-# Types of attachments to extract from email.
-# Note:  application/octet-stream and text/csv is for .csv files.
-attach_types = ["application/pdf", "application/octet-stream", "text/csv"]
 # Dictionary of valid email addresses and their associated queue names.
 # Format of email should be: "name@domain"
 queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}
@@ -40,9 +37,13 @@ queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}
 err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
 #
 # Do not modify settings below unless you know what you are doing.
+#
+# Types of attachments to extract from email.
+# Note:  application/octet-stream and text/csv is for .csv files.
+attach_types = ["application/pdf", "application/octet-stream", "text/csv"]
 # Filter out strings within the subject line.
 # Do not modify unless you understand regular expressions.
-subj_filter = ["\[.*\]"]
+subj_filter = "\[.*\]"
 # RabbitMQ listening port, default is 5672.
 port = 5672
 # Type of exchange:  direct, topic, fanout, headers
