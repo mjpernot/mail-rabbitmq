@@ -32,9 +32,21 @@ log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
 tmp_dir = "DIRECTORY_PATH/tmp"
 # Dictionary of valid email addresses and their associated queue names.
 # Format of email should be: "name@domain"
-queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}
+# Example: queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}
+queue_dict = {}
 # Name of error queue to handle incorrect email address or missing attachment.
 err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
+#
+# This section is for debugging use only.
+#
+# Debugging address.
+# This address is for debugging purposes only.
+# Example: debug_address = "debug_name@domain"
+debug_address = None
+# Dictionary of valid from email addresses and their associated queue names.
+# Format of email should be: "name@domain"
+# Example: debug_queue_dict = {"debug_name@domain": "DebugQueueName"}
+debug_queue_dict = {}
 #
 # Do not modify settings below unless you know what you are doing.
 #

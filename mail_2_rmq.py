@@ -510,6 +510,59 @@ def process_file(cfg, log, subj, msg):
         connect_rmq(cfg, log, cfg.err_queue, cfg.err_queue, msg)
 
 
+def process_subj_debug(cfg, debug_log, subj, msg):
+    print('Hold')
+
+
+def process_from_debug(cfg, debug_log, msg, from_addr):
+    print('Hold')
+
+
+def process_file_debug(cfg, debug_log, subj, msg):
+    print('Hold')
+
+
+def process_debug(cfg, subj, msg, from_addr):
+
+    """Function:  process_debug
+
+    Description:  Process for debugging.  Will determine whether to process on
+        subject, from address or attachment.
+
+    Note: A new log instance will be initiated and all debugging entries will
+        be sent to this debug log.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) subj -> Email subject line
+        (input) msg -> Email message body
+        (input) from_addr -> Email From line
+
+    """
+
+    log_file = os.path.join(
+        os.path.dirname(cfg.log_file),
+        "debug_" + os.path.basename(cfg.log_file))
+    date = "." + datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d")
+    debug_log = gen_class.Logger(
+        log_file, log_file + date, "INFO",
+        "%(asctime)s %(levelname)s %(message)s", "%Y-%m-%dT%H:%M:%SZ")
+    debug_log.log_info(f"[{os.getpid()}] {'=' * 80}")
+    debug_log.log_info(
+        f"[{os.getpid()}] {cfg.host}:{cfg.exchange_name} Initialized")
+
+    if subj in cfg.debug_valid_queues:
+        process_subj_debug(cfg, debug_log, subj, msg)
+
+    elif from_addr and from_addr in list(cfg.debug_queue_dict.keys()):
+        process_from_debug(cfg, debug_log, msg, from_addr)
+
+    else:
+        process_file_debug(cfg, debug_log, subj, msg)
+
+    debug_log.log_close()
+
+
 def process_message(cfg, log):
 
     """Function:  process_message
@@ -536,6 +589,9 @@ def process_message(cfg, log):
 
     elif from_addr and from_addr in list(cfg.queue_dict.keys()):
         process_from(cfg, log, msg, from_addr)
+
+    elif from_addr and from_addr == cfg.debug_address:
+        process_debug(cfg, subj, msg, from_addr)
 
     else:
         process_file(cfg, log, subj, msg)

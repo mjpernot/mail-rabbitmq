@@ -8,7 +8,13 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Updated python-lib to v4.0.3
 - Updated rabbitmq-lib v2.4.1
 
+### Added
+- process_debug: Process for debugging, used to determine whether to process on subject, from address or attachment.
+
 ### Changes
+- process_message: Added check to see if the mail from address is the debugging email address.
+- config/rabbitmq.py.TEMPLATE: Added debugging entries.
+- process_attach: Removed the check on if the attachment is a text file to not decode the payload.
 - Documnetation changes.
 
 ### Deprecated

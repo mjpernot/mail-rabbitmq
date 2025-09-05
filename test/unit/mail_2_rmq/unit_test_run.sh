@@ -21,3 +21,4 @@
 /usr/bin/python test/unit/mail_2_rmq/process_message.py
 /usr/bin/python test/unit/mail_2_rmq/process_subj.py
 /usr/bin/python test/unit/mail_2_rmq/run_program.py
+/usr/bin/python test/unit/mail_2_rmq/process_debug.py
