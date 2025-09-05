@@ -29,6 +29,9 @@
         NOTE 1:  -v or -h overrides all other options.
         NOTE 2:  -M and -C are XOR options.
 
+        WARNING: If sending a text attachment, it must be encoded when it is
+            emailed.
+
     Notes:
         RabbitMQ configuration file format (config/rabbitmq.py.TEMPLATE).
 
@@ -329,13 +332,16 @@ def process_attach(msg, log, cfg):
                     f"[{os.getpid()}] Attachment type:"
                     f" {item.get_content_type()}")
 
-                if item.get_content_type() == "text/plain":
-                    with io.open(tname, mode="wb") as fhdr:
-                        fhdr.write(convert_bytes(item.get_payload()))
-                else:
-                    with io.open(tname, mode="wb") as fhdr:
-                        fhdr.write(
-                            convert_bytes(item.get_payload(decode=True)))
+#                if item.get_content_type() == "text/plain":
+#                    with io.open(tname, mode="wb") as fhdr:
+#                        fhdr.write(convert_bytes(item.get_payload()))
+#                else:
+#                    with io.open(tname, mode="wb") as fhdr:
+#                        fhdr.write(
+#                            convert_bytes(item.get_payload(decode=True)))
+                with io.open(tname, mode="wb") as fhdr:
+                    fhdr.write(
+                        convert_bytes(item.get_payload(decode=True)))
 
                 fname = tname + ".encoded"
                 fname_list.append(fname)
