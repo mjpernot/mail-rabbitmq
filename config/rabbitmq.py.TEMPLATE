@@ -14,11 +14,11 @@ exchange_name = "EXCHANGE_NAME"
 # List of queues in RabbitMQ.
 # Queue names are direct correlation to the subject names in the emails.
 # Queues names must be PascalCase style.
-valid_queues = ["QueueName1", "QueueName2", ...]
+valid_queues = ["QueueName1", "QueueName2"]
 # List of queues for file attachment queues.
 # Queue names are direct correlation to the subject names in the emails.
 # Queues names must be PascalCase style.
-file_queues = ["FileQueueName1", "FileQueueName2", ...]
+file_queues = ["FileQueueName1", "FileQueueName2"]
 # Name of error queue to handle incorrectly routed emails.
 err_queue = "ERROR_QUEUE_NAME"
 # Name of queue for handling error file attachments.
@@ -42,11 +42,18 @@ err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
 # Debugging address.
 # This address is for debugging purposes only.
 # Example: debug_address = "debug_name@domain"
-debug_address = None
+# NOTE: This should be set to prevent an empty From email address accidentally going into debug mode.
+debug_address = "debug_name@domain"
+# List of queues in RabbitMQ.
+# Queue names are direct correlation to the subject names in the emails.
+# Queues names must be PascalCase style.
+# Warning: Do not contain the same name as in the valid_queues entry as that is a production queue.
+debug_valid_queues = ["DebugQueue"]
 # Dictionary of valid from email addresses and their associated queue names.
 # Format of email should be: "name@domain"
-# Example: debug_queue_dict = {"debug_name@domain": "DebugQueueName"}
-debug_queue_dict = {}
+# Example: debug_queue_dict = {"debug_name@domain": "DebugQueue"}
+# Warning: Do not contain the same name as in the queue_dict entry as that is a production queue.
+debug_queue_dict = {"debug_name@domain": "DebugQueue"}
 #
 # Do not modify settings below unless you know what you are doing.
 #
