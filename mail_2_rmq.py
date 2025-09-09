@@ -578,7 +578,7 @@ def get_text_debug(msg, log):
             log.log_debug(f"[{os.getpid()}] Appending data to list")
             msg_list.append(data)
 
-        log.log_debug(f"[{os.getpid()}] Bottom of get_text_debug")
+        log.log_debug(f"[{os.getpid()}] Bottom of msg.walk loop")
 
     log.log_debug(f"[{os.getpid()}] End of get_text_debug")
     log.log_debug(f"[{os.getpid()}] Joining msg_list together for return")
@@ -1033,15 +1033,22 @@ def process_message(cfg, log):
     log.log_info(f"[{os.getpid()}] Instance creation")
 
     if subj in cfg.valid_queues:
+        log.log_info(f"[{os.getpid()}] Process subject")
         process_subj(cfg, log, subj, msg)
 
     elif from_addr and from_addr in list(cfg.queue_dict.keys()):
+        log.log_info(f"[{os.getpid()}] Process from address")
         process_from(cfg, log, msg, from_addr)
 
-    elif from_addr and from_addr == cfg.debug_address:
+    elif from_addr and hasattr(cfg, "debug_address") \
+       and from_addr == cfg.debug_address:
+        log.log_info(f"[{os.getpid()}] Process debug")
+        log.log_info(f"[{os.getpid()}] Starting seperate debug log")
         process_debug(cfg, subj, msg, from_addr)
+        log.log_info(f"[{os.getpid()}] Closed seperate debug log")
 
     else:
+        log.log_info(f"[{os.getpid()}] Process attachment")
         process_file(cfg, log, subj, msg)
 
 
