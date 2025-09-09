@@ -220,8 +220,8 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
 
 ```
 cp config/rabbitmq.py.TEMPLATE test/blackbox/mail_2_rmq/config/rabbitmq.py
+chmod 600 test/blackbox/mail_2_rmq/config/rabbitmq.py
 vim test/blackbox/mail_2_rmq/config/rabbitmq.py
-chmod 644 test/blackbox/mail_2_rmq/config/rabbitmq.py
 ```
 
 Setup a second configuration file to test non-connection logic paths.
@@ -229,8 +229,8 @@ Setup a second configuration file to test non-connection logic paths.
 
 ```
 cp test/blackbox/mail_2_rmq/config/rabbitmq.py test/blackbox/mail_2_rmq/config/rabbitmq_2.py
+chmod 600 test/blackbox/mail_2_rmq/config/rabbitmq_2.py
 vim test/blackbox/mail_2_rmq/config/rabbitmq_2.py
-chmod 644 test/blackbox/mail_2_rmq/config/rabbitmq_2.py
 ```
 
 Add two email aliases to allow functional testing.

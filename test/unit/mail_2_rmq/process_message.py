@@ -68,6 +68,7 @@ class CfgTest():                                        # pylint:disable=R0903
         self.email_dir = "EMAIL_DIRECTORY"
         self.queue_dict = {"goodname@domain": "AddrQueue",
                            "goodname2@domain": "AddrQueue2"}
+        self.debug_address = "debug@debug.domain"
 
 
 class UnitTest(unittest.TestCase):
@@ -78,6 +79,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
+        test_debug_addr
         test_missing_from
         test_from_addr
         test_fname_valid_subj
@@ -107,6 +109,32 @@ class UnitTest(unittest.TestCase):
                            "from": "From: goodname@domain"}
         self.email_list = ["name@domain"]
         self.email_list2 = ["goodname@domain"]
+        self.email_list3 = ["debug@debug.domain"]
+
+    @mock.patch("mail_2_rmq.process_debug", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_libs.find_email_addr")
+    @mock.patch("mail_2_rmq.gen_libs.pascalize")
+    @mock.patch("mail_2_rmq.filter_subject")
+    @mock.patch("mail_2_rmq.parse_email")
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_debug_addr(                         # pylint:disable=R0913,R0917
+            self, mock_log, mock_parse, mock_filter, mock_camel, mock_email):
+
+        """Function:  test_debug_addr
+
+        Description:  Test with the from address and debug address.
+
+        Arguments:
+
+        """
+
+        mock_email.return_value = self.email_list3
+        mock_log.return_value = True
+        mock_parse.return_value = self.email_msg4
+        mock_filter.return_value = "InvalidQueue"
+        mock_camel.return_value = "InvalidQueue"
+
+        self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
 
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.gen_libs.find_email_addr")
@@ -144,7 +172,7 @@ class UnitTest(unittest.TestCase):
 
         """Function:  test_from_addr
 
-        Description:  Test with file attachment found and valid subject.
+        Description:  Test with the email from address.
 
         Arguments:
 
