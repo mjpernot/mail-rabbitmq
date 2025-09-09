@@ -848,7 +848,6 @@ def process_from_debug(cfg, log, msg, from_addr):
             log.log_debug(f"[{os.getpid()}] Removing file: {fname}")
             err_flag, err_msg = gen_libs.rm_file(fname)
             log.log_debug(f"[{os.getpid()}] Removed file {fname}")
-            
 
             if err_flag:
                 log.log_debug(
@@ -1040,8 +1039,8 @@ def process_message(cfg, log):
         log.log_info(f"[{os.getpid()}] Process from address")
         process_from(cfg, log, msg, from_addr)
 
-    elif from_addr and hasattr(cfg, "debug_address") \
-       and from_addr == cfg.debug_address:
+    elif from_addr and hasattr(
+       cfg, "debug_address") and from_addr == cfg.debug_address:
         log.log_info(f"[{os.getpid()}] Process debug")
         log.log_info(f"[{os.getpid()}] Starting seperate debug log")
         process_debug(cfg, subj, msg, from_addr)
