@@ -134,6 +134,8 @@ class UnitTest(unittest.TestCase):
         mock_filter.return_value = "InvalidQueue"
         mock_camel.return_value = "InvalidQueue"
 
+        self.assertFalse(mail_2_rmq.process_message(self.cfg, mock_log))
+
     @mock.patch("mail_2_rmq.process_file", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.gen_libs.find_email_addr")
     @mock.patch("mail_2_rmq.gen_libs.pascalize")
