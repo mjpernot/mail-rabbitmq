@@ -5,11 +5,20 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [2.2.0] - 2025-09-05
+- Added debugging capability using the from address option.
 - Updated python-lib to v4.0.3
 - Updated rabbitmq-lib v2.4.1
 
 ### Added
 - process_debug: Process for debugging, used to determine whether to process on subject, from address or attachment.
+- archive_email_debug: Save an email to file in an archive directory.
+- connect_process_debug: Publish email message to RabbitMQ.
+- connect_rmq_debug: Set up and connect to RabbitMQ, check for connection problems.
+- get_text_debug: Walks the tree of a email and returns the text of the email.
+- process_attach_debug: Locate, extract, and process attachment from email based on specified attachment types.
+- process_file_debug: Process email with a file attachment or process as an invalid message.
+- process_from_debug: Process email using its From line.
+- process_subj_debug: Process email using its subject line and open connection and validate connection to RabbitMQ.
 
 ### Changes
 - process_message: Added check to see if the mail from address is the debugging email address.

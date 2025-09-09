@@ -510,16 +510,452 @@ def process_file(cfg, log, subj, msg):
         connect_rmq(cfg, log, cfg.err_queue, cfg.err_queue, msg)
 
 
-def process_subj_debug(cfg, debug_log, subj, msg):
-    print('Hold')
+def archive_email_debug(rmq, log, cfg, msg):
+
+    """Function:  archive_email_debug
+
+    Description:  Save an email to file in an archive directory.
+
+    Arguments:
+        (input) rmq -> RabbitMQ class instance
+        (input) log -> Log class instance
+        (input) cfg -> Configuration settings module for the program
+        (input) msg -> Email message instance
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] Start of archive_email_debug")
+    e_file = rmq.exchange + "-" + rmq.queue_name + "-" \
+        + datetime.datetime.strftime(
+            datetime.datetime.now(), "%Y%m%d-%H%M%S") \
+        + f".{os.getpid()}.email.txt"
+    log.log_debug(f"[{os.getpid()}] e_file: {e_file}")
+    f_file = os.path.join(cfg.email_dir, e_file)
+    log.log_debug(f"[{os.getpid()}] f_file: {f_file}")
+    log.log_info(f"[{os.getpid()}] Saving email to: {f_file}")
+    gen_libs.write_file(f_file, "w", msg)
+    log.log_info(f"[{os.getpid()}] Email saved to: {e_file}")
+    log.log_debug(f"[{os.getpid()}] End of archive_email_debug")
 
 
-def process_from_debug(cfg, debug_log, msg, from_addr):
-    print('Hold')
+def get_text_debug(msg, log):
+
+    """Function:  get_text_debug
+
+    Description:  Walks the tree of a email and returns the text of the email.
+
+    Arguments:
+        (input) msg -> Email message instance
+        (input) log -> Log class instance
+        (output) All texts in email joined together in a single string
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] Start of get_text_debug")
+    msg_list = []
+
+    for part in msg.walk():
+        log.log_debug(f"[{os.getpid()}] Top of msg.walk loop")
+
+        if part.get_content_maintype() == "multipart" \
+           or not part.get_payload(decode=True):
+            log.log_debug(f"[{os.getpid()}] Multipart or no payload detected")
+            log.log_debug(f"[{os.getpid()}] Continue to next iteration")
+            continue
+
+        if part.get_content_type() == "text/plain":
+            log.log_debug(f"[{os.getpid()}] Content type is text/plain")
+            log.log_debug(f"[{os.getpid()}] Get payload")
+            data = part.get_payload(decode=True)
+            log.log_debug(f"[{os.getpid()}] Got payload")
+
+            if not isinstance(data, str):
+                log.log_debug(f"[{os.getpid()}] Data is not a string")
+                log.log_debug(f"[{os.getpid()}] Start decode on data")
+                data = data.decode("UTF-8")
+                log.log_debug(f"[{os.getpid()}] Finish decode on data")
+
+            log.log_debug(f"[{os.getpid()}] Appending data to list")
+            msg_list.append(data)
+
+        log.log_debug(f"[{os.getpid()}] Bottom of get_text_debug")
+
+    log.log_debug(f"[{os.getpid()}] End of get_text_debug")
+    log.log_debug(f"[{os.getpid()}] Joining msg_list together for return")
+
+    return "".join(msg_list)
 
 
-def process_file_debug(cfg, debug_log, subj, msg):
-    print('Hold')
+def connect_process_debug(rmq, log, cfg, msg, **kwargs):
+
+    """Function:  connect_process_debug
+
+    Description:  Publish email message to RabbitMQ.
+
+    Arguments:
+        (input) rmq -> RabbitMQ class instance
+        (input) log -> Log class instance
+        (input) cfg -> Configuration settings module for the program
+        (input) msg -> Email message instance
+        (input) kwargs:
+            fname -> File name of email/attachment
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] Start of connect_process_debug")
+    fname = kwargs.get("fname", None)
+
+    # Process email or file/attachment.
+    if fname:
+        log.log_info(f"[{os.getpid()}] Processing file/attachment...")
+        log.log_debug(f"[{os.getpid()}] Open file for reading: {fname}")
+
+        with open(fname, mode="r", encoding="UTF-8") as f_hldr:
+            t_msg = f_hldr.read()
+
+        log.log_debug(f"[{os.getpid()}] Finished reafing file: {fname}")
+        bname = os.path.splitext(os.path.basename(fname))[0]
+        log.log_debug(f"[{os.getpid()}] Basename: {bname}")
+        t_msg = str({"AFilename": bname, "File": t_msg})
+        log.log_debug(f"[{os.getpid()}] Created t_msg for queue")
+
+    elif rmq.queue_name == cfg.err_queue:
+        log.log_debug(f"[{os.getpid()}] Queue name detected is error queue")
+        log.log_debug(f"[{os.getpid()}] RMQ Queue: {rmq.queue_name}")
+        log.log_debug(f"[{os.getpid()}] CFG Queue: {cfg.err_queue}")
+        log.log_info(f"[{os.getpid()}] Processing error message...")
+        log.log_debug(f"[{os.getpid()}] Calling get_text_debug")
+        t_msg = "From: " + msg["from"] + " To: " + msg["to"] \
+                + " Subject: " + msg["subject"] + " Body: " \
+                + (get_text_debug(msg, log) or "")
+        log.log_debug(f"[{os.getpid()}] Finished get_text_debug")
+
+    else:
+        log.log_info(f"[{os.getpid()}] Processing email body...")
+        log.log_debug(f"[{os.getpid()}] Calling get_text_debug")
+        t_msg = get_text_debug(msg, log)
+        log.log_debug(f"[{os.getpid()}] Finished get_text_debug")
+
+    log.log_debug(f"[{os.getpid()}] Process message if t_msg is detected")
+
+    if t_msg and rmq.publish_msg(t_msg):
+        log.log_info(f"[{os.getpid()}] Message ingested into RabbitMQ")
+
+    else:
+        log.log_debug(f"[{os.getpid()}] t_msg not detected or publish failed")
+        log.log_err(f"[{os.getpid()}] Failed to injest message into RabbitMQ")
+        log.log_debug(f"[{os.getpid()}] Calling archive_email_debug")
+        archive_email_debug(rmq, log, cfg, msg)
+        log.log_debug(f"[{os.getpid()}] Finished archive_email_debug")
+
+    log.log_debug(f"[{os.getpid()}] End of connect_process_debug")
+
+
+def connect_rmq_debug(cfg, log, qname, rkey, msg, **kwargs):
+
+    """Function:  connect_rmq_debug
+
+    Description:  Set up and connect to RabbitMQ, check for connection
+        problems.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) qname -> Queue name for RabbitMQ
+        (input) rkey -> Rkey value for RabbitMQ
+        (input) msg -> Message body
+        (input) kwargs:
+            fname -> Name of attachment file
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] Start of connect_rmq_debug")
+    config = {"fname": kwargs.get("fname")} if kwargs.get("fname", False) \
+        else {}
+    log.log_debug(f"[{os.getpid()}] Value for config: {config}")
+    log.log_debug(f"[{os.getpid()}] Creating RMQ Pub instance")
+    rmq = rabbitmq_class.create_rmqpub(cfg, qname, rkey)
+    log.log_info(
+        f"[{os.getpid()}] connect_rmq: Connection info:"
+        f" {cfg.host}->{cfg.exchange_name}")
+    log.log_debug(f"[{os.getpid()}] Creating RMQ connection")
+    connect_status, err_msg = rmq.create_connection()
+    log.log_debug(f"[{os.getpid()}] Created RMQ connection")
+
+    if connect_status and rmq.channel.is_open:
+        log.log_info(
+            f"[{os.getpid()}] connect_rmq: Connected to RabbitMQ mode")
+        log.log_debug(f"[{os.getpid()}] Calling connect_process_debug")
+        connect_process_debug(rmq, log, cfg, msg, **config)
+        log.log_debug(f"[{os.getpid()}] Finished connect_process_debug")
+
+    else:
+        log.log_err(
+            f"[{os.getpid()}] connect_rmq: Failed to connect to RabbitMQ")
+        log.log_err(f"[{os.getpid()}] connect_rmq: Message:  {err_msg}")
+        log.log_debug(f"[{os.getpid()}] Calling archive_email_debug")
+        archive_email_debug(rmq, log, cfg, msg)
+        log.log_debug(f"[{os.getpid()}] Finished archive_email_debug")
+
+    if connect_status:
+        log.log_debug(f"[{os.getpid()}] Clsoing RMQ connection")
+        rmq.close()
+
+    log.log_debug(f"[{os.getpid()}] End of connect_rmq_debug")
+
+
+def process_subj_debug(cfg, log, subj, msg):
+
+    """Function:  process_subj_debug
+
+    Description:  Process email using its subject line and open connection and
+        validate connection to RabbitMQ.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) subj -> Email subject line
+        (input) msg -> Email message body
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] Start of process_subj_debug")
+    log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
+    log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug")
+    connect_rmq_debug(cfg, log, subj, subj, msg)
+    log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug")
+    log.log_debug(f"[{os.getpid()}] End of process_subj_debug")
+
+
+def process_attach_debug(msg, log, cfg):
+
+    """Function:  process_attach_debug
+
+    Description:  Locate, extract, and process attachment from email based on
+        specified attachment types.
+
+    Arguments:
+        (input) msg -> Email message instance
+        (input) log -> Log class instance
+        (input) cfg -> Configuration settings module for the program
+        (output) fname -> Name of encoded attachment file
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] Start of process_attach_debug")
+    fname_list = []
+    log.log_info(f"[{os.getpid()}] Locating attachments...")
+
+    if msg.is_multipart():
+        log.log_debug(f"[{os.getpid()}] Multipart is detected")
+
+        for item in msg.walk():
+            log.log_debug(f"[{os.getpid()}] Top of msg.walk loop")
+
+            if item.get_content_type() in cfg.attach_types \
+               and item.get_filename():
+                log.log_debug(f"[{os.getpid()}] Detected attachment and file")
+                tname = os.path.join(cfg.tmp_dir, item.get_filename())
+                log.log_info(
+                    f"[{os.getpid()}] Attachment detected:"
+                    f" {item.get_filename()}")
+                log.log_info(
+                    f"[{os.getpid()}] Attachment type:"
+                    f" {item.get_content_type()}")
+                log.log_debug(f"[{os.getpid()}] Start of writing to {tname}")
+                log.log_debug(f"[{os.getpid()}] Calling convert_bytes")
+
+                with io.open(tname, mode="wb") as fhdr:
+                    fhdr.write(
+                        convert_bytes(item.get_payload(decode=True)))
+
+                log.log_debug(f"[{os.getpid()}] Finished convert_bytes")
+                log.log_debug(f"[{os.getpid()}] Close of writing to {tname}")
+                fname = tname + ".encoded"
+                fname_list.append(fname)
+                log.log_debug(f"[{os.getpid()}] Added {fname} to {fname_list}")
+                log.log_debug(f"[{os.getpid()}] Start of reading from {tname}")
+                in_file = io.open(tname, mode="rb")     # pylint:disable=R1732
+                log.log_debug(f"[{os.getpid()}] Start of writing to {fname}")
+                out_file = io.open(fname, mode="wb")    # pylint:disable=R1732
+                log.log_debug(f"[{os.getpid()}] Base64 encoding data to file")
+                base64.encode(in_file, out_file)
+                in_file.close()
+                log.log_debug(f"[{os.getpid()}] Closed reading from {tname}")
+                out_file.close()
+                log.log_debug(f"[{os.getpid()}] Closed writing to {fname}")
+                log.log_debug(f"[{os.getpid()}] Removing file: {tname}")
+                err_flag, err_msg = gen_libs.rm_file(tname)
+                log.log_debug(f"[{os.getpid()}] Removed file {tname}")
+
+                if err_flag:
+                    log.log_debug(
+                        f"[{os.getpid()}] File {tname}, Perms:"
+                        f" {oct(os.stat(tname).st_mode)[-3:]}")
+                    log.log_debug(
+                        f"[{os.getpid()}] File Owner: {os.stat(tname).st_uid}")
+                    log.log_warn(
+                        f"[{os.getpid()}] process_attach:  Message: {err_msg}")
+
+            elif item.get_filename():
+                log.log_debug(f"[{os.getpid()}] Detected filename in msg only")
+                log.log_warn(
+                    f"[{os.getpid()}] Invalid attachment detected:"
+                    f" {item.get_filename()}")
+                log.log_warn(
+                    f"[{os.getpid()}] Attachment type:"
+                    f" {item.get_content_type()}")
+
+            log.log_debug(f"[{os.getpid()}] Bottom of msg.walk loop")
+
+    log.log_debug(f"[{os.getpid()}] End of process_attach_debug")
+
+    return fname_list
+
+
+def process_from_debug(cfg, log, msg, from_addr):
+
+    """Function:  process_from_debug
+
+    Description:  Process email using its From line.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) msg -> Email message body
+        (input) from_addr -> Email From line
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] Start of process_from_debug")
+    log.log_debug(f"[{os.getpid()}] Calling process_attach_debug")
+    fname_list = process_attach_debug(msg, log, cfg)
+    log.log_debug(f"[{os.getpid()}] Finished process_attach_debug")
+
+    if fname_list:
+        log.log_debug(f"[{os.getpid()}] Detected fname_list: {fname_list}")
+
+        for fname in fname_list:
+            log.log_debug(f"[{os.getpid()}] Top of fname_list loop")
+            log.log_info(
+                f"[{os.getpid()}] Valid From address:"
+                f" {from_addr} with file attachment: {fname}")
+            log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug")
+            connect_rmq_debug(
+                cfg, log, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr],
+                msg, fname=fname)
+            log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug")
+            log.log_debug(f"[{os.getpid()}] Removing file: {fname}")
+            err_flag, err_msg = gen_libs.rm_file(fname)
+            log.log_debug(f"[{os.getpid()}] Removed file {fname}")
+            
+
+            if err_flag:
+                log.log_debug(
+                    f"[{os.getpid()}] File {fname}, Perms:"
+                    f" {oct(os.stat(fname).st_mode)[-3:]}")
+                log.log_debug(
+                    f"[{os.getpid()}] File Owner: {os.stat(fname).st_uid}")
+                log.log_warn(
+                    f"[{os.getpid()}] process_from: Message: {err_msg}")
+
+            log.log_debug(f"[{os.getpid()}] Bottom of fname_list loop")
+
+    else:
+        log.log_debug(f"[{os.getpid()}] No fname_list detected")
+        log.log_warn(
+            f"[{os.getpid()}] Missing attachment for email address:"
+            f" {from_addr}")
+        log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug - error")
+        connect_rmq_debug(
+            cfg, log, cfg.err_addr_queue, cfg.err_addr_queue, msg)
+        log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug - error")
+
+    log.log_debug(f"[{os.getpid()}] End of process_from_debug")
+
+
+def process_file_debug(cfg, log, subj, msg):
+
+    """Function:  process_file_debug
+
+    Description:  Process email with a file attachment or process as an invalid
+        message.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) subj -> Email subject line
+        (input) msg -> Email message body
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] Start of process_file_debug")
+    log.log_debug(f"[{os.getpid()}] Calling process_attach_debug")
+    fname_list = process_attach_debug(msg, log, cfg)
+    log.log_debug(f"[{os.getpid()}] Finished process_attach_debug")
+
+    if fname_list and subj in cfg.file_queues:
+        log.log_debug(f"[{os.getpid()}] Found {subj} in {cfg.file_queues}")
+        log.log_debug(f"[{os.getpid()}] Detected list: {fname_list}")
+
+        for fname in fname_list:
+            log.log_debug(f"[{os.getpid()}] Top of fname_list loop")
+            log.log_info(
+                f"[{os.getpid()}] Valid subject with file attachment: {fname}")
+            log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug")
+            connect_rmq_debug(cfg, log, subj, subj, msg, fname=fname)
+            log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug")
+            log.log_debug(f"[{os.getpid()}] Removing file: {fname}")
+            err_flag, err_msg = gen_libs.rm_file(fname)
+            log.log_debug(f"[{os.getpid()}] Removed file {fname}")
+
+            if err_flag:
+                log.log_debug(
+                    f"[{os.getpid()}] File {fname}, Perms:"
+                    f" {oct(os.stat(fname).st_mode)[-3:]}")
+                log.log_debug(
+                    f"[{os.getpid()}] File Owner: {os.stat(fname).st_uid}")
+                log.log_warn(
+                    f"[{os.getpid()}] process_file: Message: {err_msg}")
+
+            log.log_debug(f"[{os.getpid()}] Bottom of fname_list loop")
+
+    elif fname_list:
+        log.log_debug(f"[{os.getpid()}] Only detected fname_list")
+        log.log_debug(f"[{os.getpid()}] Detected list: {fname_list}")
+
+        for fname in fname_list:
+            log.log_debug(f"[{os.getpid()}] Top of fname_list second loop")
+            log.log_info(
+                f"[{os.getpid()}] Invalid subject with file attached: {fname}")
+            log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug: error")
+            connect_rmq_debug(
+                cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg,
+                fname=fname)
+            log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug: error")
+            log.log_debug(f"[{os.getpid()}] Removing file: {fname}")
+            err_flag, err_msg = gen_libs.rm_file(fname)
+            log.log_debug(f"[{os.getpid()}] Removed file {fname}")
+
+            if err_flag:
+                log.log_debug(
+                    f"[{os.getpid()}] File {fname}, Perms:"
+                    f" {oct(os.stat(fname).st_mode)[-3:]}")
+                log.log_debug(
+                    f"[{os.getpid()}] File Owner: {os.stat(fname).st_uid}")
+                log.log_warn(
+                    f"[{os.getpid()}] process_file 2: Message: {err_msg}")
+
+            log.log_debug(f"[{os.getpid()}] Bottom of fname_list second loop")
+
+    else:
+        log.log_debug(f"[{os.getpid()}] No fname_list or subject detected")
+        log.log_warn(f"[{os.getpid()}] Invalid email subject: {subj}")
+        log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug - error")
+        connect_rmq_debug(cfg, log, cfg.err_queue, cfg.err_queue, msg)
+        log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug - error")
+
+    log.log_debug(f"[{os.getpid()}] End of process_file_debug")
 
 
 def process_debug(cfg, subj, msg, from_addr):
@@ -544,23 +980,35 @@ def process_debug(cfg, subj, msg, from_addr):
         os.path.dirname(cfg.log_file),
         "debug_" + os.path.basename(cfg.log_file))
     date = "." + datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d")
-    debug_log = gen_class.Logger(
-        log_file, log_file + date, "INFO",
+    log = gen_class.Logger(
+        log_file, log_file + date, "DEBUG",
         "%(asctime)s %(levelname)s %(message)s", "%Y-%m-%dT%H:%M:%SZ")
-    debug_log.log_info(f"[{os.getpid()}] {'=' * 80}")
-    debug_log.log_info(
+    log.log_info(f"[{os.getpid()}] {'=' * 80}")
+    log.log_info(
         f"[{os.getpid()}] {cfg.host}:{cfg.exchange_name} Initialized")
+    log.log_debug(f"[{os.getpid()}] Start of debugging")
 
     if subj in cfg.debug_valid_queues:
-        process_subj_debug(cfg, debug_log, subj, msg)
+        log.log_debug(f"[{os.getpid()}] Detected valid subject: {subj}")
+        log.log_debug(f"[{os.getpid()}] Calling process_subj_debug")
+        process_subj_debug(cfg, log, subj, msg)
+        log.log_debug(f"[{os.getpid()}] Finished process_subj_debug")
 
     elif from_addr and from_addr in list(cfg.debug_queue_dict.keys()):
-        process_from_debug(cfg, debug_log, msg, from_addr)
+        log.log_debug(f"[{os.getpid()}] Detected valid from addr: {from_addr}")
+        log.log_debug(f"[{os.getpid()}] Calling process_from_debug")
+        process_from_debug(cfg, log, msg, from_addr)
+        log.log_debug(f"[{os.getpid()}] Finished process_from_debug")
 
     else:
-        process_file_debug(cfg, debug_log, subj, msg)
+        log.log_debug(f"[{os.getpid()}] Processing as all others")
+        log.log_debug(f"[{os.getpid()}] Calling process_file_debug")
+        process_file_debug(cfg, log, subj, msg)
+        log.log_debug(f"[{os.getpid()}] Finished process_file_debug")
 
-    debug_log.log_close()
+    log.log_debug(f"[{os.getpid()}] End of debugging")
+
+    log.log_close()
 
 
 def process_message(cfg, log):

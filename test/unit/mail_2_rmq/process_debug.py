@@ -36,6 +36,7 @@ class LoggerTest():
 
     Methods:
         __init__
+        log_debug
         log_info
         log_close
 
@@ -52,6 +53,18 @@ class LoggerTest():
         """
 
         self.data = None
+
+    def log_debug(self, data):
+
+        """Method:  log_debug
+
+        Description:  Stub holder for Logger.log_debug method.
+
+        Arguments:
+
+        """
+
+        self.data = data
 
     def log_info(self, data):
 
@@ -129,10 +142,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
+        test_attach
         test_from_addr
-        test_fname_valid_subj
-        test_fname_invalid_subj
-        test_fname_miss
         test_invalid_subj
         test_valid_subj
 
@@ -151,8 +162,64 @@ class UnitTest(unittest.TestCase):
         self.cfg = CfgTest()
         self.log = LoggerTest()
         self.subj = "DebugQueue"
+        self.subj2 = "DebugQueue2"
         self.msg = {"subject": "DebugQueue", "from": "From: debug_name@domain"}
         self.from_addr = "debug_name@domain"
+        self.from_addr2 = "debug_name@domain2"
+
+    @mock.patch("mail_2_rmq.process_file_debug", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_class")
+    def test_attach(self, mock_log):
+
+        """Function:  test_attach
+
+        Description:  Test email with attached file.
+
+        Arguments:
+
+        """
+
+        mock_log.Logger.return_value = self.log
+
+        self.assertFalse(
+            mail_2_rmq.process_debug(
+                self.cfg, self.subj2, self.msg, self.from_addr2))
+
+    @mock.patch("mail_2_rmq.process_from_debug", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_class")
+    def test_from_addr(self, mock_log):
+
+        """Function:  test_from_addr
+
+        Description:  Test email with valid from address.
+
+        Arguments:
+
+        """
+
+        mock_log.Logger.return_value = self.log
+
+        self.assertFalse(
+            mail_2_rmq.process_debug(
+                self.cfg, self.subj2, self.msg, self.from_addr))
+
+    @mock.patch("mail_2_rmq.process_file_debug", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_class")
+    def test_invalid_subj(self, mock_log):
+
+        """Function:  test_invalid_subj
+
+        Description:  Test email with invalid subject.
+
+        Arguments:
+
+        """
+
+        mock_log.Logger.return_value = self.log
+
+        self.assertFalse(
+            mail_2_rmq.process_debug(
+                self.cfg, self.subj2, self.msg, self.from_addr2))
 
     @mock.patch("mail_2_rmq.process_subj_debug", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.gen_class")
