@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [2.2.1] - 2025-09-12
+
+### Fixed
+- convert_bytes: Only convert if a string.
+- process_attach, process_attach_debug: Added check to see if the message body was converted to bytes before proceeding.
+- process_from_debug: Passed the debug arguments to the connect_rmq_debug call.
+- Fixed a number of duplicate debug statements.
+
+### Changed
+- Documentation changes.
+
+
 ## [2.2.0] - 2025-09-05
 - Added debugging capability using the from address option.
 - Updated python-lib to v4.0.3
