@@ -6,6 +6,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [2.2.1] - 2025-09-12
 
+### Added
+- convert_bytes_debug: Converts a string to bytes.
+
 ### Fixed
 - convert_bytes: Only convert if a string.
 - process_attach, process_attach_debug: Added check to see if the message body was converted to bytes before proceeding.

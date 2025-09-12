@@ -330,49 +330,47 @@ def process_attach(msg, log, cfg):
     fname_list = []
     log.log_info(f"[{os.getpid()}] Locating attachments...")
 
-    if msg.is_multipart():
+    if not msg.is_multipart():
+        return fname_list
 
-        for item in msg.walk():
+    for item in msg.walk():
 
-            if item.get_content_type() in cfg.attach_types \
-               and item.get_filename():
-                tname = os.path.join(cfg.tmp_dir, item.get_filename())
-                log.log_info(
-                    f"[{os.getpid()}] Attachment detected:"
-                    f" {item.get_filename()}")
-                log.log_info(
-                    f"[{os.getpid()}] Attachment type:"
-                    f" {item.get_content_type()}")
-                data = convert_bytes(item.get_payload(decode=True))
+        if item.get_content_type() in cfg.attach_types \
+           and item.get_filename():
+            tname = os.path.join(cfg.tmp_dir, item.get_filename())
+            log.log_info(
+                f"[{os.getpid()}] Attachment detected: {item.get_filename()}")
+            log.log_info(
+                f"[{os.getpid()}] Attachment type: {item.get_content_type()}")
+            data = convert_bytes(item.get_payload(decode=True))
 
-                if data is None:
-                    log.log_warn(
-                        f"[{os.getpid()}] Unable to convert attach to bytes")
-                    continue
-
-                with io.open(tname, mode="wb") as fhdr:
-                    fhdr.write(data)
-
-                fname = tname + ".encoded"
-                fname_list.append(fname)
-                in_file = io.open(tname, mode="rb")     # pylint:disable=R1732
-                out_file = io.open(fname, mode="wb")    # pylint:disable=R1732
-                base64.encode(in_file, out_file)
-                in_file.close()
-                out_file.close()
-                err_flag, err_msg = gen_libs.rm_file(tname)
-
-                if err_flag:
-                    log.log_warn(
-                        f"[{os.getpid()}] process_attach:  Message: {err_msg}")
-
-            elif item.get_filename():
+            if data is None:
                 log.log_warn(
-                    f"[{os.getpid()}] Invalid attachment detected:"
-                    f" {item.get_filename()}")
+                    f"[{os.getpid()}] Unable to convert attach to bytes")
+                continue
+
+            with io.open(tname, mode="wb") as fhdr:
+                fhdr.write(data)
+
+            fname = tname + ".encoded"
+            fname_list.append(fname)
+            in_file = io.open(tname, mode="rb")     # pylint:disable=R1732
+            out_file = io.open(fname, mode="wb")    # pylint:disable=R1732
+            base64.encode(in_file, out_file)
+            in_file.close()
+            out_file.close()
+            err_flag, err_msg = gen_libs.rm_file(tname)
+
+            if err_flag:
                 log.log_warn(
-                    f"[{os.getpid()}] Attachment type:"
-                    f" {item.get_content_type()}")
+                    f"[{os.getpid()}] process_attach:  Message: {err_msg}")
+
+        elif item.get_filename():
+            log.log_warn(
+                f"[{os.getpid()}] Invalid attachment detected:"
+                f" {item.get_filename()}")
+            log.log_warn(
+                f"[{os.getpid()}] Attachment type: {item.get_content_type()}")
 
     return fname_list
 
@@ -546,6 +544,39 @@ def archive_email_debug(rmq, log, cfg, msg):
     gen_libs.write_file(f_file, "w", msg)
     log.log_info(f"[{os.getpid()}] Email saved to: {e_file}")
     log.log_debug(f"[{os.getpid()}] End of archive_email_debug")
+
+
+def convert_bytes_debug(data, log):
+
+    """Function:  convert_bytes_debug
+
+    Description:  Converts a string to bytes.
+
+    Arguments:
+        (input) data -> Data string
+        (input) log -> Log class instance
+        (output) -> Bytes or None
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] Start of convert_bytes_debug")
+
+    if isinstance(data, bytes):
+        log.log_debug(f"[{os.getpid()}] Returning no change already bytes")
+        log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 1")
+
+        return data
+
+    if isinstance(data, str):
+        log.log_debug(f"[{os.getpid()}] Returning converted from str to bytes")
+        log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 2")
+
+        return data.encode()
+
+    log.log_debug(f"[{os.getpid()}] Returning None - some other data type")
+    log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 3")
+
+    return None
 
 
 def get_text_debug(msg, log):
@@ -760,84 +791,85 @@ def process_attach_debug(msg, log, cfg):                # pylint:disable=R0915
     fname_list = []
     log.log_info(f"[{os.getpid()}] Locating attachments...")
 
-    if msg.is_multipart():
-        log.log_debug(f"[{os.getpid()}] Multipart is detected")
+    if not msg.is_multipart():
+        log.log_debug(f"[{os.getpid()}] Multipart not detected")
+        log.log_debug(f"[{os.getpid()}] End of process_attach_debug")
+        return fname_list
 
-        for item in msg.walk():
-            log.log_debug(
-                f"[{os.getpid()}] process_attach: Top of msg.walk loop")
+    log.log_debug(f"[{os.getpid()}] Multipart is detected")
 
-            if item.get_content_type() in cfg.attach_types \
-               and item.get_filename():
+    for item in msg.walk():
+        log.log_debug(
+            f"[{os.getpid()}] process_attach: Top of msg.walk loop")
 
-                log.log_debug(f"[{os.getpid()}] Detected attachment and file")
-                tname = os.path.join(cfg.tmp_dir, item.get_filename())
-                log.log_info(
-                    f"[{os.getpid()}] Attachment detected:"
-                    f" {item.get_filename()}")
-                log.log_info(
-                    f"[{os.getpid()}] Attachment type:"
-                    f" {item.get_content_type()}")
-                log.log_debug(f"[{os.getpid()}] Calling convert_bytes")
-                data = convert_bytes(item.get_payload(decode=True))
-                log.log_debug(f"[{os.getpid()}] Finished convert_bytes")
+        if item.get_content_type() in cfg.attach_types \
+           and item.get_filename():
 
-                log.log_debug(f"[{os.getpid()}] Check if data was converted")
-                if data is None:
-                    log.log_warn(
-                        f"[{os.getpid()}] Unable to convert attach to bytes")
-                    log.log_debug(f"[{os.getpid()}] Continue to next loop")
-                    continue
+            log.log_debug(f"[{os.getpid()}] Detected attachment and file")
+            tname = os.path.join(cfg.tmp_dir, item.get_filename())
+            log.log_info(
+                f"[{os.getpid()}] Attachment detected: {item.get_filename()}")
+            log.log_info(
+                f"[{os.getpid()}] Attachment type: {item.get_content_type()}")
+            log.log_debug(f"[{os.getpid()}] Calling convert_bytes_debug")
+            data = convert_bytes_debug(item.get_payload(decode=True), log)
+            log.log_debug(f"[{os.getpid()}] Finished convert_bytes_debug")
 
-                log.log_debug(f"[{os.getpid()}] Start writing to: {tname}")
-                with io.open(tname, mode="wb") as fhdr:
-                    fhdr.write(data)
-                log.log_debug(f"[{os.getpid()}] Closed writing to: {tname}")
-
-                log.log_debug(f"[{os.getpid()}] Creating fname variable")
-                fname = tname + ".encoded"
-                fname_list.append(fname)
-                log.log_debug(f"[{os.getpid()}] Added {fname} to {fname_list}")
-
-                log.log_debug(f"[{os.getpid()}] Start of reading from {tname}")
-                in_file = io.open(tname, mode="rb")     # pylint:disable=R1732
-                log.log_debug(f"[{os.getpid()}] Start writing to 2: {fname}")
-                out_file = io.open(fname, mode="wb")    # pylint:disable=R1732
-
-                log.log_debug(f"[{os.getpid()}] Base64 encoding data to file")
-                base64.encode(in_file, out_file)
-
-                in_file.close()
-                log.log_debug(f"[{os.getpid()}] Closed reading from {tname}")
-                out_file.close()
-                log.log_debug(f"[{os.getpid()}] Closed writing to 2: {fname}")
-
-                log.log_debug(
-                    f"[{os.getpid()}] process_attach: Removing file: {tname}")
-                err_flag, err_msg = gen_libs.rm_file(tname)
-                log.log_debug(
-                    f"[{os.getpid()}] process_attach: Removed file {tname}")
-
-                if err_flag:
-                    log.log_debug(
-                        f"[{os.getpid()}] process_attach: File {tname}, Perms:"
-                        f" {oct(os.stat(tname).st_mode)[-3:]}")
-                    log.log_debug(
-                        f"[{os.getpid()}] File Owner: {os.stat(tname).st_uid}")
-                    log.log_warn(
-                        f"[{os.getpid()}] process_attach:  Message: {err_msg}")
-
-            elif item.get_filename():
-                log.log_debug(f"[{os.getpid()}] Detected filename in msg only")
+            log.log_debug(f"[{os.getpid()}] Check if data was converted")
+            if data is None:
                 log.log_warn(
-                    f"[{os.getpid()}] Invalid attachment detected:"
-                    f" {item.get_filename()}")
-                log.log_warn(
-                    f"[{os.getpid()}] Attachment type:"
-                    f" {item.get_content_type()}")
+                    f"[{os.getpid()}] Unable to convert attach to bytes")
+                log.log_debug(f"[{os.getpid()}] Continue to next loop")
+                continue
+
+            log.log_debug(f"[{os.getpid()}] Start writing to: {tname}")
+            with io.open(tname, mode="wb") as fhdr:
+                fhdr.write(data)
+            log.log_debug(f"[{os.getpid()}] Closed writing to: {tname}")
+
+            log.log_debug(f"[{os.getpid()}] Creating fname variable")
+            fname = tname + ".encoded"
+            fname_list.append(fname)
+            log.log_debug(f"[{os.getpid()}] Added {fname} to {fname_list}")
+
+            log.log_debug(f"[{os.getpid()}] Start of reading from {tname}")
+            in_file = io.open(tname, mode="rb")         # pylint:disable=R1732
+            log.log_debug(f"[{os.getpid()}] Start writing to 2: {fname}")
+            out_file = io.open(fname, mode="wb")        # pylint:disable=R1732
+
+            log.log_debug(f"[{os.getpid()}] Base64 encoding data to file")
+            base64.encode(in_file, out_file)
+
+            in_file.close()
+            log.log_debug(f"[{os.getpid()}] Closed reading from {tname}")
+            out_file.close()
+            log.log_debug(f"[{os.getpid()}] Closed writing to 2: {fname}")
 
             log.log_debug(
-                f"[{os.getpid()}] process_attach: Bottom of msg.walk loop")
+                f"[{os.getpid()}] process_attach: Removing file: {tname}")
+            err_flag, err_msg = gen_libs.rm_file(tname)
+            log.log_debug(
+                f"[{os.getpid()}] process_attach: Removed file {tname}")
+
+            if err_flag:
+                log.log_debug(
+                    f"[{os.getpid()}] process_attach: File {tname}, Perms:"
+                    f" {oct(os.stat(tname).st_mode)[-3:]}")
+                log.log_debug(
+                    f"[{os.getpid()}] File Owner: {os.stat(tname).st_uid}")
+                log.log_warn(
+                    f"[{os.getpid()}] process_attach:  Message: {err_msg}")
+
+        elif item.get_filename():
+            log.log_debug(f"[{os.getpid()}] Detected filename in msg only")
+            log.log_warn(
+                f"[{os.getpid()}] Invalid attachment detected:"
+                f" {item.get_filename()}")
+            log.log_warn(
+                f"[{os.getpid()}] Attachment type: {item.get_content_type()}")
+
+        log.log_debug(
+            f"[{os.getpid()}] process_attach: Bottom of msg.walk loop")
 
     log.log_debug(f"[{os.getpid()}] End of process_attach_debug")
 
