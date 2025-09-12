@@ -41,13 +41,19 @@
             host = "IP_ADDRESS"
             host_list = []
             exchange_name = "EXCHANGE_NAME"
-            valid_queues = ["QueueName1", "QueueName2", ...]
-            file_queues = ["FileQueueName1", "FileQueueName2", ...]
+            valid_queues = ["QueueName1", "QueueName2"]
+            file_queues = ["FileQueueName1", "FileQueueName2"]
             err_queue = "ERROR_QUEUE_NAME"
             err_file_queues = "ERROR_FILE_QUEUE_NAME"
             email_dir = "DIRECTORY_PATH/email_dir"
             log_file = "DIRECTORY_PATH/mail_2_rmq.log"
             tmp_dir = "DIRECTORY_PATH/tmp"
+            queue_dict = {}
+            err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
+            # For Debugging use
+            debug_address = "debug_name@domain"
+            debug_valid_queues = ["DebugQueue"]
+            debug_queue_dict = {"debug_name@domain": "DebugQueue"}
 
             # Only change these entries if neccessary.
             attach_types
@@ -293,11 +299,17 @@ def convert_bytes(data):
 
     Arguments:
         (input) data -> Data string
-        (output) -> Bytes string
+        (output) -> Bytes or None
 
     """
 
-    return data.encode()
+    if isinstance(data, bytes):
+        return data
+
+    if isinstance(data, str):
+        return data.encode()
+
+    return None
 
 
 def process_attach(msg, log, cfg):
@@ -318,51 +330,47 @@ def process_attach(msg, log, cfg):
     fname_list = []
     log.log_info(f"[{os.getpid()}] Locating attachments...")
 
-    if msg.is_multipart():
+    if not msg.is_multipart():
+        return fname_list
 
-        for item in msg.walk():
+    for item in msg.walk():
 
-            if item.get_content_type() in cfg.attach_types \
-               and item.get_filename():
-                tname = os.path.join(cfg.tmp_dir, item.get_filename())
-                log.log_info(
-                    f"[{os.getpid()}] Attachment detected:"
-                    f" {item.get_filename()}")
-                log.log_info(
-                    f"[{os.getpid()}] Attachment type:"
-                    f" {item.get_content_type()}")
+        if item.get_content_type() in cfg.attach_types \
+           and item.get_filename():
+            tname = os.path.join(cfg.tmp_dir, item.get_filename())
+            log.log_info(
+                f"[{os.getpid()}] Attachment detected: {item.get_filename()}")
+            log.log_info(
+                f"[{os.getpid()}] Attachment type: {item.get_content_type()}")
+            data = convert_bytes(item.get_payload(decode=True))
 
-#                if item.get_content_type() == "text/plain":
-#                    with io.open(tname, mode="wb") as fhdr:
-#                        fhdr.write(convert_bytes(item.get_payload()))
-#                else:
-#                    with io.open(tname, mode="wb") as fhdr:
-#                        fhdr.write(
-#                            convert_bytes(item.get_payload(decode=True)))
-                with io.open(tname, mode="wb") as fhdr:
-                    fhdr.write(
-                        convert_bytes(item.get_payload(decode=True)))
-
-                fname = tname + ".encoded"
-                fname_list.append(fname)
-                in_file = io.open(tname, mode="rb")     # pylint:disable=R1732
-                out_file = io.open(fname, mode="wb")    # pylint:disable=R1732
-                base64.encode(in_file, out_file)
-                in_file.close()
-                out_file.close()
-                err_flag, err_msg = gen_libs.rm_file(tname)
-
-                if err_flag:
-                    log.log_warn(
-                        f"[{os.getpid()}] process_attach:  Message: {err_msg}")
-
-            elif item.get_filename():
+            if data is None:
                 log.log_warn(
-                    f"[{os.getpid()}] Invalid attachment detected:"
-                    f" {item.get_filename()}")
+                    f"[{os.getpid()}] Unable to convert attach to bytes")
+                continue
+
+            with io.open(tname, mode="wb") as fhdr:
+                fhdr.write(data)
+
+            fname = tname + ".encoded"
+            fname_list.append(fname)
+            in_file = io.open(tname, mode="rb")     # pylint:disable=R1732
+            out_file = io.open(fname, mode="wb")    # pylint:disable=R1732
+            base64.encode(in_file, out_file)
+            in_file.close()
+            out_file.close()
+            err_flag, err_msg = gen_libs.rm_file(tname)
+
+            if err_flag:
                 log.log_warn(
-                    f"[{os.getpid()}] Attachment type:"
-                    f" {item.get_content_type()}")
+                    f"[{os.getpid()}] process_attach:  Message: {err_msg}")
+
+        elif item.get_filename():
+            log.log_warn(
+                f"[{os.getpid()}] Invalid attachment detected:"
+                f" {item.get_filename()}")
+            log.log_warn(
+                f"[{os.getpid()}] Attachment type: {item.get_content_type()}")
 
     return fname_list
 
@@ -538,6 +546,39 @@ def archive_email_debug(rmq, log, cfg, msg):
     log.log_debug(f"[{os.getpid()}] End of archive_email_debug")
 
 
+def convert_bytes_debug(data, log):
+
+    """Function:  convert_bytes_debug
+
+    Description:  Converts a string to bytes.
+
+    Arguments:
+        (input) data -> Data string
+        (input) log -> Log class instance
+        (output) -> Bytes or None
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] Start of convert_bytes_debug")
+
+    if isinstance(data, bytes):
+        log.log_debug(f"[{os.getpid()}] Returning no change already bytes")
+        log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 1")
+
+        return data
+
+    if isinstance(data, str):
+        log.log_debug(f"[{os.getpid()}] Returning converted from str to bytes")
+        log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 2")
+
+        return data.encode()
+
+    log.log_debug(f"[{os.getpid()}] Returning None - some other data type")
+    log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 3")
+
+    return None
+
+
 def get_text_debug(msg, log):
 
     """Function:  get_text_debug
@@ -555,7 +596,7 @@ def get_text_debug(msg, log):
     msg_list = []
 
     for part in msg.walk():
-        log.log_debug(f"[{os.getpid()}] Top of msg.walk loop")
+        log.log_debug(f"[{os.getpid()}] get_text: Top of msg.walk loop")
 
         if part.get_content_maintype() == "multipart" \
            or not part.get_payload(decode=True):
@@ -578,7 +619,7 @@ def get_text_debug(msg, log):
             log.log_debug(f"[{os.getpid()}] Appending data to list")
             msg_list.append(data)
 
-        log.log_debug(f"[{os.getpid()}] Bottom of msg.walk loop")
+        log.log_debug(f"[{os.getpid()}] get_text: Bottom of msg.walk loop")
 
     log.log_debug(f"[{os.getpid()}] End of get_text_debug")
     log.log_debug(f"[{os.getpid()}] Joining msg_list together for return")
@@ -613,7 +654,7 @@ def connect_process_debug(rmq, log, cfg, msg, **kwargs):
         with open(fname, mode="r", encoding="UTF-8") as f_hldr:
             t_msg = f_hldr.read()
 
-        log.log_debug(f"[{os.getpid()}] Finished reafing file: {fname}")
+        log.log_debug(f"[{os.getpid()}] Finished reading file: {fname}")
         bname = os.path.splitext(os.path.basename(fname))[0]
         log.log_debug(f"[{os.getpid()}] Basename: {bname}")
         t_msg = str({"AFilename": bname, "File": t_msg})
@@ -632,9 +673,9 @@ def connect_process_debug(rmq, log, cfg, msg, **kwargs):
 
     else:
         log.log_info(f"[{os.getpid()}] Processing email body...")
-        log.log_debug(f"[{os.getpid()}] Calling get_text_debug")
+        log.log_debug(f"[{os.getpid()}] Calling get_text_debug2")
         t_msg = get_text_debug(msg, log)
-        log.log_debug(f"[{os.getpid()}] Finished get_text_debug")
+        log.log_debug(f"[{os.getpid()}] Finished get_text_debug2")
 
     log.log_debug(f"[{os.getpid()}] Process message if t_msg is detected")
 
@@ -644,9 +685,11 @@ def connect_process_debug(rmq, log, cfg, msg, **kwargs):
     else:
         log.log_debug(f"[{os.getpid()}] t_msg not detected or publish failed")
         log.log_err(f"[{os.getpid()}] Failed to injest message into RabbitMQ")
-        log.log_debug(f"[{os.getpid()}] Calling archive_email_debug")
+        log.log_debug(
+            f"[{os.getpid()}] connect_process: Calling archive_email_debug")
         archive_email_debug(rmq, log, cfg, msg)
-        log.log_debug(f"[{os.getpid()}] Finished archive_email_debug")
+        log.log_debug(
+            f"[{os.getpid()}] connect_process: Finished archive_email_debug")
 
     log.log_debug(f"[{os.getpid()}] End of connect_process_debug")
 
@@ -693,12 +736,14 @@ def connect_rmq_debug(cfg, log, qname, rkey, msg, **kwargs):
         log.log_err(
             f"[{os.getpid()}] connect_rmq: Failed to connect to RabbitMQ")
         log.log_err(f"[{os.getpid()}] connect_rmq: Message:  {err_msg}")
-        log.log_debug(f"[{os.getpid()}] Calling archive_email_debug")
+        log.log_debug(
+            f"[{os.getpid()}] connect_rmq: Calling archive_email_debug")
         archive_email_debug(rmq, log, cfg, msg)
-        log.log_debug(f"[{os.getpid()}] Finished archive_email_debug")
+        log.log_debug(
+            f"[{os.getpid()}] connect_rmq: Finished archive_email_debug")
 
     if connect_status:
-        log.log_debug(f"[{os.getpid()}] Clsoing RMQ connection")
+        log.log_debug(f"[{os.getpid()}] Closing RMQ connection")
         rmq.close()
 
     log.log_debug(f"[{os.getpid()}] End of connect_rmq_debug")
@@ -721,13 +766,13 @@ def process_subj_debug(cfg, log, subj, msg):
 
     log.log_debug(f"[{os.getpid()}] Start of process_subj_debug")
     log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
-    log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug")
+    log.log_debug(f"[{os.getpid()}] process_subj: Calling connect_rmq_debug")
     connect_rmq_debug(cfg, log, subj, subj, msg)
-    log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug")
+    log.log_debug(f"[{os.getpid()}] process_subj: Finished connect_rmq_debug")
     log.log_debug(f"[{os.getpid()}] End of process_subj_debug")
 
 
-def process_attach_debug(msg, log, cfg):
+def process_attach_debug(msg, log, cfg):                # pylint:disable=R0915
 
     """Function:  process_attach_debug
 
@@ -746,67 +791,85 @@ def process_attach_debug(msg, log, cfg):
     fname_list = []
     log.log_info(f"[{os.getpid()}] Locating attachments...")
 
-    if msg.is_multipart():
-        log.log_debug(f"[{os.getpid()}] Multipart is detected")
+    if not msg.is_multipart():
+        log.log_debug(f"[{os.getpid()}] Multipart not detected")
+        log.log_debug(f"[{os.getpid()}] End of process_attach_debug")
+        return fname_list
 
-        for item in msg.walk():
-            log.log_debug(f"[{os.getpid()}] Top of msg.walk loop")
+    log.log_debug(f"[{os.getpid()}] Multipart is detected")
 
-            if item.get_content_type() in cfg.attach_types \
-               and item.get_filename():
-                log.log_debug(f"[{os.getpid()}] Detected attachment and file")
-                tname = os.path.join(cfg.tmp_dir, item.get_filename())
-                log.log_info(
-                    f"[{os.getpid()}] Attachment detected:"
-                    f" {item.get_filename()}")
-                log.log_info(
-                    f"[{os.getpid()}] Attachment type:"
-                    f" {item.get_content_type()}")
-                log.log_debug(f"[{os.getpid()}] Start of writing to {tname}")
-                log.log_debug(f"[{os.getpid()}] Calling convert_bytes")
+    for item in msg.walk():
+        log.log_debug(
+            f"[{os.getpid()}] process_attach: Top of msg.walk loop")
 
-                with io.open(tname, mode="wb") as fhdr:
-                    fhdr.write(
-                        convert_bytes(item.get_payload(decode=True)))
+        if item.get_content_type() in cfg.attach_types \
+           and item.get_filename():
 
-                log.log_debug(f"[{os.getpid()}] Finished convert_bytes")
-                log.log_debug(f"[{os.getpid()}] Close of writing to {tname}")
-                fname = tname + ".encoded"
-                fname_list.append(fname)
-                log.log_debug(f"[{os.getpid()}] Added {fname} to {fname_list}")
-                log.log_debug(f"[{os.getpid()}] Start of reading from {tname}")
-                in_file = io.open(tname, mode="rb")     # pylint:disable=R1732
-                log.log_debug(f"[{os.getpid()}] Start of writing to {fname}")
-                out_file = io.open(fname, mode="wb")    # pylint:disable=R1732
-                log.log_debug(f"[{os.getpid()}] Base64 encoding data to file")
-                base64.encode(in_file, out_file)
-                in_file.close()
-                log.log_debug(f"[{os.getpid()}] Closed reading from {tname}")
-                out_file.close()
-                log.log_debug(f"[{os.getpid()}] Closed writing to {fname}")
-                log.log_debug(f"[{os.getpid()}] Removing file: {tname}")
-                err_flag, err_msg = gen_libs.rm_file(tname)
-                log.log_debug(f"[{os.getpid()}] Removed file {tname}")
+            log.log_debug(f"[{os.getpid()}] Detected attachment and file")
+            tname = os.path.join(cfg.tmp_dir, item.get_filename())
+            log.log_info(
+                f"[{os.getpid()}] Attachment detected: {item.get_filename()}")
+            log.log_info(
+                f"[{os.getpid()}] Attachment type: {item.get_content_type()}")
+            log.log_debug(f"[{os.getpid()}] Calling convert_bytes_debug")
+            data = convert_bytes_debug(item.get_payload(decode=True), log)
+            log.log_debug(f"[{os.getpid()}] Finished convert_bytes_debug")
 
-                if err_flag:
-                    log.log_debug(
-                        f"[{os.getpid()}] File {tname}, Perms:"
-                        f" {oct(os.stat(tname).st_mode)[-3:]}")
-                    log.log_debug(
-                        f"[{os.getpid()}] File Owner: {os.stat(tname).st_uid}")
-                    log.log_warn(
-                        f"[{os.getpid()}] process_attach:  Message: {err_msg}")
-
-            elif item.get_filename():
-                log.log_debug(f"[{os.getpid()}] Detected filename in msg only")
+            log.log_debug(f"[{os.getpid()}] Check if data was converted")
+            if data is None:
                 log.log_warn(
-                    f"[{os.getpid()}] Invalid attachment detected:"
-                    f" {item.get_filename()}")
-                log.log_warn(
-                    f"[{os.getpid()}] Attachment type:"
-                    f" {item.get_content_type()}")
+                    f"[{os.getpid()}] Unable to convert attach to bytes")
+                log.log_debug(f"[{os.getpid()}] Continue to next loop")
+                continue
 
-            log.log_debug(f"[{os.getpid()}] Bottom of msg.walk loop")
+            log.log_debug(f"[{os.getpid()}] Start writing to: {tname}")
+            with io.open(tname, mode="wb") as fhdr:
+                fhdr.write(data)
+            log.log_debug(f"[{os.getpid()}] Closed writing to: {tname}")
+
+            log.log_debug(f"[{os.getpid()}] Creating fname variable")
+            fname = tname + ".encoded"
+            fname_list.append(fname)
+            log.log_debug(f"[{os.getpid()}] Added {fname} to {fname_list}")
+
+            log.log_debug(f"[{os.getpid()}] Start of reading from {tname}")
+            in_file = io.open(tname, mode="rb")         # pylint:disable=R1732
+            log.log_debug(f"[{os.getpid()}] Start writing to 2: {fname}")
+            out_file = io.open(fname, mode="wb")        # pylint:disable=R1732
+
+            log.log_debug(f"[{os.getpid()}] Base64 encoding data to file")
+            base64.encode(in_file, out_file)
+
+            in_file.close()
+            log.log_debug(f"[{os.getpid()}] Closed reading from {tname}")
+            out_file.close()
+            log.log_debug(f"[{os.getpid()}] Closed writing to 2: {fname}")
+
+            log.log_debug(
+                f"[{os.getpid()}] process_attach: Removing file: {tname}")
+            err_flag, err_msg = gen_libs.rm_file(tname)
+            log.log_debug(
+                f"[{os.getpid()}] process_attach: Removed file {tname}")
+
+            if err_flag:
+                log.log_debug(
+                    f"[{os.getpid()}] process_attach: File {tname}, Perms:"
+                    f" {oct(os.stat(tname).st_mode)[-3:]}")
+                log.log_debug(
+                    f"[{os.getpid()}] File Owner: {os.stat(tname).st_uid}")
+                log.log_warn(
+                    f"[{os.getpid()}] process_attach:  Message: {err_msg}")
+
+        elif item.get_filename():
+            log.log_debug(f"[{os.getpid()}] Detected filename in msg only")
+            log.log_warn(
+                f"[{os.getpid()}] Invalid attachment detected:"
+                f" {item.get_filename()}")
+            log.log_warn(
+                f"[{os.getpid()}] Attachment type: {item.get_content_type()}")
+
+        log.log_debug(
+            f"[{os.getpid()}] process_attach: Bottom of msg.walk loop")
 
     log.log_debug(f"[{os.getpid()}] End of process_attach_debug")
 
@@ -828,47 +891,58 @@ def process_from_debug(cfg, log, msg, from_addr):
     """
 
     log.log_debug(f"[{os.getpid()}] Start of process_from_debug")
-    log.log_debug(f"[{os.getpid()}] Calling process_attach_debug")
+    log.log_debug(
+        f"[{os.getpid()}] process_from: Calling process_attach_debug")
     fname_list = process_attach_debug(msg, log, cfg)
-    log.log_debug(f"[{os.getpid()}] Finished process_attach_debug")
+    log.log_debug(
+        f"[{os.getpid()}] process_from: Finished process_attach_debug")
 
     if fname_list:
         log.log_debug(f"[{os.getpid()}] Detected fname_list: {fname_list}")
 
         for fname in fname_list:
-            log.log_debug(f"[{os.getpid()}] Top of fname_list loop")
+            log.log_debug(
+                f"[{os.getpid()}] process_from: Top of fname_list loop")
             log.log_info(
                 f"[{os.getpid()}] Valid From address:"
                 f" {from_addr} with file attachment: {fname}")
-            log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug")
+            log.log_debug(
+                f"[{os.getpid()}] process_from: Calling connect_rmq_debug")
             connect_rmq_debug(
-                cfg, log, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr],
-                msg, fname=fname)
-            log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug")
-            log.log_debug(f"[{os.getpid()}] Removing file: {fname}")
+                cfg, log, cfg.queue_dict_debug[from_addr],
+                cfg.queue_dict_debug[from_addr], msg, fname=fname)
+            log.log_debug(
+                f"[{os.getpid()}] process_from: Finished connect_rmq_debug")
+            log.log_debug(
+                f"[{os.getpid()}] process_from: Removing file: {fname}")
             err_flag, err_msg = gen_libs.rm_file(fname)
-            log.log_debug(f"[{os.getpid()}] Removed file {fname}")
+            log.log_debug(
+                f"[{os.getpid()}] process_from: Removed file {fname}")
 
             if err_flag:
                 log.log_debug(
-                    f"[{os.getpid()}] File {fname}, Perms:"
+                    f"[{os.getpid()}] process_from: File {fname}, Perms:"
                     f" {oct(os.stat(fname).st_mode)[-3:]}")
                 log.log_debug(
-                    f"[{os.getpid()}] File Owner: {os.stat(fname).st_uid}")
+                    f"[{os.getpid()}] process_from: File Owner:"
+                    f" {os.stat(fname).st_uid}")
                 log.log_warn(
                     f"[{os.getpid()}] process_from: Message: {err_msg}")
 
-            log.log_debug(f"[{os.getpid()}] Bottom of fname_list loop")
+            log.log_debug(
+                f"[{os.getpid()}] process_from: Bottom of fname_list loop")
 
     else:
         log.log_debug(f"[{os.getpid()}] No fname_list detected")
         log.log_warn(
             f"[{os.getpid()}] Missing attachment for email address:"
             f" {from_addr}")
-        log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug - error")
+        log.log_debug(
+            f"[{os.getpid()}] process_from: Calling connect_rmq_debug: error")
         connect_rmq_debug(
             cfg, log, cfg.err_addr_queue, cfg.err_addr_queue, msg)
-        log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug - error")
+        log.log_debug(
+            f"[{os.getpid()}] process_from: Finished connect_rmq_debug: error")
 
     log.log_debug(f"[{os.getpid()}] End of process_from_debug")
 
@@ -889,56 +963,71 @@ def process_file_debug(cfg, log, subj, msg):
     """
 
     log.log_debug(f"[{os.getpid()}] Start of process_file_debug")
-    log.log_debug(f"[{os.getpid()}] Calling process_attach_debug")
+    log.log_debug(
+        f"[{os.getpid()}] process_file: Calling process_attach_debug")
     fname_list = process_attach_debug(msg, log, cfg)
-    log.log_debug(f"[{os.getpid()}] Finished process_attach_debug")
+    log.log_debug(
+        f"[{os.getpid()}] process_file: Finished process_attach_debug")
 
     if fname_list and subj in cfg.file_queues:
         log.log_debug(f"[{os.getpid()}] Found {subj} in {cfg.file_queues}")
         log.log_debug(f"[{os.getpid()}] Detected list: {fname_list}")
 
         for fname in fname_list:
-            log.log_debug(f"[{os.getpid()}] Top of fname_list loop")
+            log.log_debug(
+                f"[{os.getpid()}] process_file: Top of fname_list loop")
             log.log_info(
                 f"[{os.getpid()}] Valid subject with file attachment: {fname}")
-            log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug")
+            log.log_debug(
+                f"[{os.getpid()}] process_file: Calling connect_rmq_debug")
             connect_rmq_debug(cfg, log, subj, subj, msg, fname=fname)
-            log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug")
-            log.log_debug(f"[{os.getpid()}] Removing file: {fname}")
+            log.log_debug(
+                f"[{os.getpid()}] process_file: Finished connect_rmq_debug")
+            log.log_debug(
+                f"[{os.getpid()}] process_file: Removing file: {fname}")
             err_flag, err_msg = gen_libs.rm_file(fname)
-            log.log_debug(f"[{os.getpid()}] Removed file {fname}")
+            log.log_debug(
+                f"[{os.getpid()}] process_file: Removed file {fname}")
 
             if err_flag:
                 log.log_debug(
-                    f"[{os.getpid()}] File {fname}, Perms:"
+                    f"[{os.getpid()}] process_file: File {fname}, Perms:"
                     f" {oct(os.stat(fname).st_mode)[-3:]}")
                 log.log_debug(
-                    f"[{os.getpid()}] File Owner: {os.stat(fname).st_uid}")
+                    f"[{os.getpid()}] process_file: File Owner:"
+                    f" {os.stat(fname).st_uid}")
                 log.log_warn(
                     f"[{os.getpid()}] process_file: Message: {err_msg}")
 
-            log.log_debug(f"[{os.getpid()}] Bottom of fname_list loop")
+            log.log_debug(
+                f"[{os.getpid()}] process_file: Bottom of fname_list loop")
 
     elif fname_list:
         log.log_debug(f"[{os.getpid()}] Only detected fname_list")
-        log.log_debug(f"[{os.getpid()}] Detected list: {fname_list}")
+        log.log_debug(f"[{os.getpid()}] Detected list 2: {fname_list}")
 
         for fname in fname_list:
             log.log_debug(f"[{os.getpid()}] Top of fname_list second loop")
             log.log_info(
                 f"[{os.getpid()}] Invalid subject with file attached: {fname}")
-            log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug: error")
+            log.log_debug(
+                f"[{os.getpid()}] process_file: Calling connect_rmq_debug:"
+                " error2")
             connect_rmq_debug(
                 cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg,
                 fname=fname)
-            log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug: error")
-            log.log_debug(f"[{os.getpid()}] Removing file: {fname}")
+            log.log_debug(
+                f"[{os.getpid()}] process_file: Finished connect_rmq_debug:"
+                " error2")
+            log.log_debug(
+                f"[{os.getpid()}] process_file: Removing file: {fname}")
             err_flag, err_msg = gen_libs.rm_file(fname)
-            log.log_debug(f"[{os.getpid()}] Removed file {fname}")
+            log.log_debug(
+                f"[{os.getpid()}] process_file: Removed file {fname}")
 
             if err_flag:
                 log.log_debug(
-                    f"[{os.getpid()}] File {fname}, Perms:"
+                    f"[{os.getpid()}] process_file: File {fname}, Perms:"
                     f" {oct(os.stat(fname).st_mode)[-3:]}")
                 log.log_debug(
                     f"[{os.getpid()}] File Owner: {os.stat(fname).st_uid}")
@@ -950,9 +1039,11 @@ def process_file_debug(cfg, log, subj, msg):
     else:
         log.log_debug(f"[{os.getpid()}] No fname_list or subject detected")
         log.log_warn(f"[{os.getpid()}] Invalid email subject: {subj}")
-        log.log_debug(f"[{os.getpid()}] Calling connect_rmq_debug - error")
+        log.log_debug(
+            f"[{os.getpid()}] process_file: Calling connect_rmq_debug: error")
         connect_rmq_debug(cfg, log, cfg.err_queue, cfg.err_queue, msg)
-        log.log_debug(f"[{os.getpid()}] Finished connect_rmq_debug - error")
+        log.log_debug(
+            f"[{os.getpid()}] process_file: Finished connect_rmq_debug: error")
 
     log.log_debug(f"[{os.getpid()}] End of process_file_debug")
 
