@@ -166,7 +166,7 @@ class Email2():
     """
 
     def __init__(                               # pylint:disable=R0913,R0917
-        self, content_type, filename, content_type2, filename2, data):
+            self, content_type, filename, content_type2, filename2, data):
 
         """Method:  __init__
 
