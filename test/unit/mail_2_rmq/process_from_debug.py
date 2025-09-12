@@ -132,7 +132,7 @@ class CfgTest():                                        # pylint:disable=R0903
         self.err_file_queue = "ERROR_FILE_QUEUE"
         self.log_file = "LOG_FILE"
         self.email_dir = "EMAIL_DIRECTORY"
-        self.queue_dict = {"From Line": "QueueName"}
+        self.queue_dict_debug = {"From Line": "QueueName"}
         self.err_addr_queue = "ERROR_ADDR_QUEUE"
 
 

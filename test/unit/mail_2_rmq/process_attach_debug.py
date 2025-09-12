@@ -41,22 +41,23 @@ class MultiPart():
 
     """
 
-    def __init__(self, content_type, filename):
+    def __init__(self, content_type, filename, data):
 
         """Method:  __init__
 
         Description:  Initialization instance of the RQTest class.
 
         Arguments:
-            (input) content_type -> Type of attachment.
-            (input) filename -> Name of attachment.
+            (input) content_type -> Type of attachment
+            (input) filename -> Name of attachment
+            (input) data -> Message body
 
         """
 
         self.decode = False
         self.content_type = content_type
         self.filename = filename
-        self.payload = "Data_Goes_Here"
+        self.payload = data
 
     def get_content_type(self):
 
@@ -110,20 +111,21 @@ class Email():
 
     """
 
-    def __init__(self, content_type, filename):
+    def __init__(self, content_type, filename, data):
 
         """Method:  __init__
 
         Description:  Initialization instance of the RQTest class.
 
         Arguments:
-            (input) content_type -> Type of attachment.
-            (input) filename -> Name of attachment.
+            (input) content_type -> Type of attachment
+            (input) filename -> Name of attachment
+            (input) data -> Message body
 
         """
 
         self.multipart = True
-        self.parts = [MultiPart(content_type, filename)]
+        self.parts = [MultiPart(content_type, filename, data)]
 
     def is_multipart(self):
 
@@ -163,21 +165,25 @@ class Email2():
 
     """
 
-    def __init__(self, content_type, filename, content_type2, filename2):
+    def __init__(                               # pylint:disable=R0913,R0917
+            self, content_type, filename, content_type2, filename2, data):
 
         """Method:  __init__
 
         Description:  Initialization instance of the RQTest class.
 
         Arguments:
-            (input) content_type -> Type of attachment.
-            (input) filename -> Name of attachment.
+            (input) content_type -> Type of attachment
+            (input) filename -> Name of attachment
+            (input) content_type2 -> Type of attachment 2
+            (input) filename2 -> Name of attachment 2
+            (input) data -> Message body
 
         """
 
         self.multipart = True
-        self.parts = [MultiPart(content_type, filename),
-                      MultiPart(content_type2, filename2)]
+        self.parts = [MultiPart(content_type, filename, data),
+                      MultiPart(content_type2, filename2, data)]
 
     def is_multipart(self):
 
@@ -249,6 +255,11 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
+        test_is_not_mulitpart
+        test_email_body_other
+        test_email_body_bytes
+        test_email_body_string
+        test_valid_text_attach
         test_multiple_attach_multiple_types
         test_multiple_attach_no_invalid
         test_multiple_attach_one_invalid
@@ -288,6 +299,92 @@ class UnitTest(unittest.TestCase):
         self.fname3 = "Filename.zip"
         self.fname4 = "Filename.zip"
         self.fname5 = "Filename.txt"
+        self.data = "Message_Body"
+        self.data2 = b"Message_Body"
+        self.data3 = 12345
+
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_is_not_mulitpart(self, mock_log):
+
+        """Function:  test_is_not_mulitpart
+
+        Description:  Test with email not being multiplart.
+
+        Arguments:
+
+        """
+
+        mock_log.return_value = True
+
+        msg = Email(
+            content_type=self.text_plain, filename=self.fname5, data=self.data)
+        msg.multipart = False
+
+        fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
+
+        self.assertEqual(fname, [])
+
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_email_body_other(self, mock_log):
+
+        """Function:  test_email_body_other
+
+        Description:  Test with email body not being bytes or string.
+
+        Arguments:
+
+        """
+
+        mock_log.return_value = True
+
+        msg = Email(
+            content_type=self.text_plain, filename=self.fname5,
+            data=self.data3)
+
+        fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
+
+        self.assertEqual(fname, [])
+
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_email_body_bytes(self, mock_log):
+
+        """Function:  test_email_body_bytes
+
+        Description:  Test with email body being already bytes.
+
+        Arguments:
+
+        """
+
+        mock_log.return_value = True
+
+        msg = Email(
+            content_type=self.text_plain, filename=self.fname5,
+            data=self.data2)
+
+        fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
+
+        self.assertEqual(fname, self.results4)
+
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_email_body_string(self, mock_log):
+
+        """Function:  test_email_body_string
+
+        Description:  Test with email body being a string.
+
+        Arguments:
+
+        """
+
+        mock_log.return_value = True
+
+        msg = Email(
+            content_type=self.text_plain, filename=self.fname5, data=self.data)
+
+        fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
+
+        self.assertEqual(fname, self.results4)
 
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_valid_text_attach(self, mock_log):
@@ -302,7 +399,8 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
 
-        msg = Email(content_type=self.text_plain, filename=self.fname5)
+        msg = Email(
+            content_type=self.text_plain, filename=self.fname5, data=self.data)
 
         fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
 
@@ -323,7 +421,7 @@ class UnitTest(unittest.TestCase):
 
         msg = Email2(
             content_type=self.app_pdf, filename=self.fname,
-            content_type2=self.app_zip, filename2=self.fname3)
+            content_type2=self.app_zip, filename2=self.fname3, data=self.data)
         self.cfg.attach_types = [self.app_pdf, self.app_zip]
 
         fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
@@ -346,7 +444,7 @@ class UnitTest(unittest.TestCase):
 
         msg = Email2(
             content_type=self.app_zip, filename=self.fname3,
-            content_type2=self.app_zip, filename2=self.fname4)
+            content_type2=self.app_zip, filename2=self.fname4, data=self.data)
 
         fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
 
@@ -367,7 +465,7 @@ class UnitTest(unittest.TestCase):
 
         msg = Email2(
             content_type=self.app_pdf, filename=self.fname,
-            content_type2=self.app_zip, filename2=self.fname3)
+            content_type2=self.app_zip, filename2=self.fname3, data=self.data)
 
         fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
 
@@ -388,7 +486,7 @@ class UnitTest(unittest.TestCase):
 
         msg = Email2(
             content_type=self.app_pdf, filename=self.fname,
-            content_type2=self.app_pdf, filename2=self.fname2)
+            content_type2=self.app_pdf, filename2=self.fname2, data=self.data)
 
         fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
 
@@ -409,7 +507,8 @@ class UnitTest(unittest.TestCase):
         mock_log.return_value = True
         mock_rm.return_value = (True, "Error Message")
 
-        msg = Email(content_type=self.app_pdf, filename=self.fname)
+        msg = Email(
+            content_type=self.app_pdf, filename=self.fname, data=self.data)
 
         fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
 
@@ -428,7 +527,8 @@ class UnitTest(unittest.TestCase):
 
         mock_log.return_value = True
 
-        msg = Email(content_type=self.app_pdf, filename=self.fname)
+        msg = Email(
+            content_type=self.app_pdf, filename=self.fname, data=self.data)
 
         fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
 

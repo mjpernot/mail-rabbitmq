@@ -17,6 +17,7 @@
 import sys
 import os
 import unittest
+import mock
 
 # Local
 sys.path.append(os.getcwd())
@@ -58,7 +59,8 @@ class UnitTest(unittest.TestCase):
         self.results = b"Data String"
         self.results2 = b"Data String2"
 
-    def test_convert_dict(self):
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_convert_dict(self, mock_log):
 
         """Function:  test_convert_dict
 
@@ -68,9 +70,12 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_log.return_value = True
+
         self.assertIsNone(mail_2_rmq.convert_bytes(self.data4))
 
-    def test_convert_int(self):
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_convert_int(self, mock_log):
 
         """Function:  test_convert_int
 
@@ -80,9 +85,12 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_log.return_value = True
+
         self.assertIsNone(mail_2_rmq.convert_bytes(self.data3))
 
-    def test_convert_bytes(self):
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_convert_bytes(self, mock_log):
 
         """Function:  test_convert_bytes
 
@@ -92,9 +100,12 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_log.return_value = True
+
         self.assertEqual(mail_2_rmq.convert_bytes(self.data2), self.results2)
 
-    def test_convert_str(self):
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_convert_str(self, mock_log):
 
         """Function:  test_convert_str
 
@@ -103,6 +114,8 @@ class UnitTest(unittest.TestCase):
         Arguments:
 
         """
+
+        mock_log.return_value = True
 
         self.assertEqual(mail_2_rmq.convert_bytes(self.data), self.results)
 
