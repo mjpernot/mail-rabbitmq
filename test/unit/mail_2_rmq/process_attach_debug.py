@@ -255,6 +255,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
+        test_is_not_mulitpart
         test_email_body_other
         test_email_body_bytes
         test_email_body_string
@@ -301,6 +302,27 @@ class UnitTest(unittest.TestCase):
         self.data = "Message_Body"
         self.data2 = b"Message_Body"
         self.data3 = 12345
+
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    def test_is_not_mulitpart(self, mock_log):
+
+        """Function:  test_is_not_mulitpart
+
+        Description:  Test with email not being multiplart.
+
+        Arguments:
+
+        """
+
+        mock_log.return_value = True
+
+        msg = Email(
+            content_type=self.text_plain, filename=self.fname5, data=self.data)
+        msg.multipart = False
+
+        fname = mail_2_rmq.process_attach_debug(msg, mock_log, self.cfg)
+
+        self.assertEqual(fname, [])
 
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_email_body_other(self, mock_log):
