@@ -931,7 +931,8 @@ def process_from_debug(cfg, log, msg, from_addr):
     log.log_debug(f"[{os.getpid()}] End of process_from_debug")
 
 
-def pub_to_rmq_debug(cfg, log, qname, rkey, msg, fname):
+def pub_to_rmq_debug(                           # pylint:disable=R0913,R0917
+        cfg, log, qname, rkey, msg, fname):
 
     """Function:  pub_to_rmq_debug
 
