@@ -34,6 +34,7 @@ coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_attach_debug.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_file_debug.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_from_debug.py
 coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/process_subj_debug.py
+coverage run -a --source=mail_2_rmq test/unit/mail_2_rmq/pub_to_rmq_debug.py
 
 echo ""
 echo "Producing code coverage report"
