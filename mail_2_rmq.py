@@ -1063,16 +1063,10 @@ def process_debug(cfg, subj, msg, from_addr):
 
     if subj in cfg.debug_valid_queues:
         log.log_debug(f"[{os.getpid()}] Detected valid subject: {subj}")
-
         log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
         log.log_debug(f"[{os.getpid()}] process: Calling connect_rmq_debug")
         connect_rmq_debug(cfg, log, subj, subj, msg)
         log.log_debug(f"[{os.getpid()}] process: Finished connect_rmq_debug")
-################################################################################
-#        log.log_debug(f"[{os.getpid()}] Calling process_subj_debug")
-#        process_subj_debug(cfg, log, subj, msg)
-#        log.log_debug(f"[{os.getpid()}] Finished process_subj_debug")
-################################################################################
 
     elif from_addr and from_addr in list(cfg.debug_queue_dict.keys()):
         log.log_debug(f"[{os.getpid()}] Detected valid from addr: {from_addr}")
