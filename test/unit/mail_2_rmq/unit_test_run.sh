@@ -31,3 +31,4 @@
 /usr/bin/python test/unit/mail_2_rmq/process_file_debug.py
 /usr/bin/python test/unit/mail_2_rmq/process_from_debug.py
 /usr/bin/python test/unit/mail_2_rmq/process_subj_debug.py
+/usr/bin/python test/unit/mail_2_rmq/pub_to_rmq_debug.py

@@ -907,28 +907,12 @@ def process_from_debug(cfg, log, msg, from_addr):
                 f"[{os.getpid()}] Valid From address:"
                 f" {from_addr} with file attachment: {fname}")
             log.log_debug(
-                f"[{os.getpid()}] process_from: Calling connect_rmq_debug")
-            connect_rmq_debug(
-                cfg, log, cfg.queue_dict_debug[from_addr],
-                cfg.queue_dict_debug[from_addr], msg, fname=fname)
+                f"[{os.getpid()}] process_from: Calling pub_to_rmq_debug")
+            pub_to_rmq_debug(
+                cfg, log, cfg.debug_queue_dict[from_addr],
+                cfg.debug_queue_dict[from_addr], msg, fname)
             log.log_debug(
-                f"[{os.getpid()}] process_from: Finished connect_rmq_debug")
-            log.log_debug(
-                f"[{os.getpid()}] process_from: Removing file: {fname}")
-            err_flag, err_msg = gen_libs.rm_file(fname)
-            log.log_debug(
-                f"[{os.getpid()}] process_from: Removed file {fname}")
-
-            if err_flag:
-                log.log_debug(
-                    f"[{os.getpid()}] process_from: File {fname}, Perms:"
-                    f" {oct(os.stat(fname).st_mode)[-3:]}")
-                log.log_debug(
-                    f"[{os.getpid()}] process_from: File Owner:"
-                    f" {os.stat(fname).st_uid}")
-                log.log_warn(
-                    f"[{os.getpid()}] process_from: Message: {err_msg}")
-
+                f"[{os.getpid()}] process_from: Finished pub_to_rmq_debug")
             log.log_debug(
                 f"[{os.getpid()}] process_from: Bottom of fname_list loop")
 
@@ -945,6 +929,40 @@ def process_from_debug(cfg, log, msg, from_addr):
             f"[{os.getpid()}] process_from: Finished connect_rmq_debug: error")
 
     log.log_debug(f"[{os.getpid()}] End of process_from_debug")
+
+
+def pub_to_rmq_debug(                           # pylint:disable=R0913,R0917
+        cfg, log, qname, rkey, msg, fname):
+
+    """Function:  pub_to_rmq_debug
+
+    Description:  Consolidate arguments for the call to RMQ and clean up file.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) qname -> Queue name for RabbitMQ
+        (input) rkey -> Rkey value for RabbitMQ
+        (input) msg -> Email message body
+        (input) fname -> Name of attachment file
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] pub_to_rmq: Calling connect_rmq_debug")
+    connect_rmq_debug(cfg, log, qname, rkey, msg, fname=fname)
+    log.log_debug(f"[{os.getpid()}] pub_to_rmq: Finished connect_rmq_debug")
+    log.log_debug(f"[{os.getpid()}] pub_to_rmq: Removing file: {fname}")
+    err_flag, err_msg = gen_libs.rm_file(fname)
+    log.log_debug(f"[{os.getpid()}] pub_to_rmq: Removed file {fname}")
+
+    if err_flag:
+        log.log_debug(
+            f"[{os.getpid()}] pub_to_rmq: File {fname}, Perms:"
+            f" {oct(os.stat(fname).st_mode)[-3:]}")
+        log.log_debug(
+            f"[{os.getpid()}] pub_to_rmq: File Owner:"
+            f" {os.stat(fname).st_uid}")
+        log.log_warn(f"[{os.getpid()}] pub_to_rmq: Message: {err_msg}")
 
 
 def process_file_debug(cfg, log, subj, msg):
@@ -979,26 +997,10 @@ def process_file_debug(cfg, log, subj, msg):
             log.log_info(
                 f"[{os.getpid()}] Valid subject with file attachment: {fname}")
             log.log_debug(
-                f"[{os.getpid()}] process_file: Calling connect_rmq_debug")
-            connect_rmq_debug(cfg, log, subj, subj, msg, fname=fname)
+                f"[{os.getpid()}] process_file: Calling pub_to_rmq_debug")
+            pub_to_rmq_debug(cfg, log, subj, subj, msg, fname)
             log.log_debug(
-                f"[{os.getpid()}] process_file: Finished connect_rmq_debug")
-            log.log_debug(
-                f"[{os.getpid()}] process_file: Removing file: {fname}")
-            err_flag, err_msg = gen_libs.rm_file(fname)
-            log.log_debug(
-                f"[{os.getpid()}] process_file: Removed file {fname}")
-
-            if err_flag:
-                log.log_debug(
-                    f"[{os.getpid()}] process_file: File {fname}, Perms:"
-                    f" {oct(os.stat(fname).st_mode)[-3:]}")
-                log.log_debug(
-                    f"[{os.getpid()}] process_file: File Owner:"
-                    f" {os.stat(fname).st_uid}")
-                log.log_warn(
-                    f"[{os.getpid()}] process_file: Message: {err_msg}")
-
+                f"[{os.getpid()}] process_file: Finished pub_to_rmq_debug")
             log.log_debug(
                 f"[{os.getpid()}] process_file: Bottom of fname_list loop")
 
@@ -1011,29 +1013,11 @@ def process_file_debug(cfg, log, subj, msg):
             log.log_info(
                 f"[{os.getpid()}] Invalid subject with file attached: {fname}")
             log.log_debug(
-                f"[{os.getpid()}] process_file: Calling connect_rmq_debug:"
-                " error2")
-            connect_rmq_debug(
-                cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg,
-                fname=fname)
+                f"[{os.getpid()}] process_file 2: Calling pub_to_rmq_debug")
+            pub_to_rmq_debug(
+                cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg, fname)
             log.log_debug(
-                f"[{os.getpid()}] process_file: Finished connect_rmq_debug:"
-                " error2")
-            log.log_debug(
-                f"[{os.getpid()}] process_file: Removing file: {fname}")
-            err_flag, err_msg = gen_libs.rm_file(fname)
-            log.log_debug(
-                f"[{os.getpid()}] process_file: Removed file {fname}")
-
-            if err_flag:
-                log.log_debug(
-                    f"[{os.getpid()}] process_file: File {fname}, Perms:"
-                    f" {oct(os.stat(fname).st_mode)[-3:]}")
-                log.log_debug(
-                    f"[{os.getpid()}] File Owner: {os.stat(fname).st_uid}")
-                log.log_warn(
-                    f"[{os.getpid()}] process_file 2: Message: {err_msg}")
-
+                f"[{os.getpid()}] process_file 2: Finished pub_to_rmq_debug")
             log.log_debug(f"[{os.getpid()}] Bottom of fname_list second loop")
 
     else:
@@ -1080,9 +1064,10 @@ def process_debug(cfg, subj, msg, from_addr):
 
     if subj in cfg.debug_valid_queues:
         log.log_debug(f"[{os.getpid()}] Detected valid subject: {subj}")
-        log.log_debug(f"[{os.getpid()}] Calling process_subj_debug")
-        process_subj_debug(cfg, log, subj, msg)
-        log.log_debug(f"[{os.getpid()}] Finished process_subj_debug")
+        log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
+        log.log_debug(f"[{os.getpid()}] process: Calling connect_rmq_debug")
+        connect_rmq_debug(cfg, log, subj, subj, msg)
+        log.log_debug(f"[{os.getpid()}] process: Finished connect_rmq_debug")
 
     elif from_addr and from_addr in list(cfg.debug_queue_dict.keys()):
         log.log_debug(f"[{os.getpid()}] Detected valid from addr: {from_addr}")
