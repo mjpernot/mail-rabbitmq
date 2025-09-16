@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [2.2.2] - 2025-09-16
+
+### Fixed
+- process_from_debug: Fixed the arguments being passed to the connect_rmq_debug.
+
+### Added
+- pub_to_rmq_debug: Consolidate arguments for the call to RMQ and clean up file.
+
+
 ## [2.2.1] - 2025-09-12
 
 ### Added

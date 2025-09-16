@@ -909,8 +909,8 @@ def process_from_debug(cfg, log, msg, from_addr):
             log.log_debug(
                 f"[{os.getpid()}] process_from: Calling connect_rmq_debug")
             connect_rmq_debug(
-                cfg, log, cfg.queue_dict_debug[from_addr],
-                cfg.queue_dict_debug[from_addr], msg, fname=fname)
+                cfg, log, cfg.debug_queue_dict[from_addr],
+                cfg.debug_queue_dict[from_addr], msg, fname=fname)
             log.log_debug(
                 f"[{os.getpid()}] process_from: Finished connect_rmq_debug")
             log.log_debug(
@@ -945,6 +945,39 @@ def process_from_debug(cfg, log, msg, from_addr):
             f"[{os.getpid()}] process_from: Finished connect_rmq_debug: error")
 
     log.log_debug(f"[{os.getpid()}] End of process_from_debug")
+
+
+def pub_to_rmq_debug(cfg, log, qname, rkey, msg, fname):
+
+    """Function:  pub_to_rmq_debug
+
+    Description:  Consolidate arguments for the call to RMQ and clean up file.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) qname -> Queue name for RabbitMQ
+        (input) rkey -> Rkey value for RabbitMQ
+        (input) msg -> Email message body
+        (input) fname -> Name of attachment file
+
+    """
+
+    log.log_debug(f"[{os.getpid()}] pub_to_rmq: Calling connect_rmq_debug")
+    connect_rmq_debug(cfg, log, qname, rkey, msg, fname=fname)
+    log.log_debug(f"[{os.getpid()}] pub_to_rmq: Finished connect_rmq_debug")
+    log.log_debug(f"[{os.getpid()}] pub_to_rmq: Removing file: {fname}")
+    err_flag, err_msg = gen_libs.rm_file(fname)
+    log.log_debug(f"[{os.getpid()}] pub_to_rmq: Removed file {fname}")
+
+    if err_flag:
+        log.log_debug(
+            f"[{os.getpid()}] pub_to_rmq: File {fname}, Perms:"
+            f" {oct(os.stat(fname).st_mode)[-3:]}")
+        log.log_debug(
+            f"[{os.getpid()}] pub_to_rmq: File Owner:"
+            f" {os.stat(fname).st_uid}")
+        log.log_warn(f"[{os.getpid()}] pub_to_rmq: Message: {err_msg}")
 
 
 def process_file_debug(cfg, log, subj, msg):
