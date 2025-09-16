@@ -221,7 +221,7 @@ class UnitTest(unittest.TestCase):
             mail_2_rmq.process_debug(
                 self.cfg, self.subj2, self.msg, self.from_addr2))
 
-    @mock.patch("mail_2_rmq.process_subj_debug", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.connect_rmq_debug", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.gen_class")
     def test_valid_subj(self, mock_log):
 

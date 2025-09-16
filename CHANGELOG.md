@@ -12,6 +12,11 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ### Added
 - pub_to_rmq_debug: Consolidate arguments for the call to RMQ and clean up file.
 
+### Changed
+- process_debug: Collapsed process_subj_debug function to this function.
+- process_file_debug: Replaced two sections of code with call to pub_to_rmq_debug with different arguments.
+- process_from_debug: Replaced a section of code with call to pub_to_rmq_debug.
+
 
 ## [2.2.1] - 2025-09-12
 
