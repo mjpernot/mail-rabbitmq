@@ -80,7 +80,7 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
   * Directory for non-processed emails/log files/temporary storage.
     - email_dir = "DIRECTORY_PATH/email_dir"
     - log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
-    - tmp_dir = "DIRECTORY_PATH/tmp"
+    - tmp_dir = "/tmp"
 
   * Types of attachments to extract from email.
     - attach_types = ["application/pdf", "application/octet-stream"]
