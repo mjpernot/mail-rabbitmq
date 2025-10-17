@@ -11,6 +11,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Updated python-lib to v4.1.0
 - Updated rabbitmq-lib to v2.4.2
 
+### Fixed
+- config/rabbitmq.py.TEMPLATE: Change tmp_dir to /tmp and moved to 'Do not modify settings' section.
+
 ### Changed
 - Documentation changes.
 

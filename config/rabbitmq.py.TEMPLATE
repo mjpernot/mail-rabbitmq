@@ -28,8 +28,6 @@ email_dir = "DIRECTORY_PATH/email_dir"
 # Directory path and file name to the program log.
 # Note: A date format of %Y%m%d will be appended to the end of the log file.
 log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
-# Directory path to temporary staging directory.
-tmp_dir = "DIRECTORY_PATH/tmp"
 # Dictionary of valid email addresses and their associated queue names.
 # Format of email should be: "name@domain"
 # Example: queue_dict = {"name1@domain": "QueueName", "name2@domain": "QueueName2"}
@@ -57,6 +55,8 @@ debug_queue_dict = {"debug_name@domain": "DebugQueue"}
 #
 # Do not modify settings below unless you know what you are doing.
 #
+# Directory path to temporary staging directory.
+tmp_dir = "/tmp"
 # Types of attachments to extract from email.
 # Note:  application/octet-stream and text/csv is for .csv files.
 attach_types = ["application/pdf", "application/octet-stream", "text/csv"]

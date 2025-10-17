@@ -47,7 +47,6 @@
             err_file_queues = "ERROR_FILE_QUEUE_NAME"
             email_dir = "DIRECTORY_PATH/email_dir"
             log_file = "DIRECTORY_PATH/mail_2_rmq.log"
-            tmp_dir = "DIRECTORY_PATH/tmp"
             queue_dict = {}
             err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
             # For Debugging use
@@ -64,6 +63,7 @@
             q_durable
             auto_delete
             heartbeat
+            tmp_dir
 
         Note:  If connecting to a multiple node RabbitMQ cluster, use the
             host_list entry.
