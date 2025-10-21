@@ -14,8 +14,19 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ### Fixed
 - config/rabbitmq.py.TEMPLATE: Change tmp_dir to /tmp and moved to 'Do not modify settings' section.
 
+### Added
+- pub_to_rmq: Consolidate arguments for the call to RMQ and clean up file.
+
 ### Changed
+- process_attach_debug: Replaced convert_bytes_debug call with gen_libs.convert_bytes call.
+- process_from: Replaced section of code with call to pub_to_rmq.
+- process_file: Replaced sections of code with call to pub_to_rmq.
+- process_message: Replaced process_subj call with connect_rmq call.
 - Documentation changes.
+
+### Removed
+- process_subj function.
+- convert_bytes_debug function.
 
 
 ## [2.2.2] - 2025-09-16

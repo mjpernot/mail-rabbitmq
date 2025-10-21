@@ -415,14 +415,9 @@ def process_from(cfg, log, msg, from_addr):
             log.log_info(
                 f"[{os.getpid()}] Valid From address:"
                 f" {from_addr} with file attachment: {fname}")
-            connect_rmq(
+            pub_to_rmq(
                 cfg, log, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr],
-                msg, fname=fname)
-            err_flag, err_msg = gen_libs.rm_file(fname)
-
-            if err_flag:
-                log.log_warn(
-                    f"[{os.getpid()}] process_from: Message: {err_msg}")
+                msg, fname)
 
     else:
         log.log_warn(
@@ -472,6 +467,30 @@ def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
         rmq.close()
 
 
+def pub_to_rmq(cfg, log, qname, rkey, msg, fname):
+
+    """Function:  pub_to_rmq
+
+    Description:  Consolidate arguments for the call to RMQ and clean up file.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) qname -> Queue name for RabbitMQ
+        (input) rkey -> Rkey value for RabbitMQ
+        (input) msg -> Email message body
+        (input) fname -> Name of attachment file
+
+    """
+
+    log.log_info(f"[{os.getpid()}] pub_to_rmq: Publishing: {fname}")
+    connect_rmq(cfg, log, qname, rkey, msg, fname=fname)
+    err_flag, err_msg = gen_libs.rm_file(fname)
+
+    if err_flag:
+        log.log_warn(f"[{os.getpid()}] pub_to_rmq: Message: {err_msg}")
+
+
 def process_file(cfg, log, subj, msg):
 
     """Function:  process_file
@@ -493,25 +512,14 @@ def process_file(cfg, log, subj, msg):
         for fname in fname_list:
             log.log_info(
                 f"[{os.getpid()}] Valid subject with file attachment: {fname}")
-            connect_rmq(cfg, log, subj, subj, msg, fname=fname)
-            err_flag, err_msg = gen_libs.rm_file(fname)
-
-            if err_flag:
-                log.log_warn(
-                    f"[{os.getpid()}] process_file: Message: {err_msg}")
+            pub_to_rmq(cfg, log, subj, subj, msg, fname)
 
     elif fname_list:
         for fname in fname_list:
             log.log_info(
                 f"[{os.getpid()}] Invalid subject with file attached: {fname}")
-            connect_rmq(
-                cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg,
-                fname=fname)
-            err_flag, err_msg = gen_libs.rm_file(fname)
-
-            if err_flag:
-                log.log_warn(
-                    f"[{os.getpid()}] process_file 2: Message: {err_msg}")
+            pub_to_rmq(
+                cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg, fname)
 
     else:
         log.log_warn(f"[{os.getpid()}] Invalid email subject: {subj}")
@@ -544,39 +552,6 @@ def archive_email_debug(rmq, log, cfg, msg):
     gen_libs.write_file(f_file, "w", msg)
     log.log_info(f"[{os.getpid()}] Email saved to: {e_file}")
     log.log_debug(f"[{os.getpid()}] End of archive_email_debug")
-
-
-def convert_bytes_debug(data, log):
-
-    """Function:  convert_bytes_debug
-
-    Description:  Converts a string to bytes.
-
-    Arguments:
-        (input) data -> Data string
-        (input) log -> Log class instance
-        (output) -> Bytes or None
-
-    """
-
-    log.log_debug(f"[{os.getpid()}] Start of convert_bytes_debug")
-
-    if isinstance(data, bytes):
-        log.log_debug(f"[{os.getpid()}] Returning no change already bytes")
-        log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 1")
-
-        return data
-
-    if isinstance(data, str):
-        log.log_debug(f"[{os.getpid()}] Returning converted from str to bytes")
-        log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 2")
-
-        return data.encode()
-
-    log.log_debug(f"[{os.getpid()}] Returning None - some other data type")
-    log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 3")
-
-    return None
 
 
 def get_text_debug(msg, log):
@@ -811,9 +786,13 @@ def process_attach_debug(msg, log, cfg):                # pylint:disable=R0915
                 f"[{os.getpid()}] Attachment detected: {item.get_filename()}")
             log.log_info(
                 f"[{os.getpid()}] Attachment type: {item.get_content_type()}")
-            log.log_debug(f"[{os.getpid()}] Calling convert_bytes_debug")
-            data = convert_bytes_debug(item.get_payload(decode=True), log)
-            log.log_debug(f"[{os.getpid()}] Finished convert_bytes_debug")
+
+            # Change 2253.
+            ####################
+            log.log_debug(f"[{os.getpid()}] Calling gen_libs.convert_bytes")
+            data = gen_libs.convert_bytes(item.get_payload(decode=True))
+            log.log_debug(f"[{os.getpid()}] Finished gen_libs.convert_bytes")
+            ####################
 
             log.log_debug(f"[{os.getpid()}] Check if data was converted")
             if data is None:
@@ -1109,7 +1088,8 @@ def process_message(cfg, log):
 
     if subj in cfg.valid_queues:
         log.log_info(f"[{os.getpid()}] Process subject")
-        process_subj(cfg, log, subj, msg)
+        log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
+        connect_rmq(cfg, log, subj, subj, msg)
 
     elif from_addr and from_addr in list(cfg.queue_dict.keys()):
         log.log_info(f"[{os.getpid()}] Process from address")
