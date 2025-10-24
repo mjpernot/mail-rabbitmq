@@ -1065,7 +1065,52 @@ def process_debug(cfg, subj, msg, from_addr):
     log.log_close()
 
 
-def process_message(cfg, log):
+def read_email(cfg, log, **kwargs):
+
+    """Function:  read_email
+
+    Description:  Read and parses the email message, then sends email for
+        further processing.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) kwargs:
+            args -> ArgParser class instance
+
+    """
+
+    # Will need a loop
+    # Example code:
+    log.log_info(f"[{os.getpid()}] Reading and parsing email...")
+    parser = Parser()
+    fhdr = open("/home/mjpernot/python/mail_rabbitmq/Package-admin.eml", "r")
+    msg = parser.parsestr("".join(fhdr.readlines()))
+    process_message(cfg, log, msg)
+
+
+def capture_email(cfg, log, **kwargs):
+
+    """Function:  capture_email
+
+    Description:  Captures the email from standard in and parses the email
+        message, before sending the email for further processing.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) kwargs:
+            args -> ArgParser class instance
+
+    """
+
+    log.log_info(f"[{os.getpid()}] Capturing and parsing email...")
+    parser = Parser()
+    msg = parser.parsestr("".join(sys.stdin.readlines()))
+    process_message(cfg, log, msg=msg)
+
+
+def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
 
@@ -1076,15 +1121,16 @@ def process_message(cfg, log):
     Arguments:
         (input) cfg -> Configuration settings module for the program
         (input) log -> Log class instance
+        (input) kwargs:
+            msg -> Email Parser class instance
 
     """
 
-    log.log_info(f"[{os.getpid()}] Parsing email...")
-    msg = parse_email()
+    log.log_info(f"[{os.getpid()}] Get email metadata")
+    msg = kwargs.get("msg")
     subj = gen_libs.pascalize(filter_subject(msg["subject"], cfg))
     email_list = gen_libs.find_email_addr(msg["from"])
     from_addr = email_list[0] if email_list else None
-    log.log_info(f"[{os.getpid()}] Instance creation")
 
     if subj in cfg.valid_queues:
         log.log_info(f"[{os.getpid()}] Process subject")
@@ -1182,7 +1228,7 @@ def main():
     """
 
     dir_perms_chk = {"-d": 5}
-    func_dict = {"-M": process_message, "-C": check_nonprocess}
+    func_dict = {"-M": capture_email, "-C": check_nonprocess}
     opt_req_list = ["-c", "-d"]
     opt_val_list = ["-c", "-d"]
     opt_xor_dict = {"-M": ["-C"], "-C": ["-M"]}

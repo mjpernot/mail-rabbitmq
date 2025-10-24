@@ -15,13 +15,15 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - config/rabbitmq.py.TEMPLATE: Change tmp_dir to /tmp and moved to 'Do not modify settings' section.
 
 ### Added
+- capture_email: Captures the email from standard in and parses the email message, before sending the email for further processing.
 - pub_to_rmq: Consolidate arguments for the call to RMQ and clean up file.
 
 ### Changed
+- main: Changed "-M" value in func_dict to "capture_email".
 - process_attach_debug: Replaced convert_bytes_debug call with gen_libs.convert_bytes call.
 - process_from: Replaced section of code with call to pub_to_rmq.
 - process_file: Replaced sections of code with call to pub_to_rmq.
-- process_message: Replaced process_subj call with connect_rmq call.
+- process_message: Replaced process_subj call with connect_rmq call, removed the parse_email call and added incoming keyword argument msg.
 - Documentation changes.
 
 ### Removed

@@ -5,6 +5,7 @@
 #   is located at.
 
 /usr/bin/python test/unit/mail_2_rmq/archive_email.py
+/usr/bin/python test/unit/mail_2_rmq/capture_email.py
 /usr/bin/python test/unit/mail_2_rmq/check_nonprocess.py
 /usr/bin/python test/unit/mail_2_rmq/connect_process.py
 /usr/bin/python test/unit/mail_2_rmq/connect_rmq.py
