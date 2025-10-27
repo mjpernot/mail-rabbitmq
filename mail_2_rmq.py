@@ -995,6 +995,23 @@ def process_debug(cfg, subj, msg, from_addr):
         connect_rmq_debug(cfg, log, subj, subj, msg)
         log.log_debug(f"[{os.getpid()}] process: Finished connect_rmq_debug")
 
+    # Change 2242.
+    ####################
+    elif subj in cfg.debug_valid_queues2:
+        log.log_debug(f"[{os.getpid()}] Detected valid subject2: {subj}")
+        log.log_info(f"[{os.getpid()}] Valid email subject2: {subj}")
+        log.log_info(
+            f"[{os.getpid()}] Looping on: {cfg.debug_valid_queues2[subj]}")
+
+        for qname in cfg.debug_valid_queues2[subj]:
+            log.log_info(f"[{os.getpid()}] Publishing to: {qname}")
+            log.log_debug(
+                f"[{os.getpid()}] process: Calling connect_rmq_debug")
+            connect_rmq_debug(cfg, log, qname, qname, msg)
+            log.log_debug(
+                f"[{os.getpid()}] process: Finished connect_rmq_debug")
+    ####################
+
     elif from_addr and from_addr in list(cfg.debug_queue_dict.keys()):
         log.log_debug(f"[{os.getpid()}] Detected valid from addr: {from_addr}")
         log.log_debug(f"[{os.getpid()}] Calling process_from_debug")

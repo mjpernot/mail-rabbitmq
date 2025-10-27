@@ -47,11 +47,16 @@ debug_address = "debug_name@domain"
 # Queues names must be PascalCase style.
 # Warning: Do not contain the same name as in the valid_queues entry as that is a production queue.
 debug_valid_queues = ["DebugQueue"]
+# Dictionary of subjects with one or more queues bound to the subject to go into RabbitMQ.
+# Queue names are direct correlation to the subject names in the emails.
+# Queues names must be PascalCase style.
+# Warning: Do not contain the same name as in the valid_queues entry as that is a production queue.
+debug_valid_queues2 = {"DebugQueue3": ["DebugQueue3", "DebugQueue4"]}
 # Dictionary of valid from email addresses and their associated queue names.
 # Format of email should be: "name@domain"
 # Example: debug_queue_dict = {"debug_name@domain": "DebugQueue"}
 # Warning: Do not contain the same name as in the queue_dict entry as that is a production queue.
-debug_queue_dict = {"debug_name@domain": "DebugQueue"}
+debug_queue_dict = {"debug_name@domain": "DebugQueue2"}
 #
 # Do not modify settings below unless you know what you are doing.
 #

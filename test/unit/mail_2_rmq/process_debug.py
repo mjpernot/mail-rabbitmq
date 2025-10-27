@@ -131,6 +131,8 @@ class CfgTest():                                        # pylint:disable=R0903
                            "goodname2@domain": "AddrQueue2"}
         self.debug_address = "debug@debug.domain"
         self.debug_valid_queues = ["DebugQueue"]
+        self.debug_valid_queues2 = {
+            "DebugQueue3": ["DebugQueue3", "DebugQueue4"]}
         self.debug_queue_dict = {"debug_name@domain": "DebugQueue"}
 
 
@@ -163,9 +165,28 @@ class UnitTest(unittest.TestCase):
         self.log = LoggerTest()
         self.subj = "DebugQueue"
         self.subj2 = "DebugQueue2"
+        self.subj3 = "DebugQueue3"
         self.msg = {"subject": "DebugQueue", "from": "From: debug_name@domain"}
         self.from_addr = "debug_name@domain"
         self.from_addr2 = "debug_name@domain2"
+
+    @mock.patch("mail_2_rmq.connect_rmq_debug", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_class")
+    def test_multiple_queues(self, mock_log):
+
+        """Function:  test_multiple_queues
+
+        Description:  Test email with multiple queues bound to a subject.
+
+        Arguments:
+
+        """
+
+        mock_log.Logger.return_value = self.log
+
+        self.assertFalse(
+            mail_2_rmq.process_debug(
+                self.cfg, self.subj3, self.msg, self.from_addr))
 
     @mock.patch("mail_2_rmq.process_file_debug", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.gen_class")

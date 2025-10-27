@@ -20,6 +20,8 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - pub_to_rmq: Consolidate arguments for the call to RMQ and clean up file.
 
 ### Changed
+- process_debug: Added new check to process those subjects with multiple queues bound to it in "debug_valid_queues2".
+- config/rabbitmq.py.TEMPLATE: Added "debug_valid_queues2" to hold subject with multiple queues bound to it.
 - run_program: Added keyword argument "args" for all function calls in the loop.
 - main: Changed "-M" value in func_dict to "capture_email" and "-C" value to "read_email", changed "-C" to handle multiple values and added arg_file_chki call to handle file permission checks.
 - process_attach_debug: Replaced convert_bytes_debug call with gen_libs.convert_bytes call.
