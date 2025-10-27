@@ -7,21 +7,24 @@
         RabbitMQ queue.
 
     Usage:
-        -M options:
+        -M option:
         email_alias: "| /path/mail_2_rmq.py -c file -d path -M"
         cat email_file | /path/mail_2_rmq.py -c file -d path -M
 
-        All other options.
-        mail_2_rmq.py -c file -d path [-C]
-            [ -v | -h ]
+        -C option:
+        mail_2_rmq.py -c file -d path -C {file* file1 file2 ...}
+
+        Other options:
+            mail_2_rmq.py [ -v | -h ]
 
     Arguments:
-        -c file => RabbitMQ configuration file.  Required argument.
-        -d dir path => Directory path for option '-c'.  Required argument.
+        -c file => RabbitMQ configuration file.
+        -d dir path => Directory path for -c option.
 
-        -M => Receive email messages from email pipe.
+        -M => Receive email messages from a pipe.
 
-        -C => Check for non-processed messages in email archive directory.
+        -C file(s) => Name(s) of the email files to read.  Can also use
+            wildcard expansion for file names.
 
         -v => Display version of this program.
         -h => Help and usage message.
@@ -71,7 +74,7 @@
     Example:
         alias: "| /opt/local/mail_2_rmq.py -M -c rabbitmq -d /opt/local/config"
         cat email_file | mail_2_rmq.py -c rabbitmq -d config -M
-        mail_2_rmq.py -c rabbitmq -d config -C
+        mail_2_rmq.py -c rabbitmq -d config -C /opt/mail/email*.eml
 
 """
 
@@ -156,23 +159,6 @@ def load_cfg(cfg_name, cfg_dir):
         combined_msg.append(err_msg)
 
     return cfg, status_flag, combined_msg
-
-
-def parse_email():
-
-    """Function:  parse_email
-
-    Description:  Accept email from standard in and process email to be used
-        for RabbitMQ.
-
-    Arguments:
-        (output) Email instance
-
-    """
-
-    parser = Parser()
-
-    return parser.parsestr("".join(sys.stdin.readlines()))
 
 
 def archive_email(rmq, log, cfg, msg):
@@ -417,7 +403,7 @@ def process_from(cfg, log, msg, from_addr):
                 f" {from_addr} with file attachment: {fname}")
             pub_to_rmq(
                 cfg, log, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr],
-                msg, fname)
+                msg, fname=fname)
 
     else:
         log.log_warn(
@@ -467,7 +453,7 @@ def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
         rmq.close()
 
 
-def pub_to_rmq(cfg, log, qname, rkey, msg, fname):
+def pub_to_rmq(cfg, log, qname, rkey, msg, **kwargs):
 
     """Function:  pub_to_rmq
 
@@ -479,10 +465,12 @@ def pub_to_rmq(cfg, log, qname, rkey, msg, fname):
         (input) qname -> Queue name for RabbitMQ
         (input) rkey -> Rkey value for RabbitMQ
         (input) msg -> Email message body
-        (input) fname -> Name of attachment file
+        (input) kwargs:
+            fname -> Name of attachment file
 
     """
 
+    fname = kwargs.get("fname")
     log.log_info(f"[{os.getpid()}] pub_to_rmq: Publishing: {fname}")
     connect_rmq(cfg, log, qname, rkey, msg, fname=fname)
     err_flag, err_msg = gen_libs.rm_file(fname)
@@ -512,14 +500,15 @@ def process_file(cfg, log, subj, msg):
         for fname in fname_list:
             log.log_info(
                 f"[{os.getpid()}] Valid subject with file attachment: {fname}")
-            pub_to_rmq(cfg, log, subj, subj, msg, fname)
+            pub_to_rmq(cfg, log, subj, subj, msg, fname=fname)
 
     elif fname_list:
         for fname in fname_list:
             log.log_info(
                 f"[{os.getpid()}] Invalid subject with file attached: {fname}")
             pub_to_rmq(
-                cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg, fname)
+                cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg,
+                fname=fname)
 
     else:
         log.log_warn(f"[{os.getpid()}] Invalid email subject: {subj}")
@@ -1069,8 +1058,8 @@ def read_email(cfg, log, **kwargs):
 
     """Function:  read_email
 
-    Description:  Read and parses the email message, then sends email for
-        further processing.
+    Description:  Reads files and parses the email messages, then sends emails
+        for further processing.
 
     Arguments:
         (input) cfg -> Configuration settings module for the program
@@ -1080,16 +1069,17 @@ def read_email(cfg, log, **kwargs):
 
     """
 
-    # Will need a loop
-    # Example code:
     log.log_info(f"[{os.getpid()}] Reading and parsing email...")
+    args = kwargs.get("args")
     parser = Parser()
-    fhdr = open("/home/mjpernot/python/mail_rabbitmq/Package-admin.eml", "r")
-    msg = parser.parsestr("".join(fhdr.readlines()))
-    process_message(cfg, log, msg)
+
+    for fname in args.get_val("-C"):
+        with open(fname, mode="r", encoding="UTF-8") as fhdr:
+            msg = parser.parsestr("".join(fhdr.readlines()))
+            process_message(cfg, log, msg=msg)
 
 
-def capture_email(cfg, log, **kwargs):
+def capture_email(cfg, log, **kwargs):                  # pylint:disable=W0613
 
     """Function:  capture_email
 
@@ -1153,22 +1143,6 @@ def process_message(cfg, log, **kwargs):
         process_file(cfg, log, subj, msg)
 
 
-def check_nonprocess(cfg, log):                         # pylint:disable=W0613
-
-    """Function:  check_nonprocess
-
-    Description:  Process any non-processed email files in the directory
-        provided.
-
-    Arguments:
-        (input) cfg -> Configuration settings module for the program
-        (input) log -> Log class instance
-
-    """
-
-    print("check_nonprocess:  Stub holder.  Yet to be developed")
-
-
 def run_program(args, func_dict):
 
     """Function:  run_program
@@ -1197,7 +1171,7 @@ def run_program(args, func_dict):
 
         # Intersect args_array & func_dict to find which functions to call
         for opt in set(args.get_args_keys()) & set(func_dict.keys()):
-            func_dict[opt](cfg, log)
+            func_dict[opt](cfg, log, args=args)
 
         log.log_close()
 
@@ -1217,7 +1191,9 @@ def main():
 
     Variables:
         dir_perms_chk -> contains directories and their octal permissions
+        file_perm -> File check options with their perms in octal
         func_dict -> dictionary list for the function calls or other options
+        multi_val -> List of options that will have multiple values
         opt_req_list -> contains options that are required for the program
         opt_val_list -> contains options which require values
         opt_xor_dict -> contains dict with key that is xor with it's values
@@ -1228,19 +1204,23 @@ def main():
     """
 
     dir_perms_chk = {"-d": 5}
-    func_dict = {"-M": capture_email, "-C": check_nonprocess}
+    file_perm = {"-C": 4}
+    func_dict = {"-M": capture_email, "-C": read_email}
+    multi_val = ["-C"]
     opt_req_list = ["-c", "-d"]
     opt_val_list = ["-c", "-d"]
     opt_xor_dict = {"-M": ["-C"], "-C": ["-M"]}
 
     # Process argument list from command line
-    args = gen_class.ArgParser(sys.argv, opt_val=opt_val_list)
+    args = gen_class.ArgParser(
+        sys.argv, opt_val=opt_val_list, multi_val=multi_val)
 
     if args.arg_parse2()                                            \
        and not gen_libs.help_func(args, __version__, help_message)  \
        and args.arg_require(opt_req=opt_req_list)                   \
        and args.arg_xor_dict(opt_xor_val=opt_xor_dict)              \
-       and args.arg_dir_chk(dir_perms_chk=dir_perms_chk):
+       and args.arg_dir_chk(dir_perms_chk=dir_perms_chk)            \
+       and args.arg_file_chk(file_perm_chk=file_perm):
         run_program(args, func_dict)
 
 

@@ -189,7 +189,7 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(
             mail_2_rmq.pub_to_rmq(
                 self.cfg, mock_log, self.qname, self.rkey, self.msg,
-                self.fname2))
+                fname=self.fname2))
 
     @mock.patch("mail_2_rmq.gen_libs.rm_file",
                 mock.Mock(return_value=(False, None)))
@@ -214,7 +214,7 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(
             mail_2_rmq.pub_to_rmq(
                 self.cfg, mock_log, self.qname, self.rkey, self.msg,
-                self.fname))
+                fname=self.fname))
 
 
 if __name__ == "__main__":

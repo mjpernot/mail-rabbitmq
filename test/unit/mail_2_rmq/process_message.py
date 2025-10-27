@@ -189,7 +189,7 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_fname_valid_subj(
-        self, mock_log, mock_filter, mock_camel, mock_email):
+            self, mock_log, mock_filter, mock_camel, mock_email):
 
         """Function:  test_fname_valid_subj
 
@@ -214,7 +214,7 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mail_2_rmq.filter_subject")
     @mock.patch("mail_2_rmq.gen_class.Logger")
     def test_fname_invalid_subj(
-        self, mock_log, mock_filter, mock_camel, mock_email):
+            self, mock_log, mock_filter, mock_camel, mock_email):
 
         """Function:  test_fname_invalid_subj
 

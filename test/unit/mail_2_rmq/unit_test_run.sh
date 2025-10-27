@@ -6,7 +6,6 @@
 
 /usr/bin/python test/unit/mail_2_rmq/archive_email.py
 /usr/bin/python test/unit/mail_2_rmq/capture_email.py
-/usr/bin/python test/unit/mail_2_rmq/check_nonprocess.py
 /usr/bin/python test/unit/mail_2_rmq/connect_process.py
 /usr/bin/python test/unit/mail_2_rmq/connect_rmq.py
 /usr/bin/python test/unit/mail_2_rmq/convert_bytes.py
@@ -15,13 +14,13 @@
 /usr/bin/python test/unit/mail_2_rmq/help_message.py
 /usr/bin/python test/unit/mail_2_rmq/load_cfg.py
 /usr/bin/python test/unit/mail_2_rmq/main.py
-/usr/bin/python test/unit/mail_2_rmq/parse_email.py
 /usr/bin/python test/unit/mail_2_rmq/process_attach.py
 /usr/bin/python test/unit/mail_2_rmq/process_file.py
 /usr/bin/python test/unit/mail_2_rmq/process_from.py
 /usr/bin/python test/unit/mail_2_rmq/process_message.py
 /usr/bin/python test/unit/mail_2_rmq/process_subj.py
 /usr/bin/python test/unit/mail_2_rmq/pub_to_rmq.py
+/usr/bin/python test/unit/mail_2_rmq/read_email.py
 /usr/bin/python test/unit/mail_2_rmq/run_program.py
 /usr/bin/python test/unit/mail_2_rmq/process_debug.py
 /usr/bin/python test/unit/mail_2_rmq/archive_email_debug.py
