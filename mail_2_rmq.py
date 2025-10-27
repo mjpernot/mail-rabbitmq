@@ -361,25 +361,6 @@ def process_attach(msg, log, cfg):
     return fname_list
 
 
-def process_subj(cfg, log, subj, msg):
-
-    """Function:  process_subj
-
-    Description:  Process email using its subject line and open connection and
-        validate connection to RabbitMQ.
-
-    Arguments:
-        (input) cfg -> Configuration settings module for the program
-        (input) log -> Log class instance
-        (input) subj -> Email subject line
-        (input) msg -> Email message body
-
-    """
-
-    log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
-    connect_rmq(cfg, log, subj, subj, msg)
-
-
 def process_from(cfg, log, msg, from_addr):
 
     """Function:  process_from
@@ -711,29 +692,6 @@ def connect_rmq_debug(cfg, log, qname, rkey, msg, **kwargs):
         rmq.close()
 
     log.log_debug(f"[{os.getpid()}] End of connect_rmq_debug")
-
-
-def process_subj_debug(cfg, log, subj, msg):
-
-    """Function:  process_subj_debug
-
-    Description:  Process email using its subject line and open connection and
-        validate connection to RabbitMQ.
-
-    Arguments:
-        (input) cfg -> Configuration settings module for the program
-        (input) log -> Log class instance
-        (input) subj -> Email subject line
-        (input) msg -> Email message body
-
-    """
-
-    log.log_debug(f"[{os.getpid()}] Start of process_subj_debug")
-    log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
-    log.log_debug(f"[{os.getpid()}] process_subj: Calling connect_rmq_debug")
-    connect_rmq_debug(cfg, log, subj, subj, msg)
-    log.log_debug(f"[{os.getpid()}] process_subj: Finished connect_rmq_debug")
-    log.log_debug(f"[{os.getpid()}] End of process_subj_debug")
 
 
 def process_attach_debug(msg, log, cfg):                # pylint:disable=R0915

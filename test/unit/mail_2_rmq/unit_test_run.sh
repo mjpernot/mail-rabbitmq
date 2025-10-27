@@ -18,7 +18,6 @@
 /usr/bin/python test/unit/mail_2_rmq/process_file.py
 /usr/bin/python test/unit/mail_2_rmq/process_from.py
 /usr/bin/python test/unit/mail_2_rmq/process_message.py
-/usr/bin/python test/unit/mail_2_rmq/process_subj.py
 /usr/bin/python test/unit/mail_2_rmq/pub_to_rmq.py
 /usr/bin/python test/unit/mail_2_rmq/read_email.py
 /usr/bin/python test/unit/mail_2_rmq/run_program.py
@@ -30,5 +29,4 @@
 /usr/bin/python test/unit/mail_2_rmq/process_attach_debug.py
 /usr/bin/python test/unit/mail_2_rmq/process_file_debug.py
 /usr/bin/python test/unit/mail_2_rmq/process_from_debug.py
-/usr/bin/python test/unit/mail_2_rmq/process_subj_debug.py
 /usr/bin/python test/unit/mail_2_rmq/pub_to_rmq_debug.py

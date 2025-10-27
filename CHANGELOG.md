@@ -29,6 +29,8 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Documentation changes.
 
 ### Removed
+- process_subj_debug function.
+- process_subj function.
 - check_nonprocess function.
 - parse_email function.
 - process_subj function.
