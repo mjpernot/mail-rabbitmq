@@ -7,21 +7,24 @@
         RabbitMQ queue.
 
     Usage:
-        -M options:
+        -M option:
         email_alias: "| /path/mail_2_rmq.py -c file -d path -M"
         cat email_file | /path/mail_2_rmq.py -c file -d path -M
 
-        All other options.
-        mail_2_rmq.py -c file -d path [-C]
-            [ -v | -h ]
+        -C option:
+        mail_2_rmq.py -c file -d path -C {file* file1 file2 ...}
+
+        Other options:
+            mail_2_rmq.py [ -v | -h ]
 
     Arguments:
-        -c file => RabbitMQ configuration file.  Required argument.
-        -d dir path => Directory path for option '-c'.  Required argument.
+        -c file => RabbitMQ configuration file.
+        -d dir path => Directory path for -c option.
 
-        -M => Receive email messages from email pipe.
+        -M => Receive email messages from a pipe.
 
-        -C => Check for non-processed messages in email archive directory.
+        -C file(s) => Name(s) of the email files to read.  Can also use
+            wildcard expansion for file names.
 
         -v => Display version of this program.
         -h => Help and usage message.
@@ -47,7 +50,6 @@
             err_file_queues = "ERROR_FILE_QUEUE_NAME"
             email_dir = "DIRECTORY_PATH/email_dir"
             log_file = "DIRECTORY_PATH/mail_2_rmq.log"
-            tmp_dir = "DIRECTORY_PATH/tmp"
             queue_dict = {}
             err_addr_queue = "ERROR_ADDR_QUEUE_NAME"
             # For Debugging use
@@ -64,6 +66,7 @@
             q_durable
             auto_delete
             heartbeat
+            tmp_dir
 
         Note:  If connecting to a multiple node RabbitMQ cluster, use the
             host_list entry.
@@ -71,7 +74,7 @@
     Example:
         alias: "| /opt/local/mail_2_rmq.py -M -c rabbitmq -d /opt/local/config"
         cat email_file | mail_2_rmq.py -c rabbitmq -d config -M
-        mail_2_rmq.py -c rabbitmq -d config -C
+        mail_2_rmq.py -c rabbitmq -d config -C /opt/mail/email*.eml
 
 """
 
@@ -156,23 +159,6 @@ def load_cfg(cfg_name, cfg_dir):
         combined_msg.append(err_msg)
 
     return cfg, status_flag, combined_msg
-
-
-def parse_email():
-
-    """Function:  parse_email
-
-    Description:  Accept email from standard in and process email to be used
-        for RabbitMQ.
-
-    Arguments:
-        (output) Email instance
-
-    """
-
-    parser = Parser()
-
-    return parser.parsestr("".join(sys.stdin.readlines()))
 
 
 def archive_email(rmq, log, cfg, msg):
@@ -375,25 +361,6 @@ def process_attach(msg, log, cfg):
     return fname_list
 
 
-def process_subj(cfg, log, subj, msg):
-
-    """Function:  process_subj
-
-    Description:  Process email using its subject line and open connection and
-        validate connection to RabbitMQ.
-
-    Arguments:
-        (input) cfg -> Configuration settings module for the program
-        (input) log -> Log class instance
-        (input) subj -> Email subject line
-        (input) msg -> Email message body
-
-    """
-
-    log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
-    connect_rmq(cfg, log, subj, subj, msg)
-
-
 def process_from(cfg, log, msg, from_addr):
 
     """Function:  process_from
@@ -415,14 +382,9 @@ def process_from(cfg, log, msg, from_addr):
             log.log_info(
                 f"[{os.getpid()}] Valid From address:"
                 f" {from_addr} with file attachment: {fname}")
-            connect_rmq(
+            pub_to_rmq(
                 cfg, log, cfg.queue_dict[from_addr], cfg.queue_dict[from_addr],
                 msg, fname=fname)
-            err_flag, err_msg = gen_libs.rm_file(fname)
-
-            if err_flag:
-                log.log_warn(
-                    f"[{os.getpid()}] process_from: Message: {err_msg}")
 
     else:
         log.log_warn(
@@ -472,6 +434,32 @@ def connect_rmq(cfg, log, qname, rkey, msg, **kwargs):
         rmq.close()
 
 
+def pub_to_rmq(cfg, log, qname, rkey, msg, **kwargs):
+
+    """Function:  pub_to_rmq
+
+    Description:  Consolidate arguments for the call to RMQ and clean up file.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) qname -> Queue name for RabbitMQ
+        (input) rkey -> Rkey value for RabbitMQ
+        (input) msg -> Email message body
+        (input) kwargs:
+            fname -> Name of attachment file
+
+    """
+
+    fname = kwargs.get("fname")
+    log.log_info(f"[{os.getpid()}] pub_to_rmq: Publishing: {fname}")
+    connect_rmq(cfg, log, qname, rkey, msg, fname=fname)
+    err_flag, err_msg = gen_libs.rm_file(fname)
+
+    if err_flag:
+        log.log_warn(f"[{os.getpid()}] pub_to_rmq: Message: {err_msg}")
+
+
 def process_file(cfg, log, subj, msg):
 
     """Function:  process_file
@@ -493,25 +481,15 @@ def process_file(cfg, log, subj, msg):
         for fname in fname_list:
             log.log_info(
                 f"[{os.getpid()}] Valid subject with file attachment: {fname}")
-            connect_rmq(cfg, log, subj, subj, msg, fname=fname)
-            err_flag, err_msg = gen_libs.rm_file(fname)
-
-            if err_flag:
-                log.log_warn(
-                    f"[{os.getpid()}] process_file: Message: {err_msg}")
+            pub_to_rmq(cfg, log, subj, subj, msg, fname=fname)
 
     elif fname_list:
         for fname in fname_list:
             log.log_info(
                 f"[{os.getpid()}] Invalid subject with file attached: {fname}")
-            connect_rmq(
+            pub_to_rmq(
                 cfg, log, cfg.err_file_queue, cfg.err_file_queue, msg,
                 fname=fname)
-            err_flag, err_msg = gen_libs.rm_file(fname)
-
-            if err_flag:
-                log.log_warn(
-                    f"[{os.getpid()}] process_file 2: Message: {err_msg}")
 
     else:
         log.log_warn(f"[{os.getpid()}] Invalid email subject: {subj}")
@@ -544,39 +522,6 @@ def archive_email_debug(rmq, log, cfg, msg):
     gen_libs.write_file(f_file, "w", msg)
     log.log_info(f"[{os.getpid()}] Email saved to: {e_file}")
     log.log_debug(f"[{os.getpid()}] End of archive_email_debug")
-
-
-def convert_bytes_debug(data, log):
-
-    """Function:  convert_bytes_debug
-
-    Description:  Converts a string to bytes.
-
-    Arguments:
-        (input) data -> Data string
-        (input) log -> Log class instance
-        (output) -> Bytes or None
-
-    """
-
-    log.log_debug(f"[{os.getpid()}] Start of convert_bytes_debug")
-
-    if isinstance(data, bytes):
-        log.log_debug(f"[{os.getpid()}] Returning no change already bytes")
-        log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 1")
-
-        return data
-
-    if isinstance(data, str):
-        log.log_debug(f"[{os.getpid()}] Returning converted from str to bytes")
-        log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 2")
-
-        return data.encode()
-
-    log.log_debug(f"[{os.getpid()}] Returning None - some other data type")
-    log.log_debug(f"[{os.getpid()}] End of convert_bytes_debug 3")
-
-    return None
 
 
 def get_text_debug(msg, log):
@@ -749,29 +694,6 @@ def connect_rmq_debug(cfg, log, qname, rkey, msg, **kwargs):
     log.log_debug(f"[{os.getpid()}] End of connect_rmq_debug")
 
 
-def process_subj_debug(cfg, log, subj, msg):
-
-    """Function:  process_subj_debug
-
-    Description:  Process email using its subject line and open connection and
-        validate connection to RabbitMQ.
-
-    Arguments:
-        (input) cfg -> Configuration settings module for the program
-        (input) log -> Log class instance
-        (input) subj -> Email subject line
-        (input) msg -> Email message body
-
-    """
-
-    log.log_debug(f"[{os.getpid()}] Start of process_subj_debug")
-    log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
-    log.log_debug(f"[{os.getpid()}] process_subj: Calling connect_rmq_debug")
-    connect_rmq_debug(cfg, log, subj, subj, msg)
-    log.log_debug(f"[{os.getpid()}] process_subj: Finished connect_rmq_debug")
-    log.log_debug(f"[{os.getpid()}] End of process_subj_debug")
-
-
 def process_attach_debug(msg, log, cfg):                # pylint:disable=R0915
 
     """Function:  process_attach_debug
@@ -811,9 +733,13 @@ def process_attach_debug(msg, log, cfg):                # pylint:disable=R0915
                 f"[{os.getpid()}] Attachment detected: {item.get_filename()}")
             log.log_info(
                 f"[{os.getpid()}] Attachment type: {item.get_content_type()}")
-            log.log_debug(f"[{os.getpid()}] Calling convert_bytes_debug")
-            data = convert_bytes_debug(item.get_payload(decode=True), log)
-            log.log_debug(f"[{os.getpid()}] Finished convert_bytes_debug")
+
+            # Change 2253.
+            ####################
+            log.log_debug(f"[{os.getpid()}] Calling gen_libs.convert_bytes")
+            data = gen_libs.convert_bytes(item.get_payload(decode=True))
+            log.log_debug(f"[{os.getpid()}] Finished gen_libs.convert_bytes")
+            ####################
 
             log.log_debug(f"[{os.getpid()}] Check if data was converted")
             if data is None:
@@ -1069,6 +995,23 @@ def process_debug(cfg, subj, msg, from_addr):
         connect_rmq_debug(cfg, log, subj, subj, msg)
         log.log_debug(f"[{os.getpid()}] process: Finished connect_rmq_debug")
 
+    # Change 2242.
+    ####################
+    elif subj in cfg.debug_valid_queues2:
+        log.log_debug(f"[{os.getpid()}] Detected valid subject2: {subj}")
+        log.log_info(f"[{os.getpid()}] Valid email subject2: {subj}")
+        log.log_info(
+            f"[{os.getpid()}] Looping on: {cfg.debug_valid_queues2[subj]}")
+
+        for qname in cfg.debug_valid_queues2[subj]:
+            log.log_info(f"[{os.getpid()}] Publishing to: {qname}")
+            log.log_debug(
+                f"[{os.getpid()}] process: Calling connect_rmq_debug")
+            connect_rmq_debug(cfg, log, qname, qname, msg)
+            log.log_debug(
+                f"[{os.getpid()}] process: Finished connect_rmq_debug")
+    ####################
+
     elif from_addr and from_addr in list(cfg.debug_queue_dict.keys()):
         log.log_debug(f"[{os.getpid()}] Detected valid from addr: {from_addr}")
         log.log_debug(f"[{os.getpid()}] Calling process_from_debug")
@@ -1086,7 +1029,53 @@ def process_debug(cfg, subj, msg, from_addr):
     log.log_close()
 
 
-def process_message(cfg, log):
+def read_email(cfg, log, **kwargs):
+
+    """Function:  read_email
+
+    Description:  Reads files and parses the email messages, then sends emails
+        for further processing.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) kwargs:
+            args -> ArgParser class instance
+
+    """
+
+    log.log_info(f"[{os.getpid()}] Reading and parsing email...")
+    args = kwargs.get("args")
+    parser = Parser()
+
+    for fname in args.get_val("-C"):
+        with open(fname, mode="r", encoding="UTF-8") as fhdr:
+            msg = parser.parsestr("".join(fhdr.readlines()))
+            process_message(cfg, log, msg=msg)
+
+
+def capture_email(cfg, log, **kwargs):                  # pylint:disable=W0613
+
+    """Function:  capture_email
+
+    Description:  Captures the email from standard in and parses the email
+        message, before sending the email for further processing.
+
+    Arguments:
+        (input) cfg -> Configuration settings module for the program
+        (input) log -> Log class instance
+        (input) kwargs:
+            args -> ArgParser class instance
+
+    """
+
+    log.log_info(f"[{os.getpid()}] Capturing and parsing email...")
+    parser = Parser()
+    msg = parser.parsestr("".join(sys.stdin.readlines()))
+    process_message(cfg, log, msg=msg)
+
+
+def process_message(cfg, log, **kwargs):
 
     """Function:  process_message
 
@@ -1097,19 +1086,21 @@ def process_message(cfg, log):
     Arguments:
         (input) cfg -> Configuration settings module for the program
         (input) log -> Log class instance
+        (input) kwargs:
+            msg -> Email Parser class instance
 
     """
 
-    log.log_info(f"[{os.getpid()}] Parsing email...")
-    msg = parse_email()
+    log.log_info(f"[{os.getpid()}] Get email metadata")
+    msg = kwargs.get("msg")
     subj = gen_libs.pascalize(filter_subject(msg["subject"], cfg))
     email_list = gen_libs.find_email_addr(msg["from"])
     from_addr = email_list[0] if email_list else None
-    log.log_info(f"[{os.getpid()}] Instance creation")
 
     if subj in cfg.valid_queues:
         log.log_info(f"[{os.getpid()}] Process subject")
-        process_subj(cfg, log, subj, msg)
+        log.log_info(f"[{os.getpid()}] Valid email subject: {subj}")
+        connect_rmq(cfg, log, subj, subj, msg)
 
     elif from_addr and from_addr in list(cfg.queue_dict.keys()):
         log.log_info(f"[{os.getpid()}] Process from address")
@@ -1125,22 +1116,6 @@ def process_message(cfg, log):
     else:
         log.log_info(f"[{os.getpid()}] Process attachment")
         process_file(cfg, log, subj, msg)
-
-
-def check_nonprocess(cfg, log):                         # pylint:disable=W0613
-
-    """Function:  check_nonprocess
-
-    Description:  Process any non-processed email files in the directory
-        provided.
-
-    Arguments:
-        (input) cfg -> Configuration settings module for the program
-        (input) log -> Log class instance
-
-    """
-
-    print("check_nonprocess:  Stub holder.  Yet to be developed")
 
 
 def run_program(args, func_dict):
@@ -1171,7 +1146,7 @@ def run_program(args, func_dict):
 
         # Intersect args_array & func_dict to find which functions to call
         for opt in set(args.get_args_keys()) & set(func_dict.keys()):
-            func_dict[opt](cfg, log)
+            func_dict[opt](cfg, log, args=args)
 
         log.log_close()
 
@@ -1191,7 +1166,9 @@ def main():
 
     Variables:
         dir_perms_chk -> contains directories and their octal permissions
+        file_perm -> File check options with their perms in octal
         func_dict -> dictionary list for the function calls or other options
+        multi_val -> List of options that will have multiple values
         opt_req_list -> contains options that are required for the program
         opt_val_list -> contains options which require values
         opt_xor_dict -> contains dict with key that is xor with it's values
@@ -1202,19 +1179,23 @@ def main():
     """
 
     dir_perms_chk = {"-d": 5}
-    func_dict = {"-M": process_message, "-C": check_nonprocess}
+    file_perm = {"-C": 4}
+    func_dict = {"-M": capture_email, "-C": read_email}
+    multi_val = ["-C"]
     opt_req_list = ["-c", "-d"]
     opt_val_list = ["-c", "-d"]
     opt_xor_dict = {"-M": ["-C"], "-C": ["-M"]}
 
     # Process argument list from command line
-    args = gen_class.ArgParser(sys.argv, opt_val=opt_val_list)
+    args = gen_class.ArgParser(
+        sys.argv, opt_val=opt_val_list, multi_val=multi_val)
 
     if args.arg_parse2()                                            \
        and not gen_libs.help_func(args, __version__, help_message)  \
        and args.arg_require(opt_req=opt_req_list)                   \
        and args.arg_xor_dict(opt_xor_val=opt_xor_dict)              \
-       and args.arg_dir_chk(dir_perms_chk=dir_perms_chk):
+       and args.arg_dir_chk(dir_perms_chk=dir_perms_chk)            \
+       and args.arg_file_chk(file_perm_chk=file_perm):
         run_program(args, func_dict)
 
 

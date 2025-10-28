@@ -1,11 +1,11 @@
 # Classification (U)
 
-"""Program:  process_subj_debug.py
+"""Program:  pub_to_rmq.py
 
-    Description:  Unit testing of process_subj_debug in mail_2_rmq.py.
+    Description:  Unit testing of pub_to_rmq in mail_2_rmq.py.
 
     Usage:
-        test/unit/mail_2_rmq/process_subj_debug.py
+        test/unit/mail_2_rmq/pub_to_rmq.py
 
     Arguments:
 
@@ -132,6 +132,7 @@ class CfgTest():                                        # pylint:disable=R0903
         self.err_file_queue = "ERROR_FILE_QUEUE"
         self.log_file = "LOG_FILE"
         self.email_dir = "EMAIL_DIRECTORY"
+        self.queue_dict = {"From Line": "QueueName"}
 
 
 class UnitTest(unittest.TestCase):
@@ -142,11 +143,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
-        test_valid_subj
-        test_true_true_connect
-        test_false_false_connect
-        test_false_true_connect
-        test_true_false_connect
+        test_remove_file_failed
+        test_file_processed
 
     """
 
@@ -162,106 +160,22 @@ class UnitTest(unittest.TestCase):
 
         self.cfg = CfgTest()
         self.rmq = Rmq()
-        self.subj = "SubjectLine"
+        self.fname = "Filename.txt"
+        self.fname2 = "test/unit/mail_2_rmq/testfiles/fileattachment.txt"
+        self.qname = "FileQueue1"
+        self.rkey = "FileQueue1"
         self.msg = "Message Body"
 
-    @mock.patch("mail_2_rmq.connect_process_debug",
-                mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_libs.rm_file",
+                mock.Mock(return_value=(True, "ErrorMessage")))
+    @mock.patch("mail_2_rmq.archive_email", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.gen_class.Logger")
     @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_valid_subj(self, mock_rmq, mock_log):
+    def test_remove_file_failed(self, mock_rmq, mock_log):
 
-        """Function:  test_valid_subj
+        """Function:  test_remove_file_failed
 
-        Description:  Test email with valid subject.
-
-        Arguments:
-
-        """
-
-        mock_rmq.return_value = self.rmq
-        mock_log.return_value = True
-
-        self.assertFalse(
-            mail_2_rmq.process_subj_debug(
-                self.cfg, mock_log, self.subj, self.msg))
-
-    @mock.patch("mail_2_rmq.connect_process_debug",
-                mock.Mock(return_value=True))
-    @mock.patch("mail_2_rmq.gen_class.Logger")
-    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_true_true_connect(self, mock_rmq, mock_log):
-
-        """Function:  test_true_true_connect
-
-        Description:  Test connecting to RabbitMQ with true/true status.
-
-        Arguments:
-
-        """
-
-        mock_rmq.return_value = self.rmq
-        mock_log.return_value = True
-
-        self.assertFalse(
-            mail_2_rmq.process_subj_debug(
-                self.cfg, mock_log, self.subj, self.msg))
-
-    @mock.patch("mail_2_rmq.archive_email_debug")
-    @mock.patch("mail_2_rmq.gen_class.Logger")
-    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_false_false_connect(self, mock_rmq, mock_log, mock_archive):
-
-        """Function:  test_false_false_connect
-
-        Description:  Test connecting to RabbitMQ with false/false status.
-
-        Arguments:
-
-        """
-
-        self.rmq.conn_status = False
-        self.rmq.change_channel(False)
-
-        mock_rmq.return_value = self.rmq
-        mock_log.return_value = True
-        mock_archive.return_value = True
-
-        self.assertFalse(
-            mail_2_rmq.process_subj_debug(
-                self.cfg, mock_log, self.subj, self.msg))
-
-    @mock.patch("mail_2_rmq.archive_email_debug")
-    @mock.patch("mail_2_rmq.gen_class.Logger")
-    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_false_true_connect(self, mock_rmq, mock_log, mock_archive):
-
-        """Function:  test_false_true_connect
-
-        Description:  Test connecting to RabbitMQ with false/true status.
-
-        Arguments:
-
-        """
-
-        self.rmq.conn_status = False
-
-        mock_rmq.return_value = self.rmq
-        mock_log.return_value = True
-        mock_archive.return_value = True
-
-        self.assertFalse(
-            mail_2_rmq.process_subj_debug(
-                self.cfg, mock_log, self.subj, self.msg))
-
-    @mock.patch("mail_2_rmq.archive_email_debug")
-    @mock.patch("mail_2_rmq.gen_class.Logger")
-    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
-    def test_true_false_connect(self, mock_rmq, mock_log, mock_archive):
-
-        """Function:  test_true_false_connect
-
-        Description:  Test connecting to RabbitMQ with true/false status.
+        Description:  Test with file being processed, but file removal failed.
 
         Arguments:
 
@@ -271,11 +185,36 @@ class UnitTest(unittest.TestCase):
 
         mock_rmq.return_value = self.rmq
         mock_log.return_value = True
-        mock_archive.return_value = True
 
         self.assertFalse(
-            mail_2_rmq.process_subj_debug(
-                self.cfg, mock_log, self.subj, self.msg))
+            mail_2_rmq.pub_to_rmq(
+                self.cfg, mock_log, self.qname, self.rkey, self.msg,
+                fname=self.fname2))
+
+    @mock.patch("mail_2_rmq.gen_libs.rm_file",
+                mock.Mock(return_value=(False, None)))
+    @mock.patch("mail_2_rmq.archive_email", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_class.Logger")
+    @mock.patch("mail_2_rmq.rabbitmq_class.create_rmqpub")
+    def test_file_processed(self, mock_rmq, mock_log):
+
+        """Function:  test_file_processed
+
+        Description:  Test with file being processed and removed.
+
+        Arguments:
+
+        """
+
+        self.rmq.change_channel(False)
+
+        mock_rmq.return_value = self.rmq
+        mock_log.return_value = True
+
+        self.assertFalse(
+            mail_2_rmq.pub_to_rmq(
+                self.cfg, mock_log, self.qname, self.rkey, self.msg,
+                fname=self.fname))
 
 
 if __name__ == "__main__":
