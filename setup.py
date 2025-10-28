@@ -51,6 +51,7 @@ setuptools.setup(
         "Operating System :: Linux :: Fedora",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Message",
         "Topic :: Message :: RabbitMQ",
         "Topic :: Message :: RabbitMQ :: 3.6",

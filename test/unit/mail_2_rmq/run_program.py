@@ -28,11 +28,11 @@ import version                                  # pylint:disable=C0413,E0401
 __version__ = version.__version__
 
 
-def process_message(cfg, log):
+def capture_email(cfg, log, **kwargs):                  # pylint:disable=W0613
 
-    """Function:  process_message
+    """Function:  capture_email
 
-    Description:  This is a function stub for mail_2_rmq.process_message.
+    Description:  This is a function stub for mail_2_rmq.capture_email.
 
     Arguments:
 
@@ -46,11 +46,11 @@ def process_message(cfg, log):
     return status
 
 
-def check_nonprocess(cfg, log):
+def read_email(cfg, log, **kwargs):                     # pylint:disable=W0613
 
-    """Function:  check_nonprocess
+    """Function:  read_email
 
-    Description:  This is a function stub for mail_2_rmq.check_nonprocess.
+    Description:  This is a function stub for mail_2_rmq.read_email.
 
     Arguments:
 
@@ -246,7 +246,7 @@ class UnitTest(unittest.TestCase):
         self.log = LoggerTest()
         self.args = ArgParser()
         self.args.args_array = {"-c": "CONFIG_FILE", "-d": "CONFIG_DIRECTORY"}
-        self.func_names = {"-M": process_message, "-C": check_nonprocess}
+        self.func_names = {"-M": capture_email, "-C": read_email}
         self.err_msgs = ["Error Msg1", "Error Msg3"]
 
     @mock.patch("mail_2_rmq.gen_class")

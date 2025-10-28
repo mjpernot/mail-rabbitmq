@@ -77,10 +77,9 @@ Make the appropriate changes to the RabbitMQ environment in the rabbitmq.py file
     - err_queue = "ERROR_QUEUE_NAME"
     - err_file_queue = "ERROR_FILE_QUEUE_NAME"
 
-  * Directory for non-processed emails/log files/temporary storage.
+  * Directory for non-processed emails/log files storage.
     - email_dir = "DIRECTORY_PATH/email_dir"
     - log_file = "DIRECTORY_PATH/logs/mail_2_rmq.log"
-    - tmp_dir = "DIRECTORY_PATH/tmp"
 
   * Types of attachments to extract from email.
     - attach_types = ["application/pdf", "application/octet-stream"]

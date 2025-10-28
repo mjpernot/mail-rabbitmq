@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [2.3.0] - 2025-10-17
+- Updated simplejson=3.19.2
+- Added support for Python 3.13
+- Updated mock==5.2.0
+- Updated python-lib to v4.1.0
+- Updated rabbitmq-lib to v2.4.2
+
+### Fixed
+- config/rabbitmq.py.TEMPLATE: Change tmp_dir to /tmp and moved to 'Do not modify settings' section.
+
+### Added
+- read_email: Reads files and parses the email messages, then sends emails for further processing.
+- capture_email: Captures the email from standard in and parses the email message, before sending the email for further processing.
+- pub_to_rmq: Consolidate arguments for the call to RMQ and clean up file.
+
+### Changed
+- process_debug: Added new check to process those subjects with multiple queues bound to it in "debug_valid_queues2".
+- config/rabbitmq.py.TEMPLATE: Added "debug_valid_queues2" to hold subject with multiple queues bound to it.
+- run_program: Added keyword argument "args" for all function calls in the loop.
+- main: Changed "-M" value in func_dict to "capture_email" and "-C" value to "read_email", changed "-C" to handle multiple values and added arg_file_chki call to handle file permission checks.
+- process_attach_debug: Replaced convert_bytes_debug call with gen_libs.convert_bytes call.
+- process_from: Replaced section of code with call to pub_to_rmq.
+- process_file: Replaced sections of code with call to pub_to_rmq.
+- process_message: Replaced process_subj call with connect_rmq call, removed the parse_email call and added incoming keyword argument msg.
+- Documentation changes.
+
+### Removed
+- process_subj_debug function.
+- process_subj function.
+- check_nonprocess function.
+- parse_email function.
+- process_subj function.
+- convert_bytes_debug function.
+
+
 ## [2.2.2] - 2025-09-16
 
 ### Fixed

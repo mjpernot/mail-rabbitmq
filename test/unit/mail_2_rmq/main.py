@@ -36,6 +36,7 @@ class ArgParser():
     Methods:
         __init__
         arg_dir_chk
+        arg_file_chk
         arg_require
         arg_xor_dict
         arg_parse2
@@ -60,6 +61,8 @@ class ArgParser():
         self.dir_perms_chk2 = True
         self.opt_xor_val = None
         self.opt_xor_val2 = True
+        self.file_perm_chk = None
+        self.arg_file_chk2 = True
         self.argparse2 = True
 
     def arg_dir_chk(self, dir_perms_chk):
@@ -75,6 +78,20 @@ class ArgParser():
         self.dir_perms_chk = dir_perms_chk
 
         return self.dir_perms_chk2
+
+    def arg_file_chk(self, file_perm_chk):
+
+        """Method:  arg_file_chk
+
+        Description:  Method stub holder for gen_class.ArgParser.arg_file_chk.
+
+        Arguments:
+
+        """
+
+        self.file_perm_chk = file_perm_chk
+
+        return self.arg_file_chk2
 
     def arg_require(self, opt_req):
 
@@ -302,7 +319,6 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mail_2_rmq.main())
 
-    @mock.patch("mail_2_rmq.run_program", mock.Mock(return_value=True))
     @mock.patch("mail_2_rmq.gen_libs.help_func")
     @mock.patch("mail_2_rmq.gen_class.ArgParser")
     def test_dir_chk_crt_true(self, mock_arg, mock_help):
@@ -310,6 +326,45 @@ class UnitTest(unittest.TestCase):
         """Function:  test_dir_chk_crt_true
 
         Description:  Test with arg_dir_chk_crt returns True.
+
+        Arguments:
+
+        """
+
+        self.args.arg_file_chk2 = False
+
+        mock_arg.return_value = self.args
+        mock_help.return_value = False
+
+        self.assertFalse(mail_2_rmq.main())
+
+    @mock.patch("mail_2_rmq.gen_libs.help_func")
+    @mock.patch("mail_2_rmq.gen_class.ArgParser")
+    def test_arg_file_chk_false(self, mock_arg, mock_help):
+
+        """Function:  test_arg_file_chk_false
+
+        Description:  Test with arg_file_chk returns False.
+
+        Arguments:
+
+        """
+
+        self.args.arg_file_chk2 = False
+
+        mock_arg.return_value = self.args
+        mock_help.return_value = False
+
+        self.assertFalse(mail_2_rmq.main())
+
+    @mock.patch("mail_2_rmq.run_program", mock.Mock(return_value=True))
+    @mock.patch("mail_2_rmq.gen_libs.help_func")
+    @mock.patch("mail_2_rmq.gen_class.ArgParser")
+    def test_arg_file_chk_true(self, mock_arg, mock_help):
+
+        """Function:  test_arg_file_chk_true
+
+        Description:  Test with arg_file_chk returns True.
 
         Arguments:
 
